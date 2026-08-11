@@ -66,7 +66,7 @@ export async function POST(request: Request) {
   const paymentType = parsed.data.paymentType || (parsed.data.appointmentId ? 'booking_deposit' : 'portal_topup')
   const isCash = parsed.data.currency.toUpperCase() === 'CASH'
   // Cash is never "confirmed" from the portal - nothing has actually been
-  // paid yet, the client is just committing to pay at the clinic. Staff
+  // paid yet, the client is just committing to pay at the business. Staff
   // marks it received later from the dashboard (the existing "Mark as Cash
   // Paid" action), same as a client calling in to say the same thing.
   const status = isCash ? 'pending' : parsed.data.status || 'confirmed'

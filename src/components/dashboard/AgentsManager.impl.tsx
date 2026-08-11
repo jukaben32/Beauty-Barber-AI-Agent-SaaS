@@ -752,7 +752,7 @@ function AgentRow({
             <StatusBadge tone={STATUS_TONE[agent.status]}>{STATUS_LABEL[agent.status]}</StatusBadge>
           </div>
           <div className="mt-1 text-sm text-[var(--text-muted)]">
-            {agent.title ?? agent.specialty ?? 'Clinic agent'}
+            {agent.title ?? agent.specialty ?? 'Booking agent'}
           </div>
         </div>
       </div>
@@ -914,7 +914,7 @@ export function AgentsManager({
     setAgents((current) => current.filter((item) => item.id !== agent.id))
     pushToast({
       title: 'Agent deleted',
-      message: `${agent.name} has been removed from the clinic.`,
+      message: `${agent.name} has been removed from the business.`,
       tone: 'slate',
     })
   }
@@ -932,7 +932,7 @@ export function AgentsManager({
       <SectionHeading
         eyebrow={<SectionEyebrow>AI Agents</SectionEyebrow>}
         title="Agents, templates, and live testing"
-        description="Build and activate the front-desk, triage, and specialist voice agents your clinic uses on the website and over the phone."
+        description="Build and activate the front-desk, triage, and specialist voice agents your business uses on the website and over the phone."
         actions={
           <Button onClick={() => openCreate()} className="inline-flex items-center gap-2">
             <Plus className="h-4 w-4" />
@@ -959,7 +959,7 @@ export function AgentsManager({
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Active AI Agents</div>
             <h2 className="mt-1 text-2xl font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">
-              The clinic voice stack that answers, books, and follows up
+              The business voice stack that answers, books, and follows up
             </h2>
           </div>
           <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">

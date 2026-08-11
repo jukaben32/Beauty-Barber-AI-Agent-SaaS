@@ -34,7 +34,7 @@ export default async function WhatsappPage() {
       <SectionHeading
         eyebrow={<SectionEyebrow>Setup</SectionEyebrow>}
         title="WhatsApp"
-        description="Connect Evolution API so the same clinic assistant can answer WhatsApp, qualify clients and book appointments."
+        description="Connect Evolution API so the same booking assistant can answer WhatsApp, qualify clients and book appointments."
       />
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.18fr)_minmax(320px,0.82fr)]">
@@ -47,7 +47,7 @@ export default async function WhatsappPage() {
                 Implementation notes
               </p>
               <h2 className="mt-2 font-display text-2xl font-semibold tracking-[-0.04em] text-[var(--text-strong)]">
-                How WhatsApp fits the clinic stack
+                How WhatsApp fits the booking stack
               </h2>
             </div>
             <StatusBadge tone={statusTone(connection?.status)}>
@@ -63,7 +63,7 @@ export default async function WhatsappPage() {
               <div>
                 <div className="font-semibold text-[var(--text-strong)]">Same assistant, new channel</div>
                 <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
-                  WhatsApp uses the same clinic tools, FAQs and appointment logic as the voice flow.
+                  WhatsApp uses the same booking tools, FAQs and appointment logic as the voice flow.
                 </p>
               </div>
             </div>

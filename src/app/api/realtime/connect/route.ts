@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { apiError, json, readJson } from '@/lib/api'
-import { resolveRealtimeClinicContext } from '@/lib/realtime'
+import { resolveRealtimeBookingContext } from '@/lib/realtime'
 import { realtimeTools } from '@/ai/tools'
 import { findOrCreateClient } from '@/services/clients'
 import { createConversation, linkConversationToAppointment } from '@/services/conversations'
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
   const admin = createAdminClient()
 
   try {
-    const context = await resolveRealtimeClinicContext(admin, {
+    const context = await resolveRealtimeBookingContext(admin, {
       businessSlug: parsed.data.businessSlug,
       widgetSlug: parsed.data.widgetSlug ?? null,
       language: parsed.data.language ?? 'en',

@@ -26,11 +26,11 @@ export function PortalRegisterForm() {
     const normalizedName = name.trim()
 
     if (!normalizedSlug) {
-      setError('Enter the clinic slug to create your account.')
+      setError('Enter the business slug to create your account.')
       return
     }
     if (!PORTAL_SLUG_PATTERN.test(normalizedSlug)) {
-      setError('Clinic slugs use lowercase letters, numbers, and hyphens only.')
+      setError('Business slugs use lowercase letters, numbers, and hyphens only.')
       return
     }
     if (!normalizedName) {
@@ -109,11 +109,11 @@ export function PortalRegisterForm() {
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-[var(--text-strong)]">Clinic slug</label>
+          <label className="text-sm font-semibold text-[var(--text-strong)]">Business slug</label>
           <input
             value={businessSlug}
             onChange={(event) => setBusinessSlug(event.target.value)}
-            placeholder="clinic-demo"
+            placeholder="business-demo"
             className="input-field"
             autoComplete="off"
             required

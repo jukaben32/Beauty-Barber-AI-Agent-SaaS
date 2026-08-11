@@ -587,7 +587,7 @@ export function AnalyticsManager({
               Performance insights and trends
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--text-muted)] md:text-base">
-              Review conversations, bookings, and clinic activity in real time. The shapes below mirror the reference flow: trend, outcome split, and weekly breakdown.
+              Review conversations, bookings, and business activity in real time. The shapes below mirror the reference flow: trend, outcome split, and weekly breakdown.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:items-end">

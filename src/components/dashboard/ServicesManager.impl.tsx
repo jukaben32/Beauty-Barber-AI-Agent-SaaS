@@ -167,10 +167,10 @@ function ServicesHeader({
           <SectionEyebrow>Services</SectionEyebrow>
           <div className="mt-4">
             <h2 className="font-display text-3xl font-semibold tracking-[-0.04em] text-[var(--text-strong)]">
-              Healthcare services catalog
+              Salon & barbershop services catalog
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--text-muted)]">
-              Manage the services Clara can book, discuss, and surface inside the clinic workflow.
+              Manage the services Clara can book, discuss, and surface inside the booking workflow.
             </p>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -362,7 +362,7 @@ function ServiceFormDialog({
       onSaved(saved)
       pushToast({
         title: mode === 'create' ? 'Service added' : 'Service updated',
-        message: `${saved.name} is ready in your clinic catalog.`,
+        message: `${saved.name} is ready in your services catalog.`,
         tone: 'emerald',
       })
       onClose()
@@ -875,7 +875,7 @@ export function ServicesManager({
       <SurfaceCard className="overflow-hidden">
         <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[var(--border-soft)] px-5 py-5">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Healthcare Services</div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Beauty & Barber Services</div>
             <h3 className="mt-1 text-2xl font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">
               {topSubtitle}
             </h3>
@@ -925,7 +925,7 @@ export function ServicesManager({
                 73 services across 13 specialties
               </h3>
               <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">
-                Click cards to select services, then add them to your clinic catalog in one batch.
+                Click cards to select services, then add them to your services catalog in one batch.
               </p>
             </div>
 

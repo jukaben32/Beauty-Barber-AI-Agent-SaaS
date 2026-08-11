@@ -2,7 +2,7 @@
 import { z } from 'zod'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { apiError, json, readJson } from '@/lib/api'
-import { resolveRealtimeClinicContext } from '@/lib/realtime'
+import { resolveRealtimeBookingContext } from '@/lib/realtime'
 import { realtimeSessionSchema } from '@/validations'
 
 const sdpAnswerSchema = z.object({
@@ -36,10 +36,10 @@ export async function POST(request: Request) {
 
   try {
     const admin = createAdminClient()
-    const context = await resolveRealtimeClinicContext(admin, {
+    const context = await resolveRealtimeBookingContext(admin, {
       businessSlug: parsed.data.businessSlug,
       widgetSlug: parsed.data.widgetSlug ?? null,
-      // Not `?? 'en'`: resolveRealtimeClinicContext falls back to the
+      // Not `?? 'en'`: resolveRealtimeBookingContext falls back to the
       // widget's assigned agent's language before defaulting to English, so
       // forcing 'en' here whenever the caller doesn't pass one would skip
       // that fallback entirely.

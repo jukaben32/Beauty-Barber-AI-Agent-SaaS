@@ -201,7 +201,7 @@ export function WhatsappManager({
                   <StatusBadge tone="slate">Disconnected</StatusBadge>
                 </div>
                 <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
-                  Connect your clinic number so the same AI assistant can answer WhatsApp messages and turn chats into
+                  Connect your business number so the same AI assistant can answer WhatsApp messages and turn chats into
                   appointments.
                 </p>
               </div>
@@ -251,7 +251,7 @@ export function WhatsappManager({
                   <span className="mt-1 grid h-6 w-6 place-items-center rounded-full bg-[var(--brand-soft)] text-[var(--brand-strong)]">
                     2
                   </span>
-                  <p>Choose the AI agent that will answer messages from the clinic number.</p>
+                  <p>Choose the AI agent that will answer messages from the business number.</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="mt-1 grid h-6 w-6 place-items-center rounded-full bg-[var(--brand-soft)] text-[var(--brand-strong)]">
@@ -364,7 +364,7 @@ export function WhatsappManager({
           <div className="rounded-[24px] border border-[var(--border-soft)] bg-[var(--panel-soft)] p-4">
             <div className="flex items-center gap-2 text-sm font-semibold text-[var(--text-strong)]">
               <ShieldCheck className="h-4 w-4 text-[var(--brand-strong)]" />
-              WhatsApp uses the same clinic knowledge base
+              WhatsApp uses the same knowledge base
             </div>
             <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
               Replies can search services, FAQ entries, appointments and billing flows with the same tools used by the
@@ -383,7 +383,7 @@ export function WhatsappManager({
                 Scan the QR code
               </div>
               <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-                Open WhatsApp on the clinic phone, go to Linked Devices, and scan this code to finish the connection.
+                Open WhatsApp on the business phone, go to Linked Devices, and scan this code to finish the connection.
               </p>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={qrCode} alt="WhatsApp QR code" className="mx-auto mt-4 h-56 w-56 rounded-2xl border border-[var(--border-soft)] bg-white p-3" />
@@ -395,7 +395,7 @@ export function WhatsappManager({
                 Connection ready
               </div>
               <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">
-                WhatsApp is linked to the clinic workspace. Keep the auto reply switch on if you want the assistant to
+                WhatsApp is linked to the business workspace. Keep the auto reply switch on if you want the assistant to
                 answer incoming messages automatically.
               </p>
               <div className="mt-5 grid gap-3">

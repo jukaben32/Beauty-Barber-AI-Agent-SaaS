@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     return apiError('Invalid payment payload', 422, { issues: parsed.error.flatten() })
   }
 
-  const txHash = parsed.data.txHash?.trim() || `clinic-${parsed.data.appointmentId}-${randomUUID()}`
+  const txHash = parsed.data.txHash?.trim() || `booking-${parsed.data.appointmentId}-${randomUUID()}`
   const appointment = await recordAppointmentPayment(supabase, business.id, parsed.data.appointmentId, {
     amount: parsed.data.amount,
     currency: parsed.data.currency || business.paymentCurrency,

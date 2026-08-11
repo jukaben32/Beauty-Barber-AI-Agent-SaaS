@@ -78,7 +78,7 @@ function LoginForm() {
         <div className="relative">
           <BrandMark />
           <h1 className="mt-10 max-w-xl text-5xl font-black tracking-tight sm:text-6xl">
-            The future of clinic booking is here.
+            The future of salon booking is here.
           </h1>
           <p className="mt-5 max-w-lg text-base leading-8 text-white/76">
             The AI receptionist handles bookings 24/7 so your staff can focus on what matters most.
@@ -90,7 +90,7 @@ function LoginForm() {
             </div>
             <div className="rounded-[24px] border border-white/10 bg-white/6 px-5 py-4">
               <div className="text-sm font-bold">Secure, multi-tenant data model</div>
-              <div className="text-xs text-white/70">Each clinic keeps its own appointments and settings.</div>
+              <div className="text-xs text-white/70">Each business keeps its own appointments and settings.</div>
             </div>
           </div>
         </div>
@@ -100,7 +100,7 @@ function LoginForm() {
         <form onSubmit={handleSubmit} className="w-full max-w-md">
           <SectionEyebrow>Staff login</SectionEyebrow>
           <h2 className="mt-5 text-3xl font-black tracking-tight text-[var(--text-strong)]">Welcome back</h2>
-          <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">Sign in to your clinic dashboard.</p>
+          <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">Sign in to your business dashboard.</p>
 
           {error && <p className="mt-4 text-sm font-medium text-[var(--coral)]">{error}</p>}
 
@@ -111,7 +111,7 @@ function LoginForm() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@clinic.com"
+                placeholder="you@yoursalon.com"
                 className="input-field"
                 required
               />
@@ -149,7 +149,7 @@ function LoginForm() {
           </div>
 
           <p className="mt-6 text-center text-sm text-[var(--text-muted)]">
-            Don&apos;t have a clinic yet?{' '}
+            Don&apos;t have a business yet?{' '}
             <a href="/signup" className="font-semibold text-[var(--brand)]">
               Create one free
             </a>

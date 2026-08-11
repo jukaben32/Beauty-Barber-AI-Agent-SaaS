@@ -41,7 +41,7 @@ export type VerifyUsdcPaymentResult = { ok: true } | { ok: false; reason: string
  * Confirms a USDC transfer actually happened on-chain: the transaction
  * succeeded, and one of its logs is an ERC-20 Transfer from the configured
  * USDC contract paying `expectedRecipient` at least `expectedMinAmount`.
- * This does NOT check who sent the funds — only that the clinic's wallet
+ * This does NOT check who sent the funds — only that the business's wallet
  * was paid — so it can't be spoofed by reporting someone else's real
  * transaction, but it also doesn't need to know the payer's address up
  * front, which the client doesn't reliably have before signing.

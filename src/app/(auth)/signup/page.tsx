@@ -11,7 +11,7 @@ import { getErrorMessage } from '@/lib/utils'
 export default function SignupPage() {
   const router = useRouter()
   const [fullName, setFullName] = useState('')
-  const [clinicName, setClinicName] = useState('')
+  const [businessName, setBusinessName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
@@ -19,7 +19,7 @@ export default function SignupPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   // Set once signUp() succeeds but Supabase requires email confirmation
-  // before a session exists — the clinic can't be created yet (RLS needs an
+  // before a session exists — the business can't be created yet (RLS needs an
   // authenticated session), so it's created the first time this account
   // actually logs in with a session (see the dashboard layout).
   const [pendingEmail, setPendingEmail] = useState<string | null>(null)
@@ -46,7 +46,7 @@ export default function SignupPage() {
         email,
         password,
         options: {
-          data: { full_name: fullName, clinic_name: clinicName },
+          data: { full_name: fullName, business_name: businessName },
           // Must point at /api/auth/callback, not straight at /login — that
           // route is what actually calls exchangeCodeForSession() to turn the
           // confirmation link's code into a real session. Pointing directly
@@ -76,7 +76,7 @@ export default function SignupPage() {
 
       await createBusiness(supabase, {
         ownerId: data.user!.id,
-        name: clinicName,
+        name: businessName,
         contactEmail: email,
         phone: phone || null,
       })
@@ -126,7 +126,7 @@ export default function SignupPage() {
       <SurfaceCard className="flex items-center justify-center p-8">
         <form onSubmit={handleSubmit} className="w-full max-w-md">
           <SectionEyebrow>Start free trial</SectionEyebrow>
-          <h2 className="mt-5 text-3xl font-black tracking-tight text-[var(--text-strong)]">Create your clinic account</h2>
+          <h2 className="mt-5 text-3xl font-black tracking-tight text-[var(--text-strong)]">Create your business account</h2>
 
           {error && <p className="mt-4 text-sm font-medium text-[var(--coral)]">{error}</p>}
 
@@ -136,17 +136,17 @@ export default function SignupPage() {
               <input
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder="Dr. Jane Doe"
+                placeholder="Jane Doe"
                 className="input-field"
                 required
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[var(--text-strong)]">Clinic name</label>
+              <label className="text-sm font-semibold text-[var(--text-strong)]">Business name</label>
               <input
-                value={clinicName}
-                onChange={(e) => setClinicName(e.target.value)}
-                placeholder="Sunrise Family Clinic"
+                value={businessName}
+                onChange={(e) => setBusinessName(e.target.value)}
+                placeholder="Bloom Beauty Salon"
                 className="input-field"
                 required
               />
@@ -157,7 +157,7 @@ export default function SignupPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@clinic.com"
+                placeholder="you@yoursalon.com"
                 className="input-field"
                 required
               />
@@ -222,7 +222,7 @@ export default function SignupPage() {
         <div className="relative">
           <BrandMark />
           <h1 className="mt-10 max-w-xl text-5xl font-black tracking-tight sm:text-6xl">
-            Launch a clinic concierge experience in days, not months.
+            Launch a salon concierge experience in days, not months.
           </h1>
           <p className="mt-5 max-w-lg text-base leading-8 text-white/76">
             Add the widget, configure AI settings, and keep every booking tied to the same source of truth.

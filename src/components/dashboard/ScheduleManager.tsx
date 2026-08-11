@@ -433,9 +433,9 @@ export function ScheduleManager({
             </div>
 
             <div className="hidden rounded-[24px] border border-[var(--border-soft)] bg-white/75 px-4 py-3 text-right backdrop-blur-sm lg:block">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Clinic</div>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Business</div>
               <div className="mt-1 font-display text-lg font-semibold tracking-[-0.03em] text-[var(--text-strong)]">
-                {businessName ?? 'Clinic'}
+                {businessName ?? 'Business'}
               </div>
               <div className="mt-1 text-xs text-[var(--text-muted)]">{selectedDateLabel}</div>
             </div>

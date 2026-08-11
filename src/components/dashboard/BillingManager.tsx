@@ -5,7 +5,7 @@ const PLAN_CATALOG: Record<PlanId, { name: string; price: number; body: string }
   free: { name: 'Free', price: 0, body: 'Demo access and sandbox widgets for testing.' },
   starter: { name: 'Starter', price: 49, body: '50 appointments/month, widget, and basic calendar.' },
   pro: { name: 'Professional', price: 99, body: 'Unlimited appointments, analytics, and custom AI.' },
-  enterprise: { name: 'Enterprise', price: 299, body: 'Multi-clinic, custom integrations, dedicated support.' },
+  enterprise: { name: 'Enterprise', price: 299, body: 'Multi-location, custom integrations, dedicated support.' },
 }
 
 type BillingTransactionStatusLike = 'pending' | 'confirmed' | 'failed' | 'refunded'
@@ -47,7 +47,7 @@ export function BillingManager({
       <SectionHeading
         eyebrow={<SectionEyebrow>Billing</SectionEyebrow>}
         title="USDC billing, deposits, and subscription plans"
-        description="Track tx hashes, payment types, and appointment-linked transactions directly from the clinic dashboard."
+        description="Track tx hashes, payment types, and appointment-linked transactions directly from the business dashboard."
       />
 
       <div className="grid gap-4 sm:grid-cols-3">

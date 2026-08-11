@@ -692,7 +692,7 @@ export function SupportManager({
                     </div>
                     <div className="mt-4 font-semibold text-[var(--text-strong)]">No messages yet</div>
                     <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-                      This ticket is ready for the first reply from the clinic.
+                      This ticket is ready for the first reply from the business.
                     </p>
                   </div>
                 ) : null}

@@ -231,7 +231,7 @@ export function WebsiteTemplateRenderer({
             <div>
               <p className="text-sm font-extrabold tracking-[-0.03em]">{website.siteTitle || businessName}</p>
               <p className="text-[11px] uppercase tracking-[0.26em]" style={{ color: style.subtext }}>
-                {website.aboutTitle || 'Healthcare site'}
+                {website.aboutTitle || 'Salon site'}
               </p>
             </div>
           </div>
@@ -371,7 +371,7 @@ export function WebsiteTemplateRenderer({
             <SectionTitle
               eyebrow="Services"
               title="How we help clients"
-              description="The same clean, high-trust layout the reference uses, but tailored to clinical care and client booking."
+              description="The same clean, high-trust layout the reference uses, but tailored to salon services and client booking."
             />
             <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {services.map((service) => {
@@ -419,7 +419,7 @@ export function WebsiteTemplateRenderer({
             <div>
               <SectionTitle
                 eyebrow="About"
-                title={website.aboutTitle || 'About the clinic'}
+                title={website.aboutTitle || 'About Us'}
                 description={website.aboutStory || website.siteDescription}
               />
               <div className="mt-8 space-y-3">
@@ -456,7 +456,7 @@ export function WebsiteTemplateRenderer({
             <SectionTitle
               eyebrow="Team"
               title="Meet the people behind the care"
-              description="A polished staff section makes the clinic feel established and trustworthy."
+              description="A polished staff section makes the business feel established and trustworthy."
               center
             />
             <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -568,7 +568,7 @@ export function WebsiteTemplateRenderer({
           <SectionTitle
             eyebrow="Contact"
             title="Get in touch"
-            description="Send a message and the clinic follows up directly - no phone tag required."
+            description="Send a message and the business follows up directly - no phone tag required."
             center
           />
           <div className="mt-10 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
@@ -616,7 +616,7 @@ export function WebsiteTemplateRenderer({
             </div>
           ) : null}
           <div className="flex flex-col gap-2">
-            <p className="font-semibold">{website.footerTagline || 'Your trusted healthcare partner.'}</p>
+            <p className="font-semibold">{website.footerTagline || 'Your trusted beauty and grooming partner.'}</p>
             <p style={{ color: style.subtext }}>{website.footerCopyright || `Copyright ${new Date().getFullYear()} ${businessName}`}</p>
           </div>
         </div>
@@ -726,7 +726,7 @@ function LeadForm({
             <CheckCircle2 className="mx-auto h-10 w-10" style={{ color: accentColor }} />
             <p className="mt-4 text-lg font-bold">Thanks for reaching out</p>
             <p className="mt-2 text-sm leading-7" style={{ color: style.subtext }}>
-              The clinic will follow up with you shortly.
+              The business will follow up with you shortly.
             </p>
             <button
               type="button"

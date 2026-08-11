@@ -48,20 +48,20 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     business = await getBusinessForUser(supabase, user.id)
   } catch (err) {
     console.error('Failed to look up the business for this user:', err)
-    return <ErrorScreen title="We couldn't load your clinic" body="Please try signing in again, or contact support if this keeps happening." detail={getErrorMessage(err)} />
+    return <ErrorScreen title="We couldn't load your business" body="Please try signing in again, or contact support if this keeps happening." detail={getErrorMessage(err)} />
   }
 
-  // Signup can't create the clinic itself when Supabase requires email
+  // Signup can't create the business itself when Supabase requires email
   // confirmation (no session exists yet at signup time — RLS needs
-  // auth.uid()) — it stashes clinic_name/full_name in the auth user's
+  // auth.uid()) — it stashes business_name/full_name in the auth user's
   // metadata instead and defers creation to here, the first authenticated
   // request after the user actually confirms and logs in. This used to just
   // bounce back to /signup, which re-showed the signup form and looped:
   // signUp() on an already-registered email returns the "already exists"
   // error instead of creating anything, so the user could never get in.
   if (!business) {
-    const clinicName = (user.user_metadata?.clinic_name as string | undefined)?.trim()
-    if (!clinicName) redirect('/signup')
+    const businessName = (user.user_metadata?.business_name as string | undefined)?.trim()
+    if (!businessName) redirect('/signup')
     try {
       // Confirmed with a live query against the production database: the
       // RLS policy on businesses (owner_id = auth.uid()) is exactly right,
@@ -77,12 +77,12 @@ export default async function DashboardLayout({ children }: { children: ReactNod
       // only fragility.
       business = await createBusiness(createAdminClient(), {
         ownerId: user.id,
-        name: clinicName,
+        name: businessName,
         contactEmail: user.email ?? null,
       })
     } catch (err) {
       console.error('Failed to auto-create business on first login:', err)
-      return <ErrorScreen title="We couldn't set up your clinic" body="Something went wrong creating your clinic account. Please try signing in again, or contact support if this keeps happening." detail={getErrorMessage(err)} />
+      return <ErrorScreen title="We couldn't set up your business" body="Something went wrong creating your business account. Please try signing in again, or contact support if this keeps happening." detail={getErrorMessage(err)} />
     }
   }
 

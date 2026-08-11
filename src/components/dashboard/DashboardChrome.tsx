@@ -43,10 +43,10 @@ type NavGroup = {
 }
 
 // The sidebar now mirrors the reference video more closely:
-// CLINICAL / SETUP / ACCOUNT, with the closest existing routes mapped in.
+// OPERATIONS / SETUP / ACCOUNT, with the closest existing routes mapped in.
 const navGroups: readonly NavGroup[] = [
   {
-    label: 'CLINICAL',
+    label: 'OPERATIONS',
     items: [
       { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
       { href: '/dashboard/analytics', label: 'Analytics', icon: LineChart },
@@ -120,7 +120,7 @@ export function DashboardChrome({
               <div className="rounded-[18px] border border-white/10 bg-white/6 p-3.5 backdrop-blur-sm">
                 <BrandMark compact />
                 <div className="mt-2 text-[11px] leading-5 text-white/60">
-                  AI voice platform for clinics
+                  AI voice platform for salons & barbershops
                 </div>
               </div>
 
@@ -198,7 +198,7 @@ export function DashboardChrome({
             </button>
             <div className="mr-auto">
               <div className="font-display text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--text-muted)]">
-                Clinic workspace
+                Business workspace
               </div>
               <h1 className="mt-1 font-display text-2xl font-semibold tracking-[-0.04em] text-[var(--text-strong)]">{activeItem.label}</h1>
             </div>

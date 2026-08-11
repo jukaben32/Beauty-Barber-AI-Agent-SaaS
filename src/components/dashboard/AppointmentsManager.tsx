@@ -142,7 +142,7 @@ export function AppointmentsManager({
                 Appointments
               </div>
               <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-[var(--text-strong)]">
-                Manage bookings, call outcomes, and clinic payments
+                Manage bookings, call outcomes, and business payments
               </h1>
               <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--text-muted)]">
                 Review client bookings in real time, inspect the appointment drawer, and keep cash or partial payments in sync with the schedule.
@@ -157,7 +157,7 @@ export function AppointmentsManager({
 
             {businessName ? (
               <div className="hidden rounded-[24px] border border-[var(--border-soft)] bg-white/75 px-4 py-3 text-right backdrop-blur-sm lg:block">
-                <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Clinic</div>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Business</div>
                 <div className="mt-1 font-display text-lg font-semibold tracking-[-0.03em] text-[var(--text-strong)]">{businessName}</div>
               </div>
             ) : null}

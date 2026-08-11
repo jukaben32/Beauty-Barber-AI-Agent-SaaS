@@ -79,12 +79,12 @@ export function PortalLoginForm() {
     const normalizedEmail = email.trim()
 
     if (!normalizedSlug) {
-      setError('Enter the clinic slug to receive your login link.')
+      setError('Enter the business slug to receive your login link.')
       return
     }
 
     if (!PORTAL_SLUG_PATTERN.test(normalizedSlug)) {
-      setError('Clinic slugs use lowercase letters, numbers, and hyphens only.')
+      setError('Business slugs use lowercase letters, numbers, and hyphens only.')
       return
     }
 
@@ -152,24 +152,24 @@ export function PortalLoginForm() {
       <SectionEyebrow>Portal login</SectionEyebrow>
       <h2 className="mt-5 text-3xl font-black tracking-tight text-[var(--text-strong)]">Welcome back</h2>
       <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">
-        Enter the clinic slug and your email to receive a secure magic link.
+        Enter the business slug and your email to receive a secure magic link.
       </p>
 
       {error ? <p className="mt-4 text-sm font-medium text-[var(--coral)]">{error}</p> : null}
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-[var(--text-strong)]">Clinic slug</label>
+          <label className="text-sm font-semibold text-[var(--text-strong)]">Business slug</label>
           <input
             value={businessSlug}
             onChange={(event) => setBusinessSlug(event.target.value)}
-            placeholder="clinic-demo"
+            placeholder="business-demo"
             className="input-field"
             autoComplete="off"
             required
           />
           <p className="text-xs leading-6 text-[var(--text-muted)]">
-            Use the slug from your clinic portal URL. If you opened this page from a clinic site, it should already be filled in.
+            Use the slug from your business portal URL. If you opened this page from a business site, it should already be filled in.
           </p>
         </div>
 

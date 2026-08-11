@@ -25,7 +25,7 @@ export function toPublicWhatsappConnection(connection: WhatsappConnection): Omit
 }
 
 function buildInstanceName(businessId: string) {
-  return `clara-medical-${businessId}`
+  return `clara-booking-${businessId}`
 }
 
 export async function connectWhatsapp(

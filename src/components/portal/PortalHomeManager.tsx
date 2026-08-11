@@ -79,7 +79,7 @@ export function PortalHomeManager({
                   </strong>
                 </div>
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-sm text-[var(--text-muted)]">Clinic</span>
+                  <span className="text-sm text-[var(--text-muted)]">Business</span>
                   <strong className="text-sm text-[var(--text-strong)]">{businessName}</strong>
                 </div>
               </div>

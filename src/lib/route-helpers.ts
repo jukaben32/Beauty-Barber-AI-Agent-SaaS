@@ -51,7 +51,7 @@ export function canManageBusiness(role: BusinessMemberRole | null) {
 }
 
 // Used by the client-facing portal pages (home, appointments, support):
-// resolves the signed-in user's linked client record and clinic in one
+// resolves the signed-in user's linked client record and business in one
 // call. The client lookup uses the authenticated client (RLS allows a
 // user to read a clients row that already carries their own auth_user_id);
 // the business lookup needs the admin client since clients have no RLS

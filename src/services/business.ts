@@ -193,8 +193,8 @@ export async function createBusiness(
 ) {
   const baseSlug = slugify(input.slug || input.name)
   // businesses.slug is unique — a base slug alone collides whenever two
-  // signups produce the same name (the same clinic name tried more than
-  // once, two different clinics with a common name, etc.), and that
+  // signups produce the same name (the same business name tried more than
+  // once, two different businesses with a common name, etc.), and that
   // collision used to bubble up as an unhandled Postgres error that crashed
   // the whole dashboard layout on the very next login. Retry with a short
   // random suffix instead of failing outright.
@@ -234,7 +234,7 @@ export async function createBusiness(
   if (!business) throw lastError
 
   const defaultAgentName = `${toTitleCase(input.name)} Assistant`
-  const defaultPrompt = `You are Clara, the AI medical receptionist for ${input.name}. Help clients book appointments, answer FAQs, and follow the clinic scheduling rules. Be concise, empathetic, and safe.`
+  const defaultPrompt = `You are Clara, the AI booking receptionist for ${input.name}. Help clients book appointments, answer FAQs, and follow the business scheduling rules. Be concise, warm, and professional.`
 
   const [{ error: subscriptionError }, { error: memberError }, { data: agentData, error: agentError }] = await Promise.all([
     supabase.from('business_subscriptions').insert({
@@ -361,7 +361,7 @@ export async function createBusiness(
       hero_subheadline: 'Schedule appointments in seconds and let Clara handle the follow-up.',
       cta_primary_text: 'Book Appointment',
       cta_secondary_text: 'View Services',
-      about_title: 'About the clinic',
+      about_title: 'About Us',
       about_story: input.description || null,
       footer_tagline: 'Powered by Clara AI',
       footer_copyright: `Copyright ${new Date().getFullYear()} ${input.name}`,

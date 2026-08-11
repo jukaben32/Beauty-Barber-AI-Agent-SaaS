@@ -48,7 +48,7 @@ export function PortalAppointmentsManager({
             Reschedule, cancel, and review your visits
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--text-muted)]">
-            Manage your bookings directly. The clinic is notified the moment you make a change.
+            Manage your bookings directly. The business is notified the moment you make a change.
           </p>
         </div>
 
@@ -189,7 +189,7 @@ function CancelModal({
     <Modal
       open={Boolean(appointment)}
       title="Cancel appointment"
-      description="The clinic will be notified right away. This cannot be undone."
+      description="The business will be notified right away. This cannot be undone."
       onClose={() => {
         setReason('')
         setError(null)
@@ -208,7 +208,7 @@ function CancelModal({
               onChange={(event) => setReason(event.target.value)}
               rows={3}
               className="input-field w-full"
-              placeholder="Let the clinic know why you're cancelling..."
+              placeholder="Let the business know why you're cancelling..."
             />
           </div>
           {error ? <p className="text-sm font-medium text-[var(--coral)]">{error}</p> : null}
@@ -414,12 +414,12 @@ function PayCashModal({
   }
 
   return (
-    <Modal open={Boolean(appointment)} title="Pay in cash" description="Commit to paying at the clinic. Staff will mark it received when you arrive." onClose={resetAndClose}>
+    <Modal open={Boolean(appointment)} title="Pay in cash" description="Commit to paying at the business. Staff will mark it received when you arrive." onClose={resetAndClose}>
       {appointment ? (
         done ? (
           <div className="space-y-4 text-center">
             <p className="text-sm leading-7 text-[var(--text-muted)]">
-              Noted. The clinic knows you&apos;ll pay {suggestedAmount ? formatCurrency(Number(amount || suggestedAmount), appointment.paymentCurrency) : ''} in cash at your visit.
+              Noted. The business knows you&apos;ll pay {suggestedAmount ? formatCurrency(Number(amount || suggestedAmount), appointment.paymentCurrency) : ''} in cash at your visit.
             </p>
             <button type="button" onClick={resetAndClose} className="btn-primary w-full justify-center py-3">
               Done

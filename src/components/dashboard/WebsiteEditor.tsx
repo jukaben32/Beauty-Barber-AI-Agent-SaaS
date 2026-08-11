@@ -8,7 +8,7 @@ import { SectionEyebrow, SurfaceCard, StatusBadge } from '@/components/dashboard
 const TEMPLATES = [
   { id: 'serenity', name: 'Serenity', tagline: 'Soft gradients, calm hero, strong booking CTA' },
   { id: 'pulse', name: 'Pulse', tagline: 'More contrast, premium positioning' },
-  { id: 'clarity', name: 'Clarity', tagline: 'Minimal, clinical trust, less decoration' },
+  { id: 'clarity', name: 'Clarity', tagline: 'Minimal, modern trust, less decoration' },
 ] as const
 
 type FormState = {
@@ -205,7 +205,7 @@ export function WebsiteEditor({
   // redirects or bails without saving would lose everything just typed in,
   // the exact bug found and fixed in the sibling real-estate project's
   // Website Builder (commit 21a8fbb). There's no payment gate here
-  // (website_builder_enabled defaults true for every clinic), so this is
+  // (website_builder_enabled defaults true for every business), so this is
   // simpler, but the save-before-state-change discipline still matters.
   async function handlePublishToggle() {
     await save(!website.published)

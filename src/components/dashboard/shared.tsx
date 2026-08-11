@@ -84,7 +84,7 @@ export function BrandMark({
             Clara AI
           </div>
           <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
-            clinical reception stack
+            AI booking reception stack
           </div>
         </div>
       ) : null}

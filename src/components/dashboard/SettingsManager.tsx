@@ -246,7 +246,7 @@ export function SettingsManager({
       <SectionHeading
         eyebrow={<SectionEyebrow>Settings</SectionEyebrow>}
         title="Business profile and operations"
-        description="How the clinic looks to clients, when it's open, and how it gets paid."
+        description="How the business looks to clients, when it's open, and how it gets paid."
       />
 
       <Tabs
@@ -262,11 +262,11 @@ export function SettingsManager({
       {tab === 'profile' ? (
         <form onSubmit={handleSaveProfile} className="space-y-6">
           <SurfaceCard className="p-6">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Clinic identity</div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Business identity</div>
             <p className="mt-1 text-sm text-[var(--text-muted)]">Name and contact details shown to clients.</p>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
-                <FieldLabel>Clinic name *</FieldLabel>
+                <FieldLabel>Business name *</FieldLabel>
                 <input
                   value={profileForm.name}
                   onChange={(e) => setProfileForm((f) => ({ ...f, name: e.target.value }))}
@@ -300,7 +300,7 @@ export function SettingsManager({
           </SurfaceCard>
 
           <SurfaceCard className="p-6">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Clinic location</div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Business location</div>
             <p className="mt-1 text-sm text-[var(--text-muted)]">Physical address shown to clients.</p>
             <div className="mt-4 grid gap-4 sm:grid-cols-3">
               <div className="space-y-2 sm:col-span-3">
@@ -437,7 +437,7 @@ export function SettingsManager({
               <div className="mt-6 space-y-2">
                 {closedDates.length === 0 && (
                   <div className="border border-dashed border-[var(--border-soft)] bg-[var(--panel)] px-4 py-10 text-center text-sm text-[var(--text-muted)]">
-                    No dates blocked. Add a holiday or clinic closure above.
+                    No dates blocked. Add a holiday or business closure above.
                   </div>
                 )}
                 {closedDates.map((d) => (
@@ -477,7 +477,7 @@ export function SettingsManager({
             <StatusBadge tone={stripe.connected ? 'emerald' : 'amber'}>{stripe.connected ? 'Connected' : 'Not connected'}</StatusBadge>
             <p className="text-sm text-[var(--text-muted)]">
               {stripe.connected
-                ? 'Card payments are enabled for this clinic. Paste new keys below to rotate them.'
+                ? 'Card payments are enabled for this business. Paste new keys below to rotate them.'
                 : 'Clients can only pay in cash until you connect Stripe. Enter your keys below to enable online payments.'}
             </p>
           </div>

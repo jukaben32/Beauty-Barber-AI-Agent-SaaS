@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     default: 'Clara AI',
     template: '%s | Clara AI',
   },
-  description: 'AI medical receptionist and clinical operations platform for modern clinics.',
+  description: 'AI voice and WhatsApp booking receptionist for modern salons and barbershops.',
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {

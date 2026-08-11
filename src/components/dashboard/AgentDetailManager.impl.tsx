@@ -497,7 +497,7 @@ export function AgentDetailManager({
                   <div>
                     <div className="text-sm font-semibold text-[var(--text-strong)]">Assigned Services</div>
                     <p className="mt-1 text-sm text-[var(--text-muted)]">
-                      Choose which clinic services this agent is allowed to discuss.
+                      Choose which services this agent is allowed to discuss.
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -599,7 +599,7 @@ export function AgentDetailManager({
             <SurfaceCard className="p-6">
               <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Live Snapshot</div>
               <h3 className="mt-2 text-xl font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">{currentAgent.name}</h3>
-              <div className="mt-1 text-sm text-[var(--text-muted)]">{currentAgent.title ?? currentAgent.specialty ?? 'Clinic agent'}</div>
+              <div className="mt-1 text-sm text-[var(--text-muted)]">{currentAgent.title ?? currentAgent.specialty ?? 'Booking agent'}</div>
 
               <div className="mt-5 flex flex-wrap items-center gap-2">
                 <StatusBadge tone={STATUS_TONE[currentAgent.status]}>{STATUS_LABEL[currentAgent.status]}</StatusBadge>
@@ -857,7 +857,7 @@ export function AgentDetailManager({
             <SurfaceCard className="p-6">
               <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Agent Summary</div>
               <h3 className="mt-2 text-xl font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">{currentAgent.name}</h3>
-              <div className="mt-1 text-sm text-[var(--text-muted)]">{currentAgent.title ?? currentAgent.specialty ?? 'Clinic agent'}</div>
+              <div className="mt-1 text-sm text-[var(--text-muted)]">{currentAgent.title ?? currentAgent.specialty ?? 'Booking agent'}</div>
 
               <div className="mt-5 flex flex-wrap items-center gap-2">
                 <StatusBadge tone={STATUS_TONE[currentAgent.status]}>{STATUS_LABEL[currentAgent.status]}</StatusBadge>
@@ -903,7 +903,7 @@ export function AgentDetailManager({
             <SurfaceCard className="p-6">
               <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Delete Agent</div>
               <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">
-                Removing this agent will keep the rest of the clinic setup intact, but the voice workflow will no longer be available.
+                Removing this agent will keep the rest of the business setup intact, but the voice workflow will no longer be available.
               </p>
               <Button variant="danger" className="mt-5 w-full" onClick={() => void handleDelete()}>
                 Delete Agent

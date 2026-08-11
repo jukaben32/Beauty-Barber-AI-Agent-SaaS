@@ -237,7 +237,7 @@ export async function getOrCreateWebsiteForBusiness(
       hero_subheadline: business.description || 'Book appointments and get help fast.',
       cta_primary_text: 'Book Appointment',
       cta_secondary_text: 'View Services',
-      about_title: 'About the clinic',
+      about_title: 'About Us',
       about_story: business.description ?? null,
       footer_tagline: 'Powered by Clara AI',
       footer_copyright: `Copyright ${new Date().getFullYear()} ${business.name}`,

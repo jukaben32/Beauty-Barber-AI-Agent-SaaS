@@ -3,7 +3,7 @@ import { getPublicBusinessProfile } from '@/services/business'
 import { getPublicWidgetConfig } from '@/services/widgets'
 import type { DbClient } from '@/services/_shared'
 
-export async function resolveRealtimeClinicContext(
+export async function resolveRealtimeBookingContext(
   supabase: DbClient,
   input: {
     businessSlug: string

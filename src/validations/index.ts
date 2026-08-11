@@ -27,7 +27,7 @@ export const availabilitySchema = z.object({
   slotMinutes: z.number().int().min(5).max(240).optional(),
 })
 
-export const clinicServiceSchema = z.object({
+export const serviceSchema = z.object({
   name: z.string().min(2).max(120),
   description: z.string().max(4000).optional().nullable(),
   durationMinutes: z.number().int().min(5).max(480).optional(),
@@ -126,7 +126,7 @@ export const portalRecordPaymentSchema = z.object({
   amount: z.number().positive(),
   // 'CASH' is a special case handled separately in the route: no on-chain
   // verification, no chainId/txHash required - it just flags that the
-  // client committed to paying at the clinic.
+  // client committed to paying at the business.
   currency: z.string().min(3).max(10),
   chainId: z.number().int().positive().optional(),
   txHash: z.string().min(4).optional(),
@@ -345,7 +345,7 @@ export type BusinessInput = z.infer<typeof businessSchema>
 export type BusinessSettingsInput = z.infer<typeof businessSettingsSchema>
 export type StripeAccountInput = z.infer<typeof stripeAccountSchema>
 export type AvailabilityInput = z.infer<typeof availabilitySchema>
-export type ClinicServiceInput = z.infer<typeof clinicServiceSchema>
+export type ServiceInput = z.infer<typeof serviceSchema>
 export type AgentInput = z.infer<typeof agentSchema>
 export type ClientInput = z.infer<typeof clientSchema>
 export type AppointmentCreateInput = z.infer<typeof appointmentCreateSchema>

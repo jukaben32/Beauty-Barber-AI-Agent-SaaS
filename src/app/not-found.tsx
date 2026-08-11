@@ -25,7 +25,7 @@ export default function NotFound() {
         </div>
         <div className="mt-6 flex items-center justify-center gap-2 text-xs uppercase tracking-[0.24em] text-[var(--text-muted)]">
           <Search className="h-3.5 w-3.5" />
-          Try the clinic homepage or dashboard
+          Try the homepage or dashboard
         </div>
       </SurfaceCard>
     </div>
