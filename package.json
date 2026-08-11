@@ -1,6 +1,7 @@
 {
-  "name": "ai-auto-repair-receptionist",
+  "name": "ai-beauty-barber-receptionist",
   "version": "1.0.0",
+  "description": "AI Voice Agents for Beauty Salons & Barbershops - Industry Management SaaS Starter",
   "private": true,
   "scripts": {
     "dev": "next dev",

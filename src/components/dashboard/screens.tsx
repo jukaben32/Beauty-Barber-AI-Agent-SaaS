@@ -953,7 +953,7 @@ export function SiteSlugScreen({ slug }: { slug: string }) {
             <SectionEyebrow>About the stylist</SectionEyebrow>
             <h2 className="mt-4 text-4xl font-black tracking-tight text-[var(--text-strong)]">Years of styling excellence</h2>
             <p className="mt-4 max-w-2xl text-sm leading-8 text-[var(--text-muted)]">
-              The public site tells the salon's story, shows the specialties, and makes booking the obvious next step. It is intentionally calm, premium, and easy to scan.
+              The public site tells the salon&apos;s story, shows the specialties, and makes booking the obvious next step. It is intentionally calm, premium, and easy to scan.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <ButtonLink href="/widget-demo" icon="calendar">

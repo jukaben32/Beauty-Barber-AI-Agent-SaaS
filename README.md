@@ -1,104 +1,54 @@
-# AI Voice Agents for Medical & Healthcare Industry Management SaaS
-
-![alt text](https://www.daulathussain.com/wp-content/uploads/2026/05/Build-Deploy-AI-Voice-Agents-for-Medical-Healthcare-Industry-Management-SaaS-Next.js-LLM-Supabase.jpg)
-
-- [Final Source Code](https://youtu.be/JpoUaJTTQKI?si=Yz4LNfuTX7vs1r64)
-
-#### Setup Video
-
-- [Final Code Setup video](https://youtu.be/UiGiVh_dO8o?si=PLIQ6n6oDlwd3HBS)
+# AI Voice Agents for Beauty Salons & Barbershops - Industry Management SaaS
 
 ## Project Overview
 
-Build & Deploy AI Voice Agents for Medical & Healthcare Industry Management SaaS | Next.js, LLM & Supabase
+A full-stack AI SaaS platform for beauty salons and barbershops, built with Next.js, LLMs, and Supabase.
 
-In this full-stack AI SaaS tutorial, you’ll learn how to build and deploy powerful Healthcare AI Voice Agents and Medical Industry Management SaaS using Next.js, LLMs, and Supabase.
+This project provides AI-powered voice and WhatsApp booking assistants designed for the beauty and grooming industry, including hair salons, barbershops, nail studios, spas, and bridal/event styling businesses. One unified product serves both salons and barbershops with neutral, industry-appropriate language.
 
-We’ll create AI-powered medical voice assistants designed for healthcare businesses, including clinics, hospitals, medical centers, telehealth services, and patient management systems.
+## These AI Agents can:
 
-## These Healthcare AI Agents can:
+- Manage client appointments & scheduling
+- Handle service inquiries & client support
+- Automate salon/barbershop communication workflows
+- Assist with client follow-ups & reminders
+- Improve front-desk management & operations
+- Support booking customer service automation, over voice and WhatsApp
 
-- Manage patient appointments & scheduling
-- Handle medical inquiries & patient support
-- Automate healthcare communication workflows
-- Assist with patient follow-ups & reminders
-- Improve medical office management & operations
-- Support healthcare customer service automation
-- In this project, you’ll learn how to:
-- Build Healthcare AI Voice Agents with modern LLMs
-- Create real-time medical voice conversations
-- Build a Healthcare Management SaaS platform
-- Manage patients, appointments, and medical workflows
-- Integrate Supabase for authentication & database management
-- Build scalable medical industry SaaS applications
-- Create reusable healthcare AI systems
-- Build a modern frontend with Next.js
-- Handle AI prompts, automation, and healthcare business logic
+## Core capabilities:
 
-This tutorial is perfect for developers, SaaS founders, freelancers, and anyone interested in building AI for healthcare, medical automation systems, and healthcare management software.
+- Real-time AI voice conversations for booking
+- A full salon/barbershop management dashboard (clients, appointments, services, staff schedules)
+- A public booking website builder with live preview
+- A self-service client portal (reschedule, cancel, pay, support tickets)
+- Supabase-backed authentication, database, and row-level multi-tenant security
+- On-chain (USDC) and card payment support for deposits and bookings
+
+This starter is intended for developers, SaaS founders, and freelancers building AI-driven booking automation and management software for the beauty and grooming industry.
 
 ## 💻 Tech Stack:
 
 - Next.js
 - Supabase
-- Claude AI
+- Claude AI / OpenAI Realtime
 - Tailwind CSS
-- JavaScript
+- TypeScript
 - Full-Stack SaaS Architecture
 
-🚀 By the end of this video, you’ll have a fully functional Healthcare & Medical Industry Management AI SaaS Platform ready for deployment.
+## Getting Started
 
-## Instruction
-
-Kindly follow the following Instructions to run the project in your system and install the necessary requirements
-
-#### Deploying Blockchain & Dapp
-
-```
-  WATCH: Digital Ocean
-  Get : $200 Free Credit
-  URL: https://m.do.co/c/fbe1551c5ae1
-```
-
-```
-  WATCH: Hostinger
-  Get : Discount 75%
-  URL: https://www.hostg.xyz/aff_c?offer_id=6&aff_id=139422
-```
-
-### MULTI-CURRENCY ICO DAPP
-
-```
-  PROJECT: MULTI-CURRENCY ICO DAPP
-  Code: https://www.theblockchaincoders.com/sourceCode/multi-currency-ico-dapp-using-next.js-solidity-and-wagmi
-  VIDEO: https://youtu.be/j8NO8ea5zVo?si=jCmvfXmpmefwjhO5
-```
-
-#### Install Vs Code Editor
-
-```
-  GET: VsCode Editor
-  URL: https://code.visualstudio.com/download
-```
+1. Install dependencies: `npm install`
+2. Copy `.env.example` to `.env.local` and fill in your Supabase, AI provider, and payment credentials
+3. Apply `supabase/schema.sql` to your Supabase project
+4. Run the dev server: `npm run dev`
 
 #### NodeJs & NPM Version
 
 ```
   NodeJs: 20 / LATEST
   URL: https://nodejs.org/en/download
-  Video: https://youtu.be/PIR0oBVowXU?si=9eNdR29u37F2ujJJ
 ```
 
-All you need to follow the complete project and follow the instructions which are explained in the tutorial by Daulat
+## Project History
 
-## Important Links
-
-- [Get Pro Blockchain Developer Course](https://www.theblockchaincoders.com/pro-nft-marketplace)
-- [Support Creator](https://bit.ly/Support-Creator)
-- [All Projects Source Code](https://www.theblockchaincoders.com/SourceCode)
-
-## Authors
-
-- [@theblockchaincoders.com](https://www.theblockchaincoders.com/)
-- [@consultancy](https://www.theblockchaincoders.com/consultancy)
-- [@youtube](https://www.youtube.com/@daulathussain)
+This project began as a fork of an "AI Voice Agents for Medical & Healthcare Industry Management SaaS" starter and has been adapted end-to-end (schema, types, AI prompts, service catalog, and UI copy) for the beauty salon and barbershop vertical, while keeping the original visual design, branding style, and layout.
