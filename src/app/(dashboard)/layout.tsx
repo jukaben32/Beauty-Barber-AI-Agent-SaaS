@@ -55,13 +55,26 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   // confirmation (no session exists yet at signup time — RLS needs
   // auth.uid()) — it stashes business_name/full_name in the auth user's
   // metadata instead and defers creation to here, the first authenticated
-  // request after the user actually confirms and logs in. This used to just
-  // bounce back to /signup, which re-showed the signup form and looped:
-  // signUp() on an already-registered email returns the "already exists"
-  // error instead of creating anything, so the user could never get in.
+  // request after the user actually confirms and logs in.
   if (!business) {
     const businessName = (user.user_metadata?.business_name as string | undefined)?.trim()
-    if (!businessName) redirect('/signup')
+    // An authenticated user with no business and no stashed business_name
+    // (e.g. an account created directly via the admin API, bypassing
+    // /signup) has no legitimate path forward here. redirect('/signup')
+    // used to be the fallback, but middleware redirects any authenticated
+    // user away from /signup straight back to /dashboard - the two rules
+    // fight each other and loop forever (visible as Chrome's "Throttling
+    // navigation to prevent the browser from hanging" and a blank page).
+    // Show a terminal error instead of bouncing.
+    if (!businessName) {
+      return (
+        <ErrorScreen
+          title="Your account isn't set up yet"
+          body="We couldn't find a business linked to this account. Please contact support to finish setting it up."
+          detail={`user: ${user.email ?? user.id}`}
+        />
+      )
+    }
     try {
       // Confirmed with a live query against the production database: the
       // RLS policy on businesses (owner_id = auth.uid()) is exactly right,
