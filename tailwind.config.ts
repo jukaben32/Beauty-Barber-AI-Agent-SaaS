@@ -8,7 +8,7 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      // Warm clinical system: softer surfaces, Sora typography, and a
+      // Warm, premium design system: softer surfaces, Sora typography, and a
       // slightly more rounded scale. The existing class names still resolve,
       // so the redesign can be applied mostly through shared components and
       // tokens instead of a full-page rewrite.

@@ -34,9 +34,9 @@ async function main() {
     .from('businesses')
     .insert({
       owner_id: '00000000-0000-0000-0000-000000000000',
-      name: 'Test Clinic',
-      slug: 'test-clinic-demo',
-      specialty: 'General Practice',
+      name: 'Test Salon',
+      slug: 'test-salon-demo',
+      specialty: 'Hair & Beauty',
       description: 'Demo business for Voice Widget testing',
       timezone: 'America/Mexico_City',
       booking_deposit_amount: 49,
