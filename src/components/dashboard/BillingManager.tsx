@@ -1,5 +1,5 @@
 import type { BillingTransaction, BusinessSubscription, PlanId } from '@/types'
-import { SectionEyebrow, SectionHeading, SurfaceCard, StatusBadge } from '@/components/clinic/shared'
+import { SectionEyebrow, SectionHeading, SurfaceCard, StatusBadge } from '@/components/dashboard/shared'
 
 const PLAN_CATALOG: Record<PlanId, { name: string; price: number; body: string }> = {
   free: { name: 'Free', price: 0, body: 'Demo access and sandbox widgets for testing.' },

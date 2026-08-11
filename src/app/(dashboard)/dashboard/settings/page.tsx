@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getBusinessForUser, getBusinessAvailability, getClosedDates } from '@/services/business'
 import { getStripeAccountStatus } from '@/services/stripeAccounts'
-import { SettingsManager } from '@/components/clinic/SettingsManager'
+import { SettingsManager } from '@/components/dashboard/SettingsManager'
 
 export default async function SettingsPage() {
   const supabase = await createClient()

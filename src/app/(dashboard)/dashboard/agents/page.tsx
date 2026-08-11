@@ -2,8 +2,8 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getBusinessForUser } from '@/services/business'
 import { listAgentsForBusiness } from '@/services/agents'
-import { listClinicServices } from '@/services/services'
-import { AgentsManager } from '@/components/clinic/AgentsManager'
+import { listServices } from '@/services/services'
+import { AgentsManager } from '@/components/dashboard/AgentsManager'
 
 export default async function AgentsPage() {
   const supabase = await createClient()
@@ -17,7 +17,7 @@ export default async function AgentsPage() {
 
   const [agents, services] = await Promise.all([
     listAgentsForBusiness(supabase, business.id),
-    listClinicServices(supabase, business.id),
+    listServices(supabase, business.id),
   ])
 
   return <AgentsManager initialAgents={agents} businessId={business.id} services={services} />

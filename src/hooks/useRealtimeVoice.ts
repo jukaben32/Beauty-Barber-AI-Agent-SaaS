@@ -89,7 +89,7 @@ export function useRealtimeVoice() {
     })
   }, [])
 
-  const endConversation = useCallback((patch: { patientId?: string; appointmentId?: string } = {}) => {
+  const endConversation = useCallback((patch: { clientId?: string; appointmentId?: string } = {}) => {
     const conversationId = conversationIdRef.current
     const businessSlug = businessSlugRef.current
     if (!conversationId || !businessSlug) return
@@ -105,10 +105,10 @@ export function useRealtimeVoice() {
     callStartedAtRef.current = null
   }, [])
 
-  const linkConversation = useCallback((patch: { patientId?: string; appointmentId?: string }) => {
+  const linkConversation = useCallback((patch: { clientId?: string; appointmentId?: string }) => {
     const conversationId = conversationIdRef.current
     const businessSlug = businessSlugRef.current
-    if (!conversationId || !businessSlug || (!patch.patientId && !patch.appointmentId)) return
+    if (!conversationId || !businessSlug || (!patch.clientId && !patch.appointmentId)) return
     fetch(`/api/realtime/conversation/${conversationId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -212,9 +212,9 @@ export function useRealtimeVoice() {
           void (async () => {
             try {
               const result = onToolCallRef.current ? await onToolCallRef.current(toolName, args) : { ok: true }
-              const typedResult = (result as { patient?: { id?: string }; appointment?: { id?: string } }) ?? {}
-              if (typedResult.patient?.id || typedResult.appointment?.id) {
-                linkConversation({ patientId: typedResult.patient?.id, appointmentId: typedResult.appointment?.id })
+              const typedResult = (result as { client?: { id?: string }; appointment?: { id?: string } }) ?? {}
+              if (typedResult.client?.id || typedResult.appointment?.id) {
+                linkConversation({ clientId: typedResult.client?.id, appointmentId: typedResult.appointment?.id })
               }
               sendToolResult(callId, (result as Record<string, unknown>) ?? { ok: true })
             } catch (toolError) {

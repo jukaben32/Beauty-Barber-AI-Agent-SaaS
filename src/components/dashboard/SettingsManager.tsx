@@ -7,7 +7,7 @@ import { DAYS_OF_WEEK } from '@/constants'
 import { createClient } from '@/lib/supabase/client'
 import { updateBusiness, upsertBusinessAvailability, addClosedDate, removeClosedDate } from '@/services/business'
 import type { StripeAccountStatus } from '@/services/stripeAccounts'
-import { SectionEyebrow, SectionHeading, SurfaceCard, StatusBadge } from '@/components/clinic/shared'
+import { SectionEyebrow, SectionHeading, SurfaceCard, StatusBadge } from '@/components/dashboard/shared'
 import Tabs from '@/components/ui/Tabs'
 
 type ClosedDateRow = { id: string; blocked_date: string; reason: string | null }
@@ -246,7 +246,7 @@ export function SettingsManager({
       <SectionHeading
         eyebrow={<SectionEyebrow>Settings</SectionEyebrow>}
         title="Business profile and operations"
-        description="How the clinic looks to patients, when it's open, and how it gets paid."
+        description="How the clinic looks to clients, when it's open, and how it gets paid."
       />
 
       <Tabs
@@ -263,7 +263,7 @@ export function SettingsManager({
         <form onSubmit={handleSaveProfile} className="space-y-6">
           <SurfaceCard className="p-6">
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Clinic identity</div>
-            <p className="mt-1 text-sm text-[var(--text-muted)]">Name and contact details shown to patients.</p>
+            <p className="mt-1 text-sm text-[var(--text-muted)]">Name and contact details shown to clients.</p>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
                 <FieldLabel>Clinic name *</FieldLabel>
@@ -301,7 +301,7 @@ export function SettingsManager({
 
           <SurfaceCard className="p-6">
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Clinic location</div>
-            <p className="mt-1 text-sm text-[var(--text-muted)]">Physical address shown to patients.</p>
+            <p className="mt-1 text-sm text-[var(--text-muted)]">Physical address shown to clients.</p>
             <div className="mt-4 grid gap-4 sm:grid-cols-3">
               <div className="space-y-2 sm:col-span-3">
                 <FieldLabel>Address</FieldLabel>

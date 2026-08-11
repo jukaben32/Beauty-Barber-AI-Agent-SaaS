@@ -35,12 +35,12 @@ export async function POST(request: Request) {
     cancelledBy: parsed.data.cancelledBy ?? 'business',
   })
 
-  if (appointment.patient?.email) {
+  if (appointment.client?.email) {
     await sendEmail({
-      to: appointment.patient.email,
+      to: appointment.client.email,
       subject: `Appointment ${toTitleCase(parsed.data.status)} - ${business.name}`,
       html: buildAppointmentStatusEmail({
-        patientName: appointment.patient.name,
+        clientName: appointment.client.name,
         businessName: business.name,
         serviceName: appointment.service?.name || 'Appointment',
         scheduledAt: new Date(appointment.scheduledAt).toLocaleString('en-US'),

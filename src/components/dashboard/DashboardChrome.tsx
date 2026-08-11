@@ -20,14 +20,14 @@ import {
   Search,
   Settings2,
   Sparkles,
-  Stethoscope,
+  Scissors,
   User,
   Users,
   LineChart,
   PhoneCall,
 } from 'lucide-react'
 
-import { BrandMark } from '@/components/clinic/shared'
+import { BrandMark } from '@/components/dashboard/shared'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 
@@ -53,7 +53,7 @@ const navGroups: readonly NavGroup[] = [
       { href: '/dashboard/conversations', label: 'Call Log', icon: PhoneCall },
       { href: '/dashboard/appointments', label: 'Appointments', icon: CalendarDays },
       { href: '/dashboard/appointments/schedule', label: 'Schedule', icon: CalendarRange },
-      { href: '/dashboard/patients', label: 'Patients', icon: Users },
+      { href: '/dashboard/clients', label: 'Clients', icon: Users },
       { href: '/dashboard/support', label: 'Support', icon: LifeBuoy },
     ],
   },
@@ -61,7 +61,7 @@ const navGroups: readonly NavGroup[] = [
     label: 'SETUP',
     items: [
       { href: '/dashboard/agents', label: 'AI Agents', icon: Bot },
-      { href: '/dashboard/services', label: 'Services', icon: Stethoscope },
+      { href: '/dashboard/services', label: 'Services', icon: Scissors },
       { href: '/dashboard/faqs', label: 'Knowledge', icon: FileText },
       { href: '/dashboard/widget', label: 'Widget', icon: Sparkles },
       { href: '/dashboard/whatsapp', label: 'WhatsApp', icon: MessageCircle },
@@ -205,7 +205,7 @@ export function DashboardChrome({
 
             <div className="hidden min-w-[260px] flex-1 items-center gap-2 rounded-full border border-[var(--border-soft)] bg-white/82 px-4 py-2.5 lg:flex lg:max-w-sm">
               <Search className="h-4 w-4 shrink-0 text-[var(--text-muted)]" />
-              <span className="truncate text-sm text-[var(--text-muted)]">Search patients, appointments, or services...</span>
+              <span className="truncate text-sm text-[var(--text-muted)]">Search clients, appointments, or services...</span>
             </div>
             <button
               type="button"

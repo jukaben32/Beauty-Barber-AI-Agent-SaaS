@@ -1,5 +1,5 @@
--- Clinical AI receptionist SaaS schema
--- Multi-tenant: every row belongs to a business (clinic).
+-- Beauty Salon & Barbershop AI receptionist SaaS schema
+-- Multi-tenant: every row belongs to a business (salon/barbershop).
 
 create extension if not exists pgcrypto;
 
@@ -16,7 +16,7 @@ $$;
 -- These three are `language plpgsql` rather than the more idiomatic
 -- `language sql` on purpose: `language sql` functions are validated against
 -- the catalog (tables must already exist) at CREATE FUNCTION time, but
--- businesses/business_members/patients aren't created until further down
+-- businesses/business_members/clients aren't created until further down
 -- this same file — running the file top-to-bottom failed immediately with
 -- `relation "businesses" does not exist` before a single table was ever
 -- created. plpgsql only compiles the body lazily (checked on first call,
@@ -62,7 +62,7 @@ begin
 end;
 $$;
 
-create or replace function is_patient_owner(target_patient_id uuid)
+create or replace function is_client_owner(target_client_id uuid)
 returns boolean
 language plpgsql
 stable
@@ -72,14 +72,14 @@ as $$
 begin
   return exists (
     select 1
-    from patients
-    where id = target_patient_id
+    from clients
+    where id = target_client_id
       and auth_user_id = auth.uid()
   );
 end;
 $$;
 
--- 1. BUSINESSES / CLINICS
+-- 1. BUSINESSES
 create table if not exists businesses (
   id uuid primary key default gen_random_uuid(),
   owner_id uuid not null references auth.users(id) on delete cascade,
@@ -229,8 +229,8 @@ create policy "agents access by business members"
 -- including system_prompt.
 drop policy if exists "public can read live agents" on ai_agents;
 
--- 5. CLINIC SERVICES
-create table if not exists clinic_services (
+-- 5. SERVICES
+create table if not exists services (
   id uuid primary key default gen_random_uuid(),
   business_id uuid not null references businesses(id) on delete cascade,
   name text not null,
@@ -250,29 +250,29 @@ create table if not exists clinic_services (
   updated_at timestamptz not null default now()
 );
 
-create index if not exists idx_clinic_services_business_id on clinic_services (business_id);
-create index if not exists idx_clinic_services_active on clinic_services (business_id, active);
+create index if not exists idx_services_business_id on services (business_id);
+create index if not exists idx_services_active on services (business_id, active);
 
-drop trigger if exists update_clinic_services_updated_at on clinic_services;
-create trigger update_clinic_services_updated_at
-before update on clinic_services
+drop trigger if exists update_services_updated_at on services;
+create trigger update_services_updated_at
+before update on services
 for each row execute function update_updated_at_column();
 
-alter table clinic_services enable row level security;
+alter table services enable row level security;
 
-drop policy if exists "services access by business members" on clinic_services;
+drop policy if exists "services access by business members" on services;
 create policy "services access by business members"
-  on clinic_services for all using (has_business_access(business_id));
--- No public/anon read policy: pricing and clinical `instructions` are
+  on services for all using (has_business_access(business_id));
+-- No public/anon read policy: pricing and internal `instructions` are
 -- internal. Public booking flows read the separate, intentionally-curated
 -- website_services table (scoped to published websites) or go through the
 -- service-role admin client server-side. A table-wide "active = true"
 -- policy would leak every business's service pricing/instructions to
 -- anyone with the public anon key via direct PostgREST access.
-drop policy if exists "public can read active services" on clinic_services;
+drop policy if exists "public can read active services" on services;
 
--- 6. PATIENTS
-create table if not exists patients (
+-- 6. CLIENTS
+create table if not exists clients (
   id uuid primary key default gen_random_uuid(),
   business_id uuid not null references businesses(id) on delete cascade,
   auth_user_id uuid references auth.users(id) on delete set null,
@@ -281,57 +281,56 @@ create table if not exists patients (
   email text,
   date_of_birth date,
   notes text,
-  insurance_provider text,
   source text not null default 'manual'
     check (source in ('ai_call', 'widget_chat', 'manual', 'portal', 'website_form', 'whatsapp')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
-create index if not exists idx_patients_business_id on patients (business_id);
-create index if not exists idx_patients_email on patients (email);
-create index if not exists idx_patients_phone on patients (phone);
-create index if not exists idx_patients_auth_user_id on patients (auth_user_id);
+create index if not exists idx_clients_business_id on clients (business_id);
+create index if not exists idx_clients_email on clients (email);
+create index if not exists idx_clients_phone on clients (phone);
+create index if not exists idx_clients_auth_user_id on clients (auth_user_id);
 
-drop trigger if exists update_patients_updated_at on patients;
-create trigger update_patients_updated_at
-before update on patients
+drop trigger if exists update_clients_updated_at on clients;
+create trigger update_clients_updated_at
+before update on clients
 for each row execute function update_updated_at_column();
 
-alter table patients enable row level security;
+alter table clients enable row level security;
 
-drop policy if exists "patients access by business members" on patients;
-create policy "patients access by business members"
-  on patients for all using (has_business_access(business_id));
-drop policy if exists "patients can read their own record" on patients;
-create policy "patients can read their own record"
-  on patients for select using (auth_user_id = auth.uid());
-drop policy if exists "patients can update their own record" on patients;
-create policy "patients can update their own record"
-  on patients for update
+drop policy if exists "clients access by business members" on clients;
+create policy "clients access by business members"
+  on clients for all using (has_business_access(business_id));
+drop policy if exists "clients can read their own record" on clients;
+create policy "clients can read their own record"
+  on clients for select using (auth_user_id = auth.uid());
+drop policy if exists "clients can update their own record" on clients;
+create policy "clients can update their own record"
+  on clients for update
   using (auth_user_id = auth.uid())
   with check (auth_user_id = auth.uid());
 
--- business_id must never change after a patient row is created: without this,
--- a patient could self-service UPDATE their own row's business_id (the RLS
+-- business_id must never change after a client row is created: without this,
+-- a client could self-service UPDATE their own row's business_id (the RLS
 -- policy above only re-checks auth_user_id, not business_id) and silently
--- move their record into a different clinic's tenant.
-create or replace function prevent_patient_business_id_change()
+-- move their record into a different business's tenant.
+create or replace function prevent_client_business_id_change()
 returns trigger
 language plpgsql
 as $$
 begin
   if new.business_id is distinct from old.business_id then
-    raise exception 'business_id cannot be changed on an existing patient record';
+    raise exception 'business_id cannot be changed on an existing client record';
   end if;
   return new;
 end;
 $$;
 
-drop trigger if exists prevent_patients_business_id_change on patients;
-create trigger prevent_patients_business_id_change
-before update on patients
-for each row execute function prevent_patient_business_id_change();
+drop trigger if exists prevent_clients_business_id_change on clients;
+create trigger prevent_clients_business_id_change
+before update on clients
+for each row execute function prevent_client_business_id_change();
 
 -- 7. BUSINESS AVAILABILITY
 create table if not exists business_availability (
@@ -385,9 +384,9 @@ create policy "closed dates access by business members"
 create table if not exists appointments (
   id uuid primary key default gen_random_uuid(),
   business_id uuid not null references businesses(id) on delete cascade,
-  patient_id uuid references patients(id) on delete set null,
+  client_id uuid references clients(id) on delete set null,
   agent_id uuid references ai_agents(id) on delete set null,
-  service_id uuid references clinic_services(id) on delete set null,
+  service_id uuid references services(id) on delete set null,
   conversation_id uuid,
   scheduled_at timestamptz not null,
   status text not null default 'scheduled'
@@ -401,7 +400,7 @@ create table if not exists appointments (
   confirmed_at timestamptz,
   cancelled_at timestamptz,
   cancellation_reason text,
-  cancelled_by text check (cancelled_by in ('patient', 'business', 'system')),
+  cancelled_by text check (cancelled_by in ('client', 'business', 'system')),
   payment_status text not null default 'not_required'
     check (payment_status in ('not_required', 'pending', 'partial', 'paid', 'cash', 'refunded')),
   payment_amount numeric(12,2),
@@ -414,7 +413,7 @@ create table if not exists appointments (
 );
 
 create index if not exists idx_appointments_business_id on appointments (business_id);
-create index if not exists idx_appointments_patient_id on appointments (patient_id);
+create index if not exists idx_appointments_client_id on appointments (client_id);
 create index if not exists idx_appointments_agent_id on appointments (agent_id);
 create index if not exists idx_appointments_service_id on appointments (service_id);
 create index if not exists idx_appointments_scheduled_at on appointments (scheduled_at);
@@ -430,13 +429,13 @@ alter table appointments enable row level security;
 drop policy if exists "appointments access by business members" on appointments;
 create policy "appointments access by business members"
   on appointments for all using (has_business_access(business_id));
-drop policy if exists "patients can see their appointments" on appointments;
-create policy "patients can see their appointments"
+drop policy if exists "clients can see their appointments" on appointments;
+create policy "clients can see their appointments"
   on appointments for select using (
     exists (
       select 1
-      from patients p
-      where p.id = patient_id
+      from clients p
+      where p.id = client_id
         and p.auth_user_id = auth.uid()
     )
   );
@@ -446,7 +445,7 @@ create table if not exists conversations (
   id uuid primary key default gen_random_uuid(),
   business_id uuid not null references businesses(id) on delete cascade,
   agent_id uuid references ai_agents(id) on delete set null,
-  patient_id uuid references patients(id) on delete set null,
+  client_id uuid references clients(id) on delete set null,
   appointment_id uuid references appointments(id) on delete set null,
   channel text not null default 'widget_voice'
     check (channel in ('widget_voice', 'widget_chat', 'phone', 'whatsapp')),
@@ -462,7 +461,7 @@ create table if not exists conversations (
 );
 
 create index if not exists idx_conversations_business_id on conversations (business_id);
-create index if not exists idx_conversations_patient_id on conversations (patient_id);
+create index if not exists idx_conversations_client_id on conversations (client_id);
 create index if not exists idx_conversations_appointment_id on conversations (appointment_id);
 
 alter table conversations enable row level security;
@@ -470,13 +469,13 @@ alter table conversations enable row level security;
 drop policy if exists "conversations access by business members" on conversations;
 create policy "conversations access by business members"
   on conversations for all using (has_business_access(business_id));
-drop policy if exists "patients can see own conversations" on conversations;
-create policy "patients can see own conversations"
+drop policy if exists "clients can see own conversations" on conversations;
+create policy "clients can see own conversations"
   on conversations for select using (
     exists (
       select 1
-      from patients p
-      where p.id = patient_id
+      from clients p
+      where p.id = client_id
         and p.auth_user_id = auth.uid()
     )
   );
@@ -638,7 +637,7 @@ create table if not exists websites (
   contact_hours text,
   contact_maps_url text,
   years_experience integer,
-  patients_served integer,
+  clients_served integer,
   satisfaction_pct numeric(5,2),
   trust_badges text[] not null default '{}',
   featured_service_ids uuid[] not null default '{}',
@@ -891,7 +890,7 @@ create policy "public can read published website faqs"
 create table if not exists support_tickets (
   id uuid primary key default gen_random_uuid(),
   business_id uuid not null references businesses(id) on delete cascade,
-  patient_id uuid references patients(id) on delete set null,
+  client_id uuid references clients(id) on delete set null,
   appointment_id uuid references appointments(id) on delete set null,
   subject text not null,
   description text,
@@ -904,7 +903,7 @@ create table if not exists support_tickets (
 );
 
 create index if not exists idx_support_tickets_business_id on support_tickets (business_id);
-create index if not exists idx_support_tickets_patient_id on support_tickets (patient_id);
+create index if not exists idx_support_tickets_client_id on support_tickets (client_id);
 
 drop trigger if exists update_support_tickets_updated_at on support_tickets;
 create trigger update_support_tickets_updated_at
@@ -916,13 +915,13 @@ alter table support_tickets enable row level security;
 drop policy if exists "support tickets access by business members" on support_tickets;
 create policy "support tickets access by business members"
   on support_tickets for all using (has_business_access(business_id));
-drop policy if exists "patients can read their support tickets" on support_tickets;
-create policy "patients can read their support tickets"
+drop policy if exists "clients can read their support tickets" on support_tickets;
+create policy "clients can read their support tickets"
   on support_tickets for select using (
     exists (
       select 1
-      from patients p
-      where p.id = patient_id
+      from clients p
+      where p.id = client_id
         and p.auth_user_id = auth.uid()
     )
   );
@@ -931,7 +930,7 @@ create table if not exists support_messages (
   id uuid primary key default gen_random_uuid(),
   ticket_id uuid not null references support_tickets(id) on delete cascade,
   business_id uuid not null references businesses(id) on delete cascade,
-  sender_type text not null check (sender_type in ('patient', 'staff', 'system')),
+  sender_type text not null check (sender_type in ('client', 'staff', 'system')),
   content text not null,
   created_at timestamptz not null default now()
 );
@@ -972,7 +971,7 @@ create table if not exists billing_transactions (
   id uuid primary key default gen_random_uuid(),
   business_id uuid not null references businesses(id) on delete cascade,
   appointment_id uuid references appointments(id) on delete set null,
-  patient_id uuid references patients(id) on delete set null,
+  client_id uuid references clients(id) on delete set null,
   amount numeric(12,2) not null,
   currency text not null default 'USDC',
   chain_id integer not null default 137,
@@ -988,7 +987,7 @@ create table if not exists billing_transactions (
 
 create index if not exists idx_billing_transactions_business_id on billing_transactions (business_id);
 create index if not exists idx_billing_transactions_appointment_id on billing_transactions (appointment_id);
-create index if not exists idx_billing_transactions_patient_id on billing_transactions (patient_id);
+create index if not exists idx_billing_transactions_client_id on billing_transactions (client_id);
 
 drop trigger if exists update_billing_transactions_updated_at on billing_transactions;
 create trigger update_billing_transactions_updated_at
@@ -1000,13 +999,13 @@ alter table billing_transactions enable row level security;
 drop policy if exists "billing transactions access by business members" on billing_transactions;
 create policy "billing transactions access by business members"
   on billing_transactions for all using (has_business_access(business_id));
-drop policy if exists "patients can see their billing rows" on billing_transactions;
-create policy "patients can see their billing rows"
+drop policy if exists "clients can see their billing rows" on billing_transactions;
+create policy "clients can see their billing rows"
   on billing_transactions for select using (
     exists (
       select 1
-      from patients p
-      where p.id = patient_id
+      from clients p
+      where p.id = client_id
         and p.auth_user_id = auth.uid()
     )
   );
@@ -1017,7 +1016,7 @@ create policy "patients can see their billing rows"
 -- straight out of `businesses`. Views in Postgres run with the *owner's*
 -- privileges when checking table access, and migration-run roles typically
 -- have BYPASSRLS, so a plain `select ... from businesses` view like this
--- would ignore businesses' RLS policies entirely and expose every clinic's
+-- would ignore businesses' RLS policies entirely and expose every business's
 -- contact/payment info to anyone with SELECT on the view (anon/authenticated
 -- get that by default in Supabase). If a public business directory is
 -- needed later, build it as a `security_invoker = true` view (PG15+) with an

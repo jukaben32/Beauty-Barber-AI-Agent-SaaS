@@ -18,7 +18,7 @@ import type { SupportMessage, SupportTicket, SupportTicketStatus } from '@/types
 import { createClient } from '@/lib/supabase/client'
 import { appendSupportMessage, listSupportMessages, updateSupportTicketStatus } from '@/services/support'
 import { cn } from '@/lib/utils'
-import { SectionEyebrow, SurfaceCard, StatusBadge } from '@/components/clinic/shared'
+import { SectionEyebrow, SurfaceCard, StatusBadge } from '@/components/dashboard/shared'
 import { formatDateOnlyInTimeZone, formatDateTimeInTimeZone } from './appointments-utils'
 
 type SupportMessagePayload = {
@@ -163,7 +163,7 @@ function TicketCard({
   timezone: string
   onClick: () => void
 }) {
-  const patientName = ticket.patient?.name ?? 'Patient'
+  const clientName = ticket.client?.name ?? 'Client'
   const priorityMeta = PRIORITY_META[ticket.priority]
 
   return (
@@ -182,7 +182,7 @@ function TicketCard({
           className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-white/70 text-xs font-semibold text-white shadow-sm"
           style={{ background: 'linear-gradient(135deg, var(--brand), var(--brand-strong))' }}
         >
-          {initials(patientName)}
+          {initials(clientName)}
         </div>
 
         <div className="min-w-0 flex-1">
@@ -193,7 +193,7 @@ function TicketCard({
               </div>
               <div className="mt-1 flex items-center gap-2 text-[11px] font-medium text-[var(--text-muted)]">
                 <UserRound className="h-3.5 w-3.5" />
-                <span className="truncate">{patientName}</span>
+                <span className="truncate">{clientName}</span>
               </div>
             </div>
 
@@ -212,20 +212,20 @@ function TicketCard({
           </div>
 
           <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-[var(--text-muted)]">
-            {ticket.patient?.email ? (
+            {ticket.client?.email ? (
               <span className="inline-flex min-w-0 items-center gap-1 rounded-full border border-[var(--border-soft)] bg-[var(--panel-soft)] px-2.5 py-1">
                 <Mail className="h-3.5 w-3.5 shrink-0" />
-                <span className="truncate">{ticket.patient.email}</span>
+                <span className="truncate">{ticket.client.email}</span>
               </span>
             ) : null}
-            {ticket.patient?.phone ? (
+            {ticket.client?.phone ? (
               <span className="inline-flex min-w-0 items-center gap-1 rounded-full border border-[var(--border-soft)] bg-[var(--panel-soft)] px-2.5 py-1">
                 <Phone className="h-3.5 w-3.5 shrink-0" />
-                <span className="truncate">{ticket.patient.phone}</span>
+                <span className="truncate">{ticket.client.phone}</span>
               </span>
             ) : null}
-            {!ticket.patient?.email && !ticket.patient?.phone ? (
-              <span className="truncate">{ticket.description ?? 'Patient request'}</span>
+            {!ticket.client?.email && !ticket.client?.phone ? (
+              <span className="truncate">{ticket.description ?? 'Client request'}</span>
             ) : null}
           </div>
 
@@ -248,7 +248,7 @@ function ThreadMessage({
   const parsed = parseMessageContent(message.content)
   const isStaff = message.senderType === 'staff'
   const isSystem = message.senderType === 'system'
-  const label = isStaff ? 'You' : message.senderType === 'patient' ? 'Patient' : 'System'
+  const label = isStaff ? 'You' : message.senderType === 'client' ? 'Client' : 'System'
   const timeLabel = formatTicketTime(message.createdAt, timezone)
 
   if (isSystem) {
@@ -335,7 +335,7 @@ function ThreadAttachmentNote({
     <div className="rounded-[24px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(244,249,248,0.95))] p-4 shadow-[0_14px_34px_-30px_rgba(15,33,41,0.35)]">
       <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">
         <FileText className="h-4 w-4 text-[var(--brand)]" />
-        Patient note
+        Client note
       </div>
       <div className="mt-2 whitespace-pre-line text-sm leading-7 text-[var(--text-strong)]">{description}</div>
     </div>
@@ -462,7 +462,7 @@ export function SupportManager({
 
   const selected = tickets.find((ticket) => ticket.id === selectedId) ?? null
   const selectedStatusMeta = selected ? STATUS_META[selected.status] : null
-  const selectedPatientName = selected?.patient?.name ?? 'Patient'
+  const selectedClientName = selected?.client?.name ?? 'Client'
   const selectedOpenedLabel = selected ? formatTicketDate(selected.createdAt, timezone) : ''
   const selectedUpdatedLabel = selected ? formatTicketTime(selected.updatedAt, timezone) : ''
   const selectedAppointmentLabel =
@@ -565,7 +565,7 @@ export function SupportManager({
         <div className="border-b border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(247,241,233,0.92))] px-5 py-5">
           <SectionEyebrow>Support Tickets</SectionEyebrow>
           <h2 className="mt-4 font-display text-3xl font-semibold tracking-[-0.04em] text-[var(--text-strong)]">
-            Patient requests
+            Client requests
           </h2>
           <p className="mt-2 max-w-sm text-sm leading-6 text-[var(--text-muted)]">
             Reply to portal issues, attachments, and chat threads without losing context.
@@ -584,7 +584,7 @@ export function SupportManager({
               </div>
               <div className="mt-4 font-semibold text-[var(--text-strong)]">No support tickets yet</div>
               <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-                Patient messages will appear here as soon as they arrive.
+                Client messages will appear here as soon as they arrive.
               </p>
             </div>
           ) : (
@@ -612,7 +612,7 @@ export function SupportManager({
                 Select a ticket
               </h2>
               <p className="mt-3 max-w-md text-sm leading-7 text-[var(--text-muted)]">
-                Choose a patient request from the list to review the thread and reply in real time.
+                Choose a client request from the list to review the thread and reply in real time.
               </p>
             </div>
           </div>
@@ -628,7 +628,7 @@ export function SupportManager({
                   <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[var(--text-muted)]">
                     <span className="inline-flex items-center gap-2">
                       <UserRound className="h-4 w-4" />
-                      {selectedPatientName}
+                      {selectedClientName}
                     </span>
                     <span className="inline-flex items-center gap-2">
                       <CalendarDays className="h-4 w-4" />

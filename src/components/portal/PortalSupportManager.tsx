@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Clock3, FileText, Loader2, Plus, Send } from 'lucide-react'
 import type { SupportMessage, SupportTicket } from '@/types'
-import { SectionEyebrow, SurfaceCard, StatusBadge } from '@/components/clinic/shared'
+import { SectionEyebrow, SurfaceCard, StatusBadge } from '@/components/dashboard/shared'
 import Modal from '@/components/ui/Modal'
 import { cn } from '@/lib/utils'
-import { formatDateOnlyInTimeZone } from '@/components/clinic/appointments-utils'
+import { formatDateOnlyInTimeZone } from '@/components/dashboard/appointments-utils'
 
 const STATUS_META: Record<SupportTicket['status'], { label: string; tone: 'teal' | 'rose' | 'amber' | 'emerald' | 'slate' }> = {
   open: { label: 'Open', tone: 'teal' },
@@ -184,7 +184,7 @@ export function PortalSupportManager({
               ) : (
                 <div className="space-y-3">
                   {messages.map((message) => {
-                    const isPatient = message.senderType === 'patient'
+                    const isClient = message.senderType === 'client'
                     if (message.senderType === 'system') {
                       return (
                         <div key={message.id} className="flex justify-center">
@@ -195,17 +195,17 @@ export function PortalSupportManager({
                       )
                     }
                     return (
-                      <div key={message.id} className={cn('flex', isPatient ? 'justify-end' : 'justify-start')}>
+                      <div key={message.id} className={cn('flex', isClient ? 'justify-end' : 'justify-start')}>
                         <div
                           className={cn(
                             'max-w-[80%] rounded-[20px] border px-4 py-3 text-sm leading-6',
-                            isPatient
+                            isClient
                               ? 'border-transparent bg-[linear-gradient(135deg,var(--brand),var(--brand-strong))] text-white'
                               : 'border-[var(--border-soft)] bg-white text-[var(--text-strong)]'
                           )}
                         >
-                          <div className={cn('mb-1 text-[10px] font-semibold uppercase tracking-[0.2em]', isPatient ? 'text-white/70' : 'text-[var(--text-muted)]')}>
-                            {isPatient ? 'You' : 'Clinic'} - {formatTime(message.createdAt, timezone)}
+                          <div className={cn('mb-1 text-[10px] font-semibold uppercase tracking-[0.2em]', isClient ? 'text-white/70' : 'text-[var(--text-muted)]')}>
+                            {isClient ? 'You' : 'Clinic'} - {formatTime(message.createdAt, timezone)}
                           </div>
                           {message.content}
                         </div>

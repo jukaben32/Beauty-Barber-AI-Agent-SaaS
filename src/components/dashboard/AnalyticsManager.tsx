@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { AppointmentWithRelations, Conversation, DashboardAnalytics } from '@/types'
-import { StatusBadge, SurfaceCard } from '@/components/clinic/shared'
+import { StatusBadge, SurfaceCard } from '@/components/dashboard/shared'
 import { getDateKeyInTimeZone, getDayOfWeekInTimeZone } from '@/services/_shared'
 
 const NUMBER_FORMAT = new Intl.NumberFormat('en-US')

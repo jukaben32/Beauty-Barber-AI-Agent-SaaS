@@ -2,7 +2,7 @@
 
 import { AlertTriangle, RefreshCw } from 'lucide-react'
 
-import { ButtonLink, SurfaceCard, SectionEyebrow } from '@/components/clinic/shared'
+import { ButtonLink, SurfaceCard, SectionEyebrow } from '@/components/dashboard/shared'
 
 type ErrorProps = {
   error: Error & { digest?: string }

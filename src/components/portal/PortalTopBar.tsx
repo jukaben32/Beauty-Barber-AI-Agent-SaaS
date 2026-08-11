@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { LogOut } from 'lucide-react'
-import { BrandMark } from '@/components/clinic/shared'
+import { BrandMark } from '@/components/dashboard/shared'
 import { createClient } from '@/lib/supabase/client'
 
 export function PortalTopBar({ businessName }: { businessName: string }) {

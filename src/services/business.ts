@@ -234,7 +234,7 @@ export async function createBusiness(
   if (!business) throw lastError
 
   const defaultAgentName = `${toTitleCase(input.name)} Assistant`
-  const defaultPrompt = `You are Clara, the AI medical receptionist for ${input.name}. Help patients book appointments, answer FAQs, and follow the clinic scheduling rules. Be concise, empathetic, and safe.`
+  const defaultPrompt = `You are Clara, the AI medical receptionist for ${input.name}. Help clients book appointments, answer FAQs, and follow the clinic scheduling rules. Be concise, empathetic, and safe.`
 
   const [{ error: subscriptionError }, { error: memberError }, { data: agentData, error: agentError }] = await Promise.all([
     supabase.from('business_subscriptions').insert({
@@ -278,7 +278,7 @@ export async function createBusiness(
     {
       business_id: business.id,
       name: 'General Consultation',
-      description: 'Initial consultation for new or existing patients.',
+      description: 'Initial consultation for new or existing clients.',
       duration_minutes: 30,
       price_type: 'fixed',
       price: 99,
@@ -328,7 +328,7 @@ export async function createBusiness(
   }))
 
   const seedOperations = [
-    supabase.from('clinic_services').insert(serviceRows),
+    supabase.from('services').insert(serviceRows),
     supabase.from('business_availability').insert(availabilityRows),
     supabase.from('widgets').insert({
       business_id: business.id,
@@ -370,9 +370,9 @@ export async function createBusiness(
       contact_address: null,
       contact_hours: 'Mon - Fri, 9:00 AM - 5:00 PM',
       years_experience: 20,
-      patients_served: 12000,
+      clients_served: 12000,
       satisfaction_pct: 98.6,
-      trust_badges: ['Board Certified', 'Patient Centered', '24/7 AI Reception'],
+      trust_badges: ['Board Certified', 'Client Centered', '24/7 AI Reception'],
       featured_service_ids: [],
     }),
   ]
@@ -504,16 +504,16 @@ export async function getDashboardAnalytics(supabase: DbClient, businessId: stri
   startOfWeek.setHours(0, 0, 0, 0)
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
 
-  const [appointmentsToday, upcomingAppointments, totalPatients, cancelledAppointments, completedAppointments, noShowAppointments, unreadNotifications, activeAgents, activeServices, totalConversations, bookedConversations, callbacksRequested] = await Promise.all([
+  const [appointmentsToday, upcomingAppointments, totalClients, cancelledAppointments, completedAppointments, noShowAppointments, unreadNotifications, activeAgents, activeServices, totalConversations, bookedConversations, callbacksRequested] = await Promise.all([
     supabase.from('appointments').select('id', { count: 'exact', head: true }).eq('business_id', businessId).gte('scheduled_at', startOfDay.toISOString()).lt('scheduled_at', new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000).toISOString()),
     supabase.from('appointments').select('id', { count: 'exact', head: true }).eq('business_id', businessId).gte('scheduled_at', now.toISOString()).neq('status', 'cancelled'),
-    supabase.from('patients').select('id', { count: 'exact', head: true }).eq('business_id', businessId),
+    supabase.from('clients').select('id', { count: 'exact', head: true }).eq('business_id', businessId),
     supabase.from('appointments').select('id', { count: 'exact', head: true }).eq('business_id', businessId).eq('status', 'cancelled').gte('created_at', startOfMonth.toISOString()),
     supabase.from('appointments').select('id', { count: 'exact', head: true }).eq('business_id', businessId).eq('status', 'completed').gte('created_at', startOfMonth.toISOString()),
     supabase.from('appointments').select('id', { count: 'exact', head: true }).eq('business_id', businessId).eq('status', 'no_show').gte('created_at', startOfMonth.toISOString()),
     supabase.from('notifications').select('id', { count: 'exact', head: true }).eq('business_id', businessId).is('read_at', null),
     supabase.from('ai_agents').select('id', { count: 'exact', head: true }).eq('business_id', businessId).eq('status', 'live'),
-    supabase.from('clinic_services').select('id', { count: 'exact', head: true }).eq('business_id', businessId).eq('active', true),
+    supabase.from('services').select('id', { count: 'exact', head: true }).eq('business_id', businessId).eq('active', true),
     supabase.from('conversations').select('id', { count: 'exact', head: true }).eq('business_id', businessId),
     supabase.from('conversations').select('id', { count: 'exact', head: true }).eq('business_id', businessId).eq('outcome', 'booked_appointment'),
     supabase.from('conversations').select('id', { count: 'exact', head: true }).eq('business_id', businessId).eq('outcome', 'escalated'),
@@ -522,7 +522,7 @@ export async function getDashboardAnalytics(supabase: DbClient, businessId: stri
   return {
     appointmentsToday: appointmentsToday.count ?? 0,
     upcomingAppointments: upcomingAppointments.count ?? 0,
-    totalPatients: totalPatients.count ?? 0,
+    totalClients: totalClients.count ?? 0,
     cancelledAppointments: cancelledAppointments.count ?? 0,
     completedAppointments: completedAppointments.count ?? 0,
     noShowAppointments: noShowAppointments.count ?? 0,

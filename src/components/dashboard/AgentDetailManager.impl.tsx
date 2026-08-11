@@ -10,14 +10,14 @@ import {
   PhoneCall,
   PhoneOff,
   Sparkles,
-  Stethoscope,
+  Scissors,
 } from 'lucide-react'
 
 import { createClient } from '@/lib/supabase/client'
 import { cn, formatCurrency } from '@/lib/utils'
-import type { AiAgent, ClinicService } from '@/types'
+import type { AiAgent, Service } from '@/types'
 import { deleteAgent, updateAgent } from '@/services/agents'
-import { findOrCreatePatient } from '@/services/patients'
+import { findOrCreateClient } from '@/services/clients'
 import { useRealtimeVoice } from '@/hooks/useRealtimeVoice'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
@@ -26,7 +26,7 @@ import Select from '@/components/ui/Select'
 import Textarea from '@/components/ui/Textarea'
 import Tabs from '@/components/ui/Tabs'
 import Toast from '@/components/ui/Toast'
-import { MetricCard, SectionEyebrow, SectionHeading, StatusBadge, SurfaceCard } from '@/components/clinic/shared'
+import { MetricCard, SectionEyebrow, SectionHeading, StatusBadge, SurfaceCard } from '@/components/dashboard/shared'
 import {
   DEFAULT_AGENT_PROMPT,
   LANGUAGE_OPTIONS,
@@ -34,7 +34,7 @@ import {
   SENSITIVITY_OPTIONS,
   VOICE_OPTIONS,
   type AgentSensitivityPreset,
-} from '@/components/clinic/agent-templates'
+} from '@/components/dashboard/agent-templates'
 
 type ToastTone = 'teal' | 'emerald' | 'blue' | 'amber' | 'rose' | 'slate'
 
@@ -101,11 +101,11 @@ function getServiceIds(agent: AiAgent) {
   return agent.assignedServiceIds ?? []
 }
 
-function getServiceNames(agent: AiAgent, services: ClinicService[]) {
+function getServiceNames(agent: AiAgent, services: Service[]) {
   const lookup = new Map(services.map((service) => [service.id, service] as const))
   return getServiceIds(agent)
     .map((serviceId) => lookup.get(serviceId))
-    .filter((service): service is ClinicService => Boolean(service))
+    .filter((service): service is Service => Boolean(service))
     .map((service) => service.name)
 }
 
@@ -135,7 +135,7 @@ export function AgentDetailManager({
   agent: AiAgent
   businessId: string
   businessSlug: string
-  services: ClinicService[]
+  services: Service[]
   initialMode: 'configure' | 'test-live'
 }) {
   const [currentAgent, setCurrentAgent] = useState(agent)
@@ -302,7 +302,7 @@ export function AgentDetailManager({
     setBookingSaving(true)
     try {
       const supabase = createClient()
-      const patient = await findOrCreatePatient(supabase, businessId, {
+      const client = await findOrCreateClient(supabase, businessId, {
         name: bookingForm.fullName.trim(),
         email: bookingForm.email.trim() || null,
         phone: bookingForm.phone.trim() || null,
@@ -314,7 +314,7 @@ export function AgentDetailManager({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          patientId: patient.id,
+          clientId: client.id,
           agentId: currentAgent.id,
           serviceId: bookingForm.serviceId,
           scheduledAt: new Date(bookingForm.dateTime).toISOString(),
@@ -381,7 +381,7 @@ export function AgentDetailManager({
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <MetricCard label="Calls Handled" value={String(currentAgent.callsHandled)} delta="Across all channels" icon={PhoneCall} tone="teal" />
-        <MetricCard label="Assigned Services" value={String(assignedServiceNames.length)} delta="Visible in booking flows" icon={Stethoscope} tone="emerald" />
+        <MetricCard label="Assigned Services" value={String(assignedServiceNames.length)} delta="Visible in booking flows" icon={Scissors} tone="emerald" />
         <MetricCard label="Voice" value={getVoiceLabel(currentAgent.voice)} delta={currentAgent.personality} icon={Mic} tone="blue" />
         <MetricCard label="Sensitivity" value={getSensitivityLabel(pickSensitivityPreset(currentAgent.sensitivity))} delta="Interrupt handling" icon={Sparkles} tone="amber" />
       </div>
@@ -402,7 +402,7 @@ export function AgentDetailManager({
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Agent Configuration</div>
                 <h2 className="mt-1 text-2xl font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">
-                  Update how this agent behaves on patient calls
+                  Update how this agent behaves on client calls
                 </h2>
               </div>
               <Badge tone="slate" className="bg-white/90 normal-case tracking-normal">
@@ -766,7 +766,7 @@ export function AgentDetailManager({
                 <div className="flex items-center justify-between gap-3 border-b border-[var(--border-soft)] pb-4">
                   <div>
                     <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Book Appointment</div>
-                    <p className="mt-1 text-sm text-[var(--text-muted)]">Manually create an appointment for a patient.</p>
+                    <p className="mt-1 text-sm text-[var(--text-muted)]">Manually create an appointment for a client.</p>
                   </div>
                   <Badge tone="slate" className="bg-white/90 normal-case tracking-normal">
                     {assignedServiceNames.length > 0 ? `${assignedServiceNames.length} services` : 'No services'}
@@ -827,12 +827,12 @@ export function AgentDetailManager({
                     value={bookingForm.notes}
                     onChange={(event) => setBookingForm((current) => ({ ...current, notes: event.target.value }))}
                     rows={4}
-                    hint="Any additional notes or patient concerns."
+                    hint="Any additional notes or client concerns."
                   />
 
                   <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border-soft)] pt-4">
                     <div className="text-sm text-[var(--text-muted)]">
-                      The booking form mirrors the patient-facing appointment flow.
+                      The booking form mirrors the client-facing appointment flow.
                     </div>
                     <Button type="submit" disabled={bookingSaving}>
                       {bookingSaving ? (

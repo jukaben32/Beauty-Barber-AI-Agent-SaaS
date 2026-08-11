@@ -33,7 +33,7 @@ import Textarea from '@/components/ui/Textarea'
 import Toggle from '@/components/ui/Toggle'
 import Toast from '@/components/ui/Toast'
 import Tabs from '@/components/ui/Tabs'
-import { MetricCard, SectionEyebrow, SectionHeading, StatusBadge, SurfaceCard, ValueCard, PhoneFrame } from '@/components/clinic/shared'
+import { MetricCard, SectionEyebrow, SectionHeading, StatusBadge, SurfaceCard, ValueCard, PhoneFrame } from '@/components/dashboard/shared'
 
 type ToastTone = 'teal' | 'emerald' | 'blue' | 'amber' | 'rose' | 'slate'
 

@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react'
 import { ChevronRight, CircleAlert, Clock3, Loader2, MessageSquareMore, PhoneCall, Search } from 'lucide-react'
 
-import type { Conversation, ConversationMessage, Patient } from '@/types'
+import type { Conversation, ConversationMessage, Client } from '@/types'
 import Modal from '@/components/ui/Modal'
-import { StatusBadge, SurfaceCard } from '@/components/clinic/shared'
+import { StatusBadge, SurfaceCard } from '@/components/dashboard/shared'
 
 type ConversationStatusFilter = 'all' | 'active' | 'completed' | 'failed'
 
@@ -96,7 +96,7 @@ function normalizeSearch(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]/g, '')
 }
 
-function getPatientInitials(name: string) {
+function getClientInitials(name: string) {
   return name
     .split(' ')
     .map((part) => part.trim()[0])
@@ -123,12 +123,11 @@ function getChannelLabel(channel: Conversation['channel']) {
   return CHANNEL_LABELS[channel] ?? channel
 }
 
-function buildSearchText(patient: Patient | null | undefined, conversation: Conversation) {
+function buildSearchText(client: Client | null | undefined, conversation: Conversation) {
   return normalizeSearch(
     [
-      patient?.name ?? 'unknown caller',
-      patient?.phone ?? '',
-      patient?.insuranceProvider ?? '',
+      client?.name ?? 'unknown caller',
+      client?.phone ?? '',
       conversation.transcriptSummary ?? '',
       conversation.status,
       conversation.outcome ?? '',
@@ -171,12 +170,12 @@ function TranscriptMessage({ message }: { message: ConversationMessage }) {
 
 export function ConversationsManager({
   initialConversations,
-  patients,
+  clients,
   timezone,
   businessName,
 }: {
   initialConversations: Conversation[]
-  patients: Patient[]
+  clients: Client[]
   timezone: string
   businessName: string
 }) {
@@ -187,10 +186,10 @@ export function ConversationsManager({
   const [transcriptStatus, setTranscriptStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle')
   const [transcriptError, setTranscriptError] = useState<string | null>(null)
 
-  const patientById = Object.fromEntries(patients.map((patient) => [patient.id, patient] as const)) as Record<string, Patient>
+  const clientById = Object.fromEntries(clients.map((client) => [client.id, client] as const)) as Record<string, Client>
 
   const visibleConversations = initialConversations.filter((conversation) => {
-    const patient = conversation.patientId ? patientById[conversation.patientId] : null
+    const client = conversation.clientId ? clientById[conversation.clientId] : null
     const matchesStatus =
       statusFilter === 'all'
         ? true
@@ -199,7 +198,7 @@ export function ConversationsManager({
           : conversation.status === statusFilter
     if (!matchesStatus) return false
 
-    const searchText = buildSearchText(patient, conversation)
+    const searchText = buildSearchText(client, conversation)
     const matchesQuery = query.trim() === '' ? true : searchText.includes(normalizeSearch(query))
     return matchesQuery
   })
@@ -211,7 +210,7 @@ export function ConversationsManager({
     ? initialConversations.find((conversation) => conversation.id === selectedConversationId) ?? null
     : null
   const selectedTranscript = selectedConversationId ? transcriptCache[selectedConversationId] ?? null : null
-  const selectedPatient = selectedConversation?.patientId ? patientById[selectedConversation.patientId] : null
+  const selectedClient = selectedConversation?.clientId ? clientById[selectedConversation.clientId] : null
 
   useEffect(() => {
     if (!selectedConversationId) return
@@ -268,7 +267,7 @@ export function ConversationsManager({
   const selectedMessages = selectedConversationId ? selectedTranscript?.messages ?? [] : []
   const activeTranscript = selectedTranscript?.conversation ?? selectedConversation
   const transcriptTitle = activeTranscript
-    ? `${formatExactDate(activeTranscript.startedAt, timezone)} · ${selectedPatient?.name ?? 'Unknown caller'}`
+    ? `${formatExactDate(activeTranscript.startedAt, timezone)} · ${selectedClient?.name ?? 'Unknown caller'}`
     : ''
   const transcriptSummary = activeTranscript?.transcriptSummary ?? selectedTranscript?.conversation.transcriptSummary ?? null
   const tableGridTemplate = 'minmax(0,1.7fr) minmax(0,0.82fr) minmax(0,0.82fr) minmax(0,0.82fr) minmax(0,0.82fr) minmax(0,0.95fr) 44px'
@@ -292,7 +291,7 @@ export function ConversationsManager({
               Call Log
             </div>
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-[-0.05em] text-[var(--text-strong)] md:text-4xl">
-              Patient call history and transcripts
+              Client call history and transcripts
             </h2>
             <p className="mt-2 max-w-xl text-sm leading-7 text-[var(--text-muted)]">
               Review every call in real time, filter by status, and open the transcript from the duration chip or chevron.
@@ -306,7 +305,7 @@ export function ConversationsManager({
                 <input
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search by patient name or phone..."
+                  placeholder="Search by client name or phone..."
                   className="h-12 w-full rounded-full border border-[var(--border-soft)] bg-white/86 pl-11 pr-20 text-sm text-[var(--text-strong)] outline-none transition placeholder:text-[var(--text-muted)] focus:border-[var(--brand)]/40 focus:ring-2 focus:ring-[var(--brand)]/12"
                 />
                 <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-[var(--border-soft)] bg-[var(--panel-soft)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
@@ -347,7 +346,7 @@ export function ConversationsManager({
             className="grid gap-3 border-b border-[var(--border-soft)] bg-[rgba(16,33,41,0.03)] px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]"
             style={{ gridTemplateColumns: tableGridTemplate }}
           >
-            <div>Patient</div>
+            <div>Client</div>
             <div>Status</div>
             <div>Duration</div>
             <div>Sentiment</div>
@@ -366,15 +365,15 @@ export function ConversationsManager({
                   No calls match your filters
                 </div>
                 <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">
-                  Try another patient name, phone number, or call status.
+                  Try another client name, phone number, or call status.
                 </p>
               </div>
             ) : (
               visibleConversations.map((conversation) => {
-                const patient = conversation.patientId ? patientById[conversation.patientId] : null
-                const patientName = patient?.name ?? 'Unknown caller'
-                const patientPhone = patient?.phone ?? 'No phone'
-                const patientInitials = getPatientInitials(patientName)
+                const client = conversation.clientId ? clientById[conversation.clientId] : null
+                const clientName = client?.name ?? 'Unknown caller'
+                const clientPhone = client?.phone ?? 'No phone'
+                const clientInitials = getClientInitials(clientName)
                 const statusMeta = getConversationStatus(conversation)
                 const sentimentMeta = getSentimentMeta(conversation.sentiment)
                 const durationLabel = conversation.durationSeconds > 0 ? formatDuration(conversation.durationSeconds) : '-'
@@ -390,15 +389,14 @@ export function ConversationsManager({
                   >
                     <div className="flex min-w-0 items-center gap-3">
                       <div className="grid h-11 w-11 shrink-0 place-items-center rounded-[16px] bg-[var(--brand)] text-[11px] font-semibold text-white shadow-[0_16px_30px_-20px_rgba(19,122,114,0.7)]">
-                        {patientInitials || 'UC'}
+                        {clientInitials || 'UC'}
                       </div>
                       <div className="min-w-0">
-                        <div className="truncate text-sm font-semibold text-[var(--text-strong)]">{patientName}</div>
-                        <div className="truncate text-xs text-[var(--text-muted)]">{patientPhone}</div>
-                        {patient?.dateOfBirth || patient?.insuranceProvider ? (
+                        <div className="truncate text-sm font-semibold text-[var(--text-strong)]">{clientName}</div>
+                        <div className="truncate text-xs text-[var(--text-muted)]">{clientPhone}</div>
+                        {client?.dateOfBirth ? (
                           <div className="mt-1 truncate text-[11px] text-[var(--text-muted)]">
-                            {patient?.dateOfBirth ? `DOB: ${patient.dateOfBirth}` : 'DOB: -'}
-                            {patient?.insuranceProvider ? ` - ${patient.insuranceProvider}` : ''}
+                            {`DOB: ${client.dateOfBirth}`}
                           </div>
                         ) : null}
                       </div>
@@ -413,8 +411,8 @@ export function ConversationsManager({
                         <button
                           type="button"
                           onClick={() => openTranscript(conversation.id)}
-                          aria-label={`Open transcript for ${patientName}`}
-                          title={`Open transcript for ${patientName}`}
+                          aria-label={`Open transcript for ${clientName}`}
+                          title={`Open transcript for ${clientName}`}
                           className="inline-flex items-center gap-2 rounded-full border border-[var(--border-soft)] bg-white/80 px-3 py-1.5 text-sm font-semibold text-[var(--brand-strong)] transition hover:border-[var(--brand)]/25 hover:bg-[var(--brand-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)]/20"
                         >
                           <Clock3 className="h-3.5 w-3.5" />
@@ -449,8 +447,8 @@ export function ConversationsManager({
                       <button
                         type="button"
                         onClick={() => openTranscript(conversation.id)}
-                        aria-label={`Open transcript for ${patientName}`}
-                        title={`Open transcript for ${patientName}`}
+                        aria-label={`Open transcript for ${clientName}`}
+                        title={`Open transcript for ${clientName}`}
                         className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-soft)] bg-white/80 text-[var(--text-muted)] transition hover:border-[var(--brand)]/25 hover:text-[var(--brand-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)]/20"
                       >
                         <ChevronRight className="h-4 w-4" />

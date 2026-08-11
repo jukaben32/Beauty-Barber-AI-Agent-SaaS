@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { ArrowLeft, Loader2, MailCheck } from 'lucide-react'
-import { SectionEyebrow } from '@/components/clinic/shared'
+import { SectionEyebrow } from '@/components/dashboard/shared'
 
 const PORTAL_SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
@@ -99,7 +99,7 @@ export function PortalRegisterForm() {
 
   return (
     <div className="max-w-md">
-      <SectionEyebrow>Patient onboarding</SectionEyebrow>
+      <SectionEyebrow>Client onboarding</SectionEyebrow>
       <h2 className="mt-5 text-3xl font-black tracking-tight text-[var(--text-strong)]">Create your portal profile</h2>
       <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">
         We use this info to sync your appointments, reminders, and receipts. No password needed - we&apos;ll email you a secure login link.
@@ -150,7 +150,7 @@ export function PortalRegisterForm() {
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            placeholder="patient@email.com"
+            placeholder="client@email.com"
             className="input-field"
             autoComplete="email"
             required

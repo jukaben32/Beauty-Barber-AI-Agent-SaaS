@@ -6,7 +6,7 @@ function toConversation(row: any): Conversation {
     id: row.id,
     businessId: row.business_id,
     agentId: row.agent_id ?? null,
-    patientId: row.patient_id ?? null,
+    clientId: row.client_id ?? null,
     appointmentId: row.appointment_id ?? null,
     channel: row.channel,
     status: row.status,
@@ -34,7 +34,7 @@ function toMessage(row: any): ConversationMessage {
 export async function listConversationsForBusiness(supabase: DbClient, businessId: string, limit = 50) {
   const { data, error } = await supabase
     .from('conversations')
-    .select('*, patients(name, phone, email), ai_agents(name), appointments(id, scheduled_at, status)')
+    .select('*, clients(name, phone, email), ai_agents(name), appointments(id, scheduled_at, status)')
     .eq('business_id', businessId)
     .order('started_at', { ascending: false })
     .limit(limit)
@@ -45,7 +45,7 @@ export async function listConversationsForBusiness(supabase: DbClient, businessI
 export async function getConversationById(supabase: DbClient, businessId: string, conversationId: string) {
   const { data, error } = await supabase
     .from('conversations')
-    .select('*, patients(*), ai_agents(*), appointments(*)')
+    .select('*, clients(*), ai_agents(*), appointments(*)')
     .eq('business_id', businessId)
     .eq('id', conversationId)
     .maybeSingle()
@@ -58,7 +58,7 @@ export async function createConversation(
   businessId: string,
   input: {
     agentId?: string | null
-    patientId?: string | null
+    clientId?: string | null
     appointmentId?: string | null
     channel?: Conversation['channel']
     status?: ConversationStatus
@@ -72,7 +72,7 @@ export async function createConversation(
     .insert({
       business_id: businessId,
       agent_id: input.agentId ?? null,
-      patient_id: input.patientId ?? null,
+      client_id: input.clientId ?? null,
       appointment_id: input.appointmentId ?? null,
       channel: input.channel ?? 'widget_voice',
       status: input.status ?? 'in_progress',
@@ -96,7 +96,7 @@ export async function updateConversationStatus(
     .from('conversations')
     .update({
       agent_id: patch.agentId,
-      patient_id: patch.patientId,
+      client_id: patch.clientId,
       appointment_id: patch.appointmentId,
       channel: patch.channel,
       status: patch.status,

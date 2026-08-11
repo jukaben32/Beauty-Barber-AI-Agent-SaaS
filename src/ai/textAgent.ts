@@ -1,7 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
-import type { AiAgent, Business, ClinicService, KnowledgeDocument } from '@/types'
-import { buildClinicAssistantInstructions, clinicRealtimeTools, executeRealtimeToolCall } from './tools'
+import type { AiAgent, Business, Service, KnowledgeDocument } from '@/types'
+import { buildAssistantInstructions, realtimeTools, executeRealtimeToolCall } from './tools'
 
 type DB = SupabaseClient<Database>
 
@@ -16,7 +16,7 @@ type ChatMessage = {
 }
 
 function toChatCompletionTools() {
-  return clinicRealtimeTools.map((tool) => ({
+  return realtimeTools.map((tool) => ({
     type: 'function' as const,
     function: {
       name: tool.name,
@@ -29,11 +29,11 @@ function toChatCompletionTools() {
 function buildWhatsappSystemPrompt(ctx: {
   business: Business
   agent: AiAgent
-  services: ClinicService[]
+  services: Service[]
   faqs: KnowledgeDocument[]
 }) {
-  const agentPrompt = ctx.agent.systemPrompt?.trim() || `You are ${ctx.agent.name}, the clinic WhatsApp assistant for ${ctx.business.name}.`
-  const clinicPrompt = buildClinicAssistantInstructions({
+  const agentPrompt = ctx.agent.systemPrompt?.trim() || `You are ${ctx.agent.name}, the WhatsApp booking assistant for ${ctx.business.name}.`
+  const bookingPrompt = buildAssistantInstructions({
     business: ctx.business,
     services: ctx.services,
     faqs: ctx.faqs,
@@ -41,8 +41,8 @@ function buildWhatsappSystemPrompt(ctx: {
 
   return [
     agentPrompt,
-    clinicPrompt,
-    'WhatsApp style rules: keep replies short, warm, and plain text. Avoid markdown tables and long blocks. Ask one question at a time when you need more details. Always use the clinic tools when you need services, availability, appointments, FAQ answers, or payments.',
+    bookingPrompt,
+    'WhatsApp style rules: keep replies short, warm, and plain text. Avoid markdown tables and long blocks. Ask one question at a time when you need more details. Always use the available tools when you need services, availability, appointments, FAQ answers, or payments.',
   ].join('\n\n')
 }
 
@@ -51,7 +51,7 @@ export async function runWhatsappAgentTurn(
   ctx: {
     business: Business
     agent: AiAgent
-    services: ClinicService[]
+    services: Service[]
     faqs: KnowledgeDocument[]
     businessId: string
     conversationId: string
@@ -123,7 +123,7 @@ export async function runWhatsappAgentTurn(
           ctx.businessId,
           call.function.name,
           args,
-          { patientSource: 'whatsapp', appointmentSource: 'whatsapp' }
+          { clientSource: 'whatsapp', appointmentSource: 'whatsapp' }
         )
       } catch (error) {
         result = {

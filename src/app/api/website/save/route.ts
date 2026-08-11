@@ -68,7 +68,7 @@ export async function POST(request: Request) {
       contactHours: parsed.data.contactHours ?? null,
       contactMapsUrl: parsed.data.contactMapsUrl ?? null,
       yearsExperience: parsed.data.yearsExperience ?? null,
-      patientsServed: parsed.data.patientsServed ?? null,
+      clientsServed: parsed.data.clientsServed ?? null,
       satisfactionPct: parsed.data.satisfactionPct ?? null,
       trustBadges: parsed.data.trustBadges ?? [],
       featuredServiceIds: parsed.data.featuredServiceIds ?? [],

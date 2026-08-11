@@ -4,7 +4,7 @@ import { getPublicBusinessProfile } from '@/services/business'
 import { updateConversationStatus } from '@/services/conversations'
 import { realtimeConversationEndSchema } from '@/validations'
 
-// Called both mid-call (to link the patient/appointment a tool call just
+// Called both mid-call (to link the client/appointment a tool call just
 // created or found, so the Call Log row points at them) and on disconnect
 // (to close the conversation out with a duration and status).
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
@@ -29,7 +29,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     }
 
     const conversation = await updateConversationStatus(admin, business.id, params.id, {
-      patientId: parsed.data.patientId,
+      clientId: parsed.data.clientId,
       appointmentId: parsed.data.appointmentId,
       durationSeconds: parsed.data.durationSeconds,
       status: parsed.data.durationSeconds !== undefined ? 'completed' : undefined,

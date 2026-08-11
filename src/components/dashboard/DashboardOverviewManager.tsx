@@ -1,7 +1,7 @@
 import { CalendarDays, Clock3, MessageSquareMore, PhoneCall, RotateCcw, Search, TrendingUp, Users } from 'lucide-react'
 import type { ComponentType } from 'react'
 import type { AppointmentWithRelations, Conversation, DashboardAnalytics } from '@/types'
-import { ArrowLink, StatusBadge, SurfaceCard } from '@/components/clinic/shared'
+import { ArrowLink, StatusBadge, SurfaceCard } from '@/components/dashboard/shared'
 import { getDateKeyInTimeZone } from '@/services/_shared'
 
 const STATUS_LABEL: Record<string, string> = {
@@ -468,17 +468,12 @@ export function DashboardOverviewManager({
           ) : (
             recentAppointments.map((appointment) => {
               const tone = getAppointmentTone(appointment.status)
-              const patientDetails = [
-                appointment.patient?.dateOfBirth ? `DOB: ${appointment.patient.dateOfBirth}` : null,
-                appointment.patient?.insuranceProvider ?? 'No Insurance',
-              ]
-                .filter(Boolean)
-                .join(' - ')
+              const clientDetails = appointment.client?.dateOfBirth ? `DOB: ${appointment.client.dateOfBirth}` : ''
               return (
                 <div key={appointment.id} className="grid gap-4 px-5 py-4 md:grid-cols-[1fr_auto] md:items-center">
                   <div className="flex min-w-0 items-center gap-4">
                     <div className="grid h-11 w-11 shrink-0 place-items-center rounded-[16px] bg-[var(--brand)] text-sm font-semibold text-white shadow-[0_16px_30px_-20px_rgba(19,122,114,0.7)]">
-                      {appointment.patient?.name
+                      {appointment.client?.name
                         ?.split(' ')
                         .map((part) => part[0])
                         .slice(0, 2)
@@ -486,9 +481,9 @@ export function DashboardOverviewManager({
                     </div>
                     <div className="min-w-0">
                       <div className="truncate text-sm font-semibold text-[var(--text-strong)]">
-                        {appointment.patient?.name ?? 'Unknown patient'}
+                        {appointment.client?.name ?? 'Unknown client'}
                       </div>
-                      <div className="mt-1 text-xs text-[var(--text-muted)]">{appointment.service?.name ?? 'No service'}{patientDetails ? ` - ${patientDetails}` : ''}</div>
+                      <div className="mt-1 text-xs text-[var(--text-muted)]">{appointment.service?.name ?? 'No service'}{clientDetails ? ` - ${clientDetails}` : ''}</div>
                     </div>
                   </div>
                   <div className="flex flex-col items-start gap-2 text-left md:items-end md:text-right">

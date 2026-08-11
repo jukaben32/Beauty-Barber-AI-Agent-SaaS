@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getBusinessForUser, getDashboardAnalytics } from '@/services/business'
 import { listAppointmentsForBusiness } from '@/services/appointments'
 import { listConversationsForBusiness } from '@/services/conversations'
-import { DashboardOverviewManager } from '@/components/clinic/DashboardOverviewManager'
+import { DashboardOverviewManager } from '@/components/dashboard/DashboardOverviewManager'
 
 export default async function DashboardPage() {
   const supabase = await createClient()

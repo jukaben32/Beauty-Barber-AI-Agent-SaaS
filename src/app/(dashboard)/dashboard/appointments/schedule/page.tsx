@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getBusinessForUser } from '@/services/business'
 import { listAppointmentsForBusiness } from '@/services/appointments'
 import { getDateKeyInTimeZone } from '@/services/_shared'
-import { ScheduleManager } from '@/components/clinic/ScheduleManager'
+import { ScheduleManager } from '@/components/dashboard/ScheduleManager'
 
 export default async function SchedulePage() {
   const supabase = await createClient()

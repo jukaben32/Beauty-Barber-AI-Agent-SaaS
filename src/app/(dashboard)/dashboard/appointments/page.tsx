@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getBusinessForUser } from '@/services/business'
 import { listAppointmentsForBusiness } from '@/services/appointments'
-import { AppointmentsManager } from '@/components/clinic/AppointmentsManager'
+import { AppointmentsManager } from '@/components/dashboard/AppointmentsManager'
 
 export default async function AppointmentsPage() {
   const supabase = await createClient()

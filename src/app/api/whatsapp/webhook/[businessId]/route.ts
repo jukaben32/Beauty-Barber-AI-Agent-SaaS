@@ -4,8 +4,8 @@ import { apiError, json } from '@/lib/api'
 import { getBusinessById } from '@/services/business'
 import { getAgentById } from '@/services/agents'
 import { appendConversationMessage, createConversation, listConversationMessages } from '@/services/conversations'
-import { findOrCreatePatient } from '@/services/patients'
-import { listClinicServices } from '@/services/services'
+import { findOrCreateClient } from '@/services/clients'
+import { listServices } from '@/services/services'
 import { listKnowledgeDocuments } from '@/services/faqs'
 import { getWhatsappConnection, sendWhatsappMessage } from '@/services/whatsapp'
 import { runWhatsappAgentTurn } from '@/ai/textAgent'
@@ -86,7 +86,7 @@ export async function POST(request: Request, { params }: { params: { businessId:
   const [business, agent, services, faqs] = await Promise.all([
     getBusinessById(supabase, params.businessId),
     getAgentById(supabase, params.businessId, connection.agent_id),
-    listClinicServices(supabase, params.businessId),
+    listServices(supabase, params.businessId),
     listKnowledgeDocuments(supabase, params.businessId, true),
   ])
 
@@ -106,7 +106,7 @@ export async function POST(request: Request, { params }: { params: { businessId:
     // Best effort only.
   }
 
-  const patient = await findOrCreatePatient(supabase, params.businessId, {
+  const client = await findOrCreateClient(supabase, params.businessId, {
     name: pushName || 'WhatsApp contact',
     phone,
     source: 'whatsapp',
@@ -116,7 +116,7 @@ export async function POST(request: Request, { params }: { params: { businessId:
     .from('conversations')
     .select('id, started_at, status')
     .eq('business_id', params.businessId)
-    .eq('patient_id', patient.id)
+    .eq('client_id', client.id)
     .eq('channel', 'whatsapp')
     .order('started_at', { ascending: false })
     .limit(1)
@@ -140,7 +140,7 @@ export async function POST(request: Request, { params }: { params: { businessId:
     conversationId = (
       await createConversation(supabase, params.businessId, {
         agentId: agent.id,
-        patientId: patient.id,
+        clientId: client.id,
         channel: 'whatsapp',
         status: 'in_progress',
       })

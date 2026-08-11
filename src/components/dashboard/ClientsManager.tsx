@@ -7,16 +7,16 @@ import {
   ChevronDown,
   ChevronUp,
   Eye,
+  FileText,
   Mail,
   Phone,
   Search,
-  ShieldAlert,
   Users,
   Wallet,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import type { AppointmentWithRelations, BillingTransaction, Patient } from '@/types'
-import { SurfaceCard, StatusBadge } from '@/components/clinic/shared'
+import type { AppointmentWithRelations, BillingTransaction, Client } from '@/types'
+import { SurfaceCard, StatusBadge } from '@/components/dashboard/shared'
 import { cn, formatCurrency } from '@/lib/utils'
 import { AppointmentDetailsDrawer } from './AppointmentDetailsDrawer'
 import {
@@ -28,8 +28,8 @@ import {
   formatDateTimeInTimeZone,
 } from './appointments-utils'
 
-type PatientRow = {
-  patient: Patient
+type ClientRow = {
+  client: Client
   appointments: AppointmentWithRelations[]
   lastVisitAt: string | null
   completedCount: number
@@ -52,14 +52,13 @@ function formatShortDate(iso: string, timezone: string) {
   }).format(new Date(iso))
 }
 
-function buildSearchText(patient: Patient, appointments: AppointmentWithRelations[]) {
+function buildSearchText(client: Client, appointments: AppointmentWithRelations[]) {
   return [
-    patient.name,
-    patient.phone,
-    patient.email,
-    patient.insuranceProvider,
-    patient.dateOfBirth,
-    patient.notes,
+    client.name,
+    client.phone,
+    client.email,
+    client.dateOfBirth,
+    client.notes,
     ...appointments.flatMap((appointment) => [
       appointment.service?.name,
       appointment.status,
@@ -193,7 +192,7 @@ function HistoryRow({
         <div className="font-semibold text-[var(--text-strong)]">
           {formatDateTimeInTimeZone(appointment.scheduledAt, timezone)}
         </div>
-        <div className="mt-1 text-xs text-[var(--text-muted)]">{appointment.patient?.name ?? 'Unknown patient'}</div>
+        <div className="mt-1 text-xs text-[var(--text-muted)]">{appointment.client?.name ?? 'Unknown client'}</div>
       </div>
 
       <div className="min-w-0">
@@ -236,7 +235,7 @@ function HistoryRow({
   )
 }
 
-function PatientCard({
+function ClientCard({
   row,
   timezone,
   currency,
@@ -245,7 +244,7 @@ function PatientCard({
   onToggle,
   onViewAppointment,
 }: {
-  row: PatientRow
+  row: ClientRow
   timezone: string
   currency: string
   paymentsByAppointmentId: Record<string, BillingTransaction[]>
@@ -253,7 +252,7 @@ function PatientCard({
   onToggle: () => void
   onViewAppointment: (appointmentId: string) => void
 }) {
-  const firstLetter = row.patient.name.trim().slice(0, 1).toUpperCase() || 'P'
+  const firstLetter = row.client.name.trim().slice(0, 1).toUpperCase() || 'P'
   const totalAppointments = row.appointments.length
   const lastVisitLabel = row.lastVisitAt ? formatShortDate(row.lastVisitAt, timezone) : '-'
   const paidLabel = row.paidAmount > 0 ? formatCurrency(row.paidAmount, currency) : '-'
@@ -280,15 +279,15 @@ function PatientCard({
             {firstLetter}
           </div>
           <div className="min-w-0">
-            <div className="truncate font-semibold text-[var(--text-strong)]">{row.patient.name}</div>
+            <div className="truncate font-semibold text-[var(--text-strong)]">{row.client.name}</div>
             <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[var(--text-muted)]">
               <span className="inline-flex items-center gap-1">
                 <Mail className="h-3.5 w-3.5" />
-                {row.patient.email ?? 'No email'}
+                {row.client.email ?? 'No email'}
               </span>
               <span className="inline-flex items-center gap-1">
                 <Phone className="h-3.5 w-3.5" />
-                {row.patient.phone ?? 'No phone'}
+                {row.client.phone ?? 'No phone'}
               </span>
             </div>
           </div>
@@ -324,8 +323,8 @@ function PatientCard({
       {expanded ? (
         <div className="border-t border-[var(--border-soft)] bg-[rgba(16,33,41,0.02)] px-4 py-4">
           <div className="grid gap-3 md:grid-cols-2">
-            <InfoTile label="Date of birth" value={row.patient.dateOfBirth ?? 'Not on file'} icon={CalendarDays} />
-            <InfoTile label="Insurance" value={row.patient.insuranceProvider ?? 'No insurance'} icon={ShieldAlert} />
+            <InfoTile label="Date of birth" value={row.client.dateOfBirth ?? 'Not on file'} icon={CalendarDays} />
+            <InfoTile label="Notes" value={row.client.notes ?? 'No notes yet'} icon={FileText} />
           </div>
 
           <div className="mt-4 overflow-hidden rounded-[22px] border border-[var(--border-soft)] bg-white/76">
@@ -372,15 +371,15 @@ function PatientCard({
   )
 }
 
-export function PatientsManager({
-  initialPatients,
+export function ClientsManager({
+  initialClients,
   appointments: initialAppointments,
   billingTransactions: initialBillingTransactions,
   timezone,
   businessName,
   paymentCurrency,
 }: {
-  initialPatients: Patient[]
+  initialClients: Client[]
   appointments: AppointmentWithRelations[]
   billingTransactions: BillingTransaction[]
   timezone: string
@@ -398,7 +397,7 @@ export function PatientsManager({
     return grouped
   })
   const [query, setQuery] = useState('')
-  const [expandedPatientId, setExpandedPatientId] = useState<string | null>(null)
+  const [expandedClientId, setExpandedClientId] = useState<string | null>(null)
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<string | null>(null)
   const initialSelectionApplied = useRef(false)
 
@@ -407,16 +406,16 @@ export function PatientsManager({
     [appointments, selectedAppointmentId],
   )
 
-  const patientRows = useMemo<PatientRow[]>(() => {
-    const rows = initialPatients.map((patient) => {
-      const patientAppointments = appointments
-        .filter((appointment) => appointment.patientId === patient.id)
+  const clientRows = useMemo<ClientRow[]>(() => {
+    const rows = initialClients.map((client) => {
+      const clientAppointments = appointments
+        .filter((appointment) => appointment.clientId === client.id)
         .sort((left, right) => new Date(right.scheduledAt).getTime() - new Date(left.scheduledAt).getTime())
 
-      const lastVisitAt = patientAppointments[0]?.scheduledAt ?? null
-      const completedCount = patientAppointments.filter((appointment) => appointment.status === 'completed').length
+      const lastVisitAt = clientAppointments[0]?.scheduledAt ?? null
+      const completedCount = clientAppointments.filter((appointment) => appointment.status === 'completed').length
 
-      const paidAmount = patientAppointments.reduce((total, appointment) => {
+      const paidAmount = clientAppointments.reduce((total, appointment) => {
         const txs = billingMap[appointment.id] ?? []
         const confirmed = txs.filter((transaction) => transaction.status === 'confirmed').reduce((sum, transaction) => sum + transaction.amount, 0)
         const refunded = txs.filter((transaction) => transaction.status === 'refunded').reduce((sum, transaction) => sum + transaction.amount, 0)
@@ -424,12 +423,12 @@ export function PatientsManager({
       }, 0)
 
       return {
-        patient,
-        appointments: patientAppointments,
+        client,
+        appointments: clientAppointments,
         lastVisitAt,
         completedCount,
         paidAmount,
-        searchText: buildSearchText(patient, patientAppointments),
+        searchText: buildSearchText(client, clientAppointments),
       }
     })
 
@@ -437,26 +436,26 @@ export function PatientsManager({
       const leftVisit = left.lastVisitAt ? new Date(left.lastVisitAt).getTime() : 0
       const rightVisit = right.lastVisitAt ? new Date(right.lastVisitAt).getTime() : 0
       if (rightVisit !== leftVisit) return rightVisit - leftVisit
-      return new Date(right.patient.createdAt).getTime() - new Date(left.patient.createdAt).getTime()
+      return new Date(right.client.createdAt).getTime() - new Date(left.client.createdAt).getTime()
     })
-  }, [appointments, billingMap, initialPatients])
+  }, [appointments, billingMap, initialClients])
 
   useEffect(() => {
     if (initialSelectionApplied.current) return
     initialSelectionApplied.current = true
-    if (patientRows[0]) {
-      setExpandedPatientId(patientRows[0].patient.id)
+    if (clientRows[0]) {
+      setExpandedClientId(clientRows[0].client.id)
     }
-  }, [patientRows])
+  }, [clientRows])
 
   const visibleRows = useMemo(() => {
     const normalized = query.trim().toLowerCase()
-    if (!normalized) return patientRows
-    return patientRows.filter((row) => row.searchText.includes(normalized))
-  }, [patientRows, query])
+    if (!normalized) return clientRows
+    return clientRows.filter((row) => row.searchText.includes(normalized))
+  }, [clientRows, query])
 
-  const totalPatients = initialPatients.length
-  const portalAccounts = initialPatients.filter((patient) => Boolean(patient.authUserId)).length
+  const totalClients = initialClients.length
+  const portalAccounts = initialClients.filter((client) => Boolean(client.authUserId)).length
   const totalAppointments = appointments.length
   const totalRevenue = Object.values(billingMap)
     .flat()
@@ -497,12 +496,12 @@ export function PatientsManager({
         <div className="border-b border-[var(--border-soft)] px-6 py-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-3xl">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Patients</div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Clients</div>
               <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-[var(--text-strong)]">
-                Patient records and appointment history
+                Client records and appointment history
               </h1>
               <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--text-muted)]">
-                Review patient profiles, expand a row to inspect every appointment, and jump into the detail drawer to inspect payments or status changes.
+                Review client profiles, expand a row to inspect every appointment, and jump into the detail drawer to inspect payments or status changes.
               </p>
             </div>
 
@@ -514,7 +513,7 @@ export function PatientsManager({
           </div>
 
           <div className="mt-5 grid gap-3 xl:grid-cols-4">
-            <MiniStat label="Total Patients" value={String(totalPatients)} accent="teal" icon={Users} />
+            <MiniStat label="Total Clients" value={String(totalClients)} accent="teal" icon={Users} />
             <MiniStat label="Portal Accounts" value={String(portalAccounts)} accent="amber" icon={CheckCircle2} />
             <MiniStat label="Total Appointments" value={String(totalAppointments)} accent="blue" icon={CalendarDays} />
             <MiniStat label="Total Revenue" value={formatCurrency(totalRevenue, paymentCurrency)} accent="rose" icon={Wallet} />
@@ -526,10 +525,10 @@ export function PatientsManager({
             <div className="border-b border-[var(--border-soft)] px-5 py-4">
               <div className="flex flex-col gap-2">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">
-                  Patient Profiles
+                  Client Profiles
                 </div>
                 <h2 className="font-display text-2xl font-semibold tracking-[-0.04em] text-[var(--text-strong)]">
-                  {visibleRows.length} unique patients
+                  {visibleRows.length} unique clients
                 </h2>
                 <p className="text-sm text-[var(--text-muted)]">click to expand appointment history</p>
               </div>
@@ -539,7 +538,7 @@ export function PatientsManager({
                 <input
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search by name, email, phone or insurance..."
+                  placeholder="Search by name, email, or phone..."
                   className="input-field w-full pl-11"
                 />
               </div>
@@ -548,19 +547,19 @@ export function PatientsManager({
             <div className="space-y-3 p-4">
               {visibleRows.length === 0 ? (
                 <div className="rounded-[22px] border border-[var(--border-soft)] bg-[var(--panel-soft)] px-5 py-10 text-center text-sm text-[var(--text-muted)]">
-                  No patients match your search.
+                  No clients match your search.
                 </div>
               ) : (
                 visibleRows.map((row) => (
-                  <PatientCard
-                    key={row.patient.id}
+                  <ClientCard
+                    key={row.client.id}
                     row={row}
                     timezone={timezone}
                     currency={paymentCurrency}
                     paymentsByAppointmentId={billingMap}
-                    expanded={expandedPatientId === row.patient.id}
+                    expanded={expandedClientId === row.client.id}
                     onToggle={() =>
-                      setExpandedPatientId((current) => (current === row.patient.id ? null : row.patient.id))
+                      setExpandedClientId((current) => (current === row.client.id ? null : row.client.id))
                     }
                     onViewAppointment={openAppointment}
                   />

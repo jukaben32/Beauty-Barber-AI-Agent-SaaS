@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
 
-import { MetricCard } from '@/components/clinic/shared'
+import { MetricCard } from '@/components/dashboard/shared'
 
 type AnalyticsCardProps = {
   label: string

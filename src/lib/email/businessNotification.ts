@@ -1,15 +1,15 @@
 import { emailShell, escapeHtml } from './shared'
 
-// For the business/staff side: sent when a patient or the AI voice agent
+// For the business/staff side: sent when a client or the AI voice agent
 // creates, cancels, or reschedules an appointment - the staff-initiated
 // routes (confirm/status/reschedule under /api/appointments) already email
-// the patient directly and don't need this, since staff already know what
+// the client directly and don't need this, since staff already know what
 // they just did.
 export function buildBusinessAppointmentEmail(opts: {
   businessName: string
-  patientName: string
-  patientPhone?: string | null
-  patientEmail?: string | null
+  clientName: string
+  clientPhone?: string | null
+  clientEmail?: string | null
   serviceName: string
   scheduledAt: string
   event: 'booked' | 'cancelled' | 'reschedule_requested'
@@ -17,17 +17,17 @@ export function buildBusinessAppointmentEmail(opts: {
 }) {
   const eventLabel: Record<typeof opts.event, string> = {
     booked: 'New appointment booked',
-    cancelled: 'Appointment cancelled by patient',
-    reschedule_requested: 'Reschedule requested by patient',
+    cancelled: 'Appointment cancelled by client',
+    reschedule_requested: 'Reschedule requested by client',
   }
 
   const body = `
     <p>Hello ${escapeHtml(opts.businessName)} team,</p>
     <p><strong>${escapeHtml(eventLabel[opts.event])}</strong> - here are the details.</p>
     <table style="width:100%;border-collapse:collapse;margin:20px 0;">
-      <tr><td style="padding:8px 0;color:#64748b;">Patient</td><td style="padding:8px 0;"><strong>${escapeHtml(opts.patientName)}</strong></td></tr>
-      ${opts.patientPhone ? `<tr><td style="padding:8px 0;color:#64748b;">Phone</td><td style="padding:8px 0;"><strong>${escapeHtml(opts.patientPhone)}</strong></td></tr>` : ''}
-      ${opts.patientEmail ? `<tr><td style="padding:8px 0;color:#64748b;">Email</td><td style="padding:8px 0;"><strong>${escapeHtml(opts.patientEmail)}</strong></td></tr>` : ''}
+      <tr><td style="padding:8px 0;color:#64748b;">Client</td><td style="padding:8px 0;"><strong>${escapeHtml(opts.clientName)}</strong></td></tr>
+      ${opts.clientPhone ? `<tr><td style="padding:8px 0;color:#64748b;">Phone</td><td style="padding:8px 0;"><strong>${escapeHtml(opts.clientPhone)}</strong></td></tr>` : ''}
+      ${opts.clientEmail ? `<tr><td style="padding:8px 0;color:#64748b;">Email</td><td style="padding:8px 0;"><strong>${escapeHtml(opts.clientEmail)}</strong></td></tr>` : ''}
       <tr><td style="padding:8px 0;color:#64748b;">Service</td><td style="padding:8px 0;"><strong>${escapeHtml(opts.serviceName)}</strong></td></tr>
       <tr><td style="padding:8px 0;color:#64748b;">Date and time</td><td style="padding:8px 0;"><strong>${escapeHtml(opts.scheduledAt)}</strong></td></tr>
       ${opts.reason ? `<tr><td style="padding:8px 0;color:#64748b;">Reason</td><td style="padding:8px 0;"><strong>${escapeHtml(opts.reason)}</strong></td></tr>` : ''}

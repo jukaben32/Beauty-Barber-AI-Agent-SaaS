@@ -9,14 +9,14 @@ import {
   Plus,
   Search,
   Sparkles,
-  Stethoscope,
+  Scissors,
   Trash2,
 } from 'lucide-react'
 
 import { createClient } from '@/lib/supabase/client'
 import { cn, slugify } from '@/lib/utils'
-import type { ClinicService, ServicePriceType } from '@/types'
-import { createClinicService, deleteClinicService, updateClinicService } from '@/services/services'
+import type { Service, ServicePriceType } from '@/types'
+import { createService, deleteService, updateService } from '@/services/services'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import Input from '@/components/ui/Input'
@@ -24,13 +24,13 @@ import Select from '@/components/ui/Select'
 import Toggle from '@/components/ui/Toggle'
 import Modal from '@/components/ui/Modal'
 import Toast from '@/components/ui/Toast'
-import { SectionEyebrow, SurfaceCard } from '@/components/clinic/shared'
+import { SectionEyebrow, SurfaceCard } from '@/components/dashboard/shared'
 import {
   SERVICE_CATALOG_CATEGORIES,
   SERVICE_CATALOG_TEMPLATES,
   type ServiceCatalogCategoryKey,
   type ServiceCatalogTemplate,
-} from '@/components/clinic/service-catalog'
+} from '@/components/dashboard/service-catalog'
 
 type ToastTone = 'teal' | 'emerald' | 'blue' | 'amber' | 'rose' | 'slate'
 
@@ -55,19 +55,16 @@ type ServiceFormState = {
 }
 
 const CATEGORY_ACCENTS: Record<ServiceCatalogCategoryKey, string> = {
-  'primary-preventive': '#0f766e',
-  'urgent-emergency': '#ea580c',
-  'telehealth-virtual': '#14b8a6',
-  'diagnostics-lab': '#8b5cf6',
-  'mental-health': '#db2777',
-  'womens-health': '#ec4899',
-  pediatrics: '#f59e0b',
-  dental: '#0ea5e9',
-  dermatology: '#16a34a',
-  'orthopedics-pt': '#10b981',
-  'nutrition-wellness': '#22c55e',
-  'eye-care': '#3b82f6',
-  cardiology: '#ef4444',
+  'hair-cuts-styling': '#0f766e',
+  color: '#ea580c',
+  barbering: '#0ea5e9',
+  nails: '#ec4899',
+  'skin-facial': '#16a34a',
+  'waxing-hair-removal': '#8b5cf6',
+  'spa-massage': '#14b8a6',
+  'lashes-brows': '#db2777',
+  'bridal-events': '#f59e0b',
+  treatments: '#22c55e',
 }
 
 const PRICE_MODE_OPTIONS: Array<{ value: ServicePriceMode; label: string }> = [
@@ -88,7 +85,7 @@ function formatMoney(value: number | null | undefined) {
 }
 
 function formatServicePrice(priceLike: {
-  priceType: ClinicService['priceType']
+  priceType: Service['priceType']
   price?: number | null
   priceMin?: number | null
   priceMax?: number | null
@@ -115,7 +112,7 @@ function buildServiceInstructions(name: string, description: string) {
   return `Use this service for ${base.toLowerCase()}. Confirm the reason for visit, preferred timing, and any intake details before finalizing the booking.`
 }
 
-function getServicePriceMode(service: ClinicService | null): ServicePriceMode {
+function getServicePriceMode(service: Service | null): ServicePriceMode {
   if (!service) return 'fixed'
   if (service.priceType === 'contact') return 'contact'
   if (service.priceMin != null && service.priceMax != null) return 'range'
@@ -123,7 +120,7 @@ function getServicePriceMode(service: ClinicService | null): ServicePriceMode {
   return 'fixed'
 }
 
-function createServiceSeed(service: ClinicService | null): ServiceFormState {
+function createServiceSeed(service: Service | null): ServiceFormState {
   if (!service) {
     return {
       name: '',
@@ -150,7 +147,7 @@ function createServiceSeed(service: ClinicService | null): ServiceFormState {
   }
 }
 
-function sortServices(services: ClinicService[]) {
+function sortServices(services: Service[]) {
   return [...services]
 }
 
@@ -203,7 +200,7 @@ function ServiceRow({
   onEdit,
   onDelete,
 }: {
-  service: ClinicService
+  service: Service
   onEdit: () => void
   onDelete: () => void
 }) {
@@ -220,7 +217,7 @@ function ServiceRow({
             color: accent,
           }}
         >
-          <Stethoscope className="h-4 w-4" />
+          <Scissors className="h-4 w-4" />
         </div>
 
         <div className="min-w-0 flex-1">
@@ -275,11 +272,11 @@ function ServiceFormDialog({
 }: {
   open: boolean
   mode: 'create' | 'edit'
-  service: ClinicService | null
+  service: Service | null
   businessId: string
   sortOrderBase: number
   onClose: () => void
-  onSaved: (service: ClinicService) => void
+  onSaved: (service: Service) => void
   pushToast: (toast: Omit<ManagerToast, 'id'>) => void
 }) {
   const [form, setForm] = useState<ServiceFormState>(() => createServiceSeed(service))
@@ -356,11 +353,11 @@ function ServiceFormDialog({
 
       const saved =
         mode === 'create'
-          ? await createClinicService(supabase, businessId, {
+          ? await createService(supabase, businessId, {
               ...payload,
               sortOrder: sortOrderBase,
             })
-          : await updateClinicService(supabase, businessId, service!.id, payload)
+          : await updateService(supabase, businessId, service!.id, payload)
 
       onSaved(saved)
       pushToast({
@@ -400,7 +397,7 @@ function ServiceFormDialog({
           label="Description"
           value={form.description}
           onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
-          placeholder="Brief description for patients and Clara."
+          placeholder="Brief description for clients and Clara."
         />
 
         <div className="grid gap-4 md:grid-cols-2">
@@ -451,7 +448,7 @@ function ServiceFormDialog({
           </div>
         ) : form.priceMode === 'contact' ? (
           <div className="rounded-[22px] border border-[var(--border-soft)] bg-[rgba(15,118,110,0.04)] px-4 py-3 text-sm text-[var(--text-muted)]">
-            The price will be hidden and patients will see a contact-for-price prompt.
+            The price will be hidden and clients will see a contact-for-price prompt.
           </div>
         ) : (
           <Input
@@ -531,7 +528,7 @@ function CatalogCard({
               color: accent,
             }}
           >
-            <Stethoscope className="h-4 w-4" />
+            <Scissors className="h-4 w-4" />
           </div>
           <div className="min-w-0">
             <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--text-muted)]">{categoryLabel}</div>
@@ -719,7 +716,7 @@ export function ServicesManager({
   initialServices,
   businessId,
 }: {
-  initialServices: ClinicService[]
+  initialServices: Service[]
   businessId: string
 }) {
   const [services, setServices] = useState(initialServices)
@@ -728,7 +725,7 @@ export function ServicesManager({
   const [selectedTemplateKeys, setSelectedTemplateKeys] = useState<string[]>([])
   const [dialogOpen, setDialogOpen] = useState(false)
   const [dialogMode, setDialogMode] = useState<'create' | 'edit'>('create')
-  const [dialogService, setDialogService] = useState<ClinicService | null>(null)
+  const [dialogService, setDialogService] = useState<Service | null>(null)
   const [addingSelected, setAddingSelected] = useState(false)
   const [toasts, setToasts] = useState<ManagerToast[]>([])
 
@@ -766,16 +763,16 @@ export function ServicesManager({
     setDialogOpen(true)
   }
 
-  function openEdit(service: ClinicService) {
+  function openEdit(service: Service) {
     setDialogMode('edit')
     setDialogService(service)
     setDialogOpen(true)
   }
 
-  async function handleDelete(service: ClinicService) {
+  async function handleDelete(service: Service) {
     if (!window.confirm(`Desactivar ${service.name}? Esto mantiene el servicio pero lo saca del catalogo activo.`)) return
     const supabase = createClient()
-    const updated = await deleteClinicService(supabase, businessId, service.id)
+    const updated = await deleteService(supabase, businessId, service.id)
     setServices((current) => current.map((item) => (item.id === updated.id ? updated : item)))
     setSelectedTemplateKeys((current) => current.filter((key) => key !== normalizeServiceKey(service.name)))
     pushToast({
@@ -785,7 +782,7 @@ export function ServicesManager({
     })
   }
 
-  function handleSaved(service: ClinicService) {
+  function handleSaved(service: Service) {
     setServices((current) => {
       const exists = current.some((item) => item.id === service.id)
       const next = exists ? current.map((item) => (item.id === service.id ? service : item)) : [...current, service]
@@ -830,7 +827,7 @@ export function ServicesManager({
       const baseSortOrder = services.length
       const created = await Promise.all(
         templatesToCreate.map((template, index) =>
-          createClinicService(supabase, businessId, {
+          createService(supabase, businessId, {
             name: template.name,
             description: template.description,
             durationMinutes: template.durationMinutes,

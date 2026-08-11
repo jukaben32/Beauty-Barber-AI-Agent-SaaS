@@ -2,8 +2,8 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getBusinessForUser } from '@/services/business'
 import { listConversationsForBusiness } from '@/services/conversations'
-import { listPatientsForBusiness } from '@/services/patients'
-import { ConversationsManager } from '@/components/clinic/ConversationsManager'
+import { listClientsForBusiness } from '@/services/clients'
+import { ConversationsManager } from '@/components/dashboard/ConversationsManager'
 
 export default async function ConversationsPage() {
   const supabase = await createClient()
@@ -15,15 +15,15 @@ export default async function ConversationsPage() {
   const business = await getBusinessForUser(supabase, user.id)
   if (!business) redirect('/signup')
 
-  const [conversations, patients] = await Promise.all([
+  const [conversations, clients] = await Promise.all([
     listConversationsForBusiness(supabase, business.id, 50),
-    listPatientsForBusiness(supabase, business.id),
+    listClientsForBusiness(supabase, business.id),
   ])
 
   return (
     <ConversationsManager
       initialConversations={conversations}
-      patients={patients}
+      clients={clients}
       timezone={business.timezone}
       businessName={business.name}
     />

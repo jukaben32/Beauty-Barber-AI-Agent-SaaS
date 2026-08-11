@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { CalendarClock, Loader2, Wallet, X } from 'lucide-react'
 import type { AppointmentWithRelations, AvailableSlot } from '@/types'
-import { SurfaceCard, StatusBadge } from '@/components/clinic/shared'
+import { SurfaceCard, StatusBadge } from '@/components/dashboard/shared'
 import Modal from '@/components/ui/Modal'
 import { cn, formatCurrency } from '@/lib/utils'
 import {
@@ -12,7 +12,7 @@ import {
   PAYMENT_STATUS_LABEL,
   PAYMENT_STATUS_TONE,
   formatDateTimeInTimeZone,
-} from '@/components/clinic/appointments-utils'
+} from '@/components/dashboard/appointments-utils'
 
 type ActiveModal =
   | { kind: 'cancel'; appointment: AppointmentWithRelations }

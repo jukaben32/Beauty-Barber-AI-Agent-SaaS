@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getBusinessForUser, createBusiness } from '@/services/business'
-import { DashboardChrome } from '@/components/clinic/DashboardChrome'
+import { DashboardChrome } from '@/components/dashboard/DashboardChrome'
 import { getErrorMessage } from '@/lib/utils'
 
 function ErrorScreen({ title, body, detail }: { title: string; body: string; detail: string }) {

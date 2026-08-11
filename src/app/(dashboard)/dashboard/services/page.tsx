@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getBusinessForUser } from '@/services/business'
-import { listClinicServices } from '@/services/services'
-import { ServicesManager } from '@/components/clinic/ServicesManager'
+import { listServices } from '@/services/services'
+import { ServicesManager } from '@/components/dashboard/ServicesManager'
 
 export default async function ServicesPage() {
   const supabase = await createClient()
@@ -14,7 +14,7 @@ export default async function ServicesPage() {
   const business = await getBusinessForUser(supabase, user.id)
   if (!business) redirect('/signup')
 
-  const services = await listClinicServices(supabase, business.id)
+  const services = await listServices(supabase, business.id)
 
   return <ServicesManager initialServices={services} businessId={business.id} />
 }

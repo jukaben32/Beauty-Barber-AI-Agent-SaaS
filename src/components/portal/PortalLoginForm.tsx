@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { ArrowLeft, Loader2, MailCheck } from 'lucide-react'
-import { SectionEyebrow } from '@/components/clinic/shared'
+import { SectionEyebrow } from '@/components/dashboard/shared'
 
 const PORTAL_BASE = 'http://localhost'
 const PORTAL_SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
@@ -179,7 +179,7 @@ export function PortalLoginForm() {
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            placeholder="patient@email.com"
+            placeholder="client@email.com"
             className="input-field"
             autoComplete="email"
             required

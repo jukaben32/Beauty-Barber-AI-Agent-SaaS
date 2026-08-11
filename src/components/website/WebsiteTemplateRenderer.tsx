@@ -9,7 +9,7 @@ import {
   ChevronDown,
   Clock3,
   FileText,
-  HeartPulse,
+  Sparkles,
   Home,
   Key,
   Loader2,
@@ -18,7 +18,7 @@ import {
   Phone,
   Send,
   Star,
-  Stethoscope,
+  Scissors,
   UsersRound,
   ClipboardList,
   TrendingUp,
@@ -26,7 +26,7 @@ import {
 import type { ReactNode } from 'react'
 
 import type { WebsiteContent } from '@/types'
-import { SurfaceCard } from '@/components/clinic/shared'
+import { SurfaceCard } from '@/components/dashboard/shared'
 import { configuredSocialLinks } from './socialLinks'
 
 const TEMPLATE_STYLES: Record<
@@ -75,9 +75,9 @@ const FONT_LINKS: Record<string, string> = {
 
 const DEFAULT_HIGHLIGHTS = [
   'Same-week appointments',
-  'Telehealth available',
-  'Insurance-friendly care',
-  'Compassionate follow-up',
+  'Online booking available',
+  'Skilled, licensed stylists',
+  'Friendly, welcoming atmosphere',
 ]
 
 const SERVICE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -225,7 +225,7 @@ export function WebsiteTemplateRenderer({
                 className="grid h-10 w-10 place-items-center rounded-2xl text-white shadow-lg"
                 style={{ background: `linear-gradient(135deg, ${website.primaryColor}, ${website.secondaryColor})` }}
               >
-                <HeartPulse className="h-5 w-5" />
+                <Sparkles className="h-5 w-5" />
               </span>
             )}
             <div>
@@ -271,7 +271,7 @@ export function WebsiteTemplateRenderer({
                 style={{ borderColor: style.border, color: website.primaryColor, backgroundColor: style.cardBg }}
               >
                 <SparkleBadge />
-                Modern patient experience
+                Modern client experience
               </span>
               <h1 className="mt-6 max-w-3xl text-4xl font-black tracking-[-0.06em] sm:text-5xl xl:text-6xl">
                 {heroTitle}
@@ -300,7 +300,7 @@ export function WebsiteTemplateRenderer({
 
               <div className="mt-10 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 <StatCard label="Years experience" value={String(website.yearsExperience ?? 0)} accent={website.primaryColor} />
-                <StatCard label="Patients served" value={String(website.patientsServed ?? 0)} accent={website.primaryColor} />
+                <StatCard label="Clients served" value={String(website.clientsServed ?? 0)} accent={website.primaryColor} />
                 <StatCard
                   label="Satisfaction"
                   value={website.satisfactionPct != null ? `${Math.round(website.satisfactionPct)}%` : '—'}
@@ -340,7 +340,7 @@ export function WebsiteTemplateRenderer({
                         <img src={website.heroImageUrl} alt="" className="h-full w-full rounded-[20px] object-cover" />
                       ) : isEditorPreview ? (
                         <div>
-                          <Stethoscope className="mx-auto h-10 w-10 opacity-40" />
+                          <Scissors className="mx-auto h-10 w-10 opacity-40" />
                           <p className="mt-3 text-sm" style={{ color: style.subtext }}>
                             Upload a hero image in the editor
                           </p>
@@ -370,8 +370,8 @@ export function WebsiteTemplateRenderer({
           <SectionBlock id="services">
             <SectionTitle
               eyebrow="Services"
-              title="How we help patients"
-              description="The same clean, high-trust layout the reference uses, but tailored to clinical care and patient booking."
+              title="How we help clients"
+              description="The same clean, high-trust layout the reference uses, but tailored to clinical care and client booking."
             />
             <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {services.map((service) => {
@@ -492,7 +492,7 @@ export function WebsiteTemplateRenderer({
           <SectionBlock bg={style.cardBg}>
             <SectionTitle
               eyebrow="Testimonials"
-              title="What patients say"
+              title="What clients say"
               description="Short quotes and ratings add trust, just like in the reference design."
               center
             />

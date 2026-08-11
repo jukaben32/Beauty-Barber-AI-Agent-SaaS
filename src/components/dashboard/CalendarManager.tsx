@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react'
 import { X } from 'lucide-react'
 import type { AppointmentStatus, AppointmentWithRelations } from '@/types'
-import { SurfaceCard, StatusBadge } from '@/components/clinic/shared'
+import { SurfaceCard, StatusBadge } from '@/components/dashboard/shared'
 import { cn } from '@/lib/utils'
 
 const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
@@ -144,7 +144,7 @@ export function CalendarManager({
                           className="block w-full truncate border px-1.5 py-1 text-left text-[11px] font-semibold"
                           style={{ borderColor: 'var(--brand)', background: 'var(--brand-soft)', color: 'var(--brand-strong)' }}
                         >
-                          {formatTime(appt.scheduledAt, timezone)} · {appt.patient?.name ?? 'Unknown'}
+                          {formatTime(appt.scheduledAt, timezone)} · {appt.client?.name ?? 'Unknown'}
                         </button>
                       ))}
                     </div>
@@ -165,7 +165,7 @@ export function CalendarManager({
                 onClick={() => setSelectedId(appt.id)}
                 className="flex w-full items-center justify-between gap-3 border border-[var(--border-soft)] px-4 py-2.5 text-left text-sm"
               >
-                <span className="font-semibold text-[var(--text-strong)]">{appt.patient?.name ?? 'Unknown'} · {appt.service?.name ?? ''}</span>
+                <span className="font-semibold text-[var(--text-strong)]">{appt.client?.name ?? 'Unknown'} · {appt.service?.name ?? ''}</span>
                 <span className="text-[var(--text-muted)]">{formatDate(appt.scheduledAt, timezone)}, {formatTime(appt.scheduledAt, timezone)}</span>
               </button>
             ))}
@@ -197,7 +197,7 @@ export function CalendarManager({
               </button>
             </div>
             <div className="space-y-3 p-5">
-              <div className="flex items-center justify-between text-sm"><span className="text-[var(--text-muted)]">Patient</span><strong className="text-[var(--text-strong)]">{selected.patient?.name ?? 'Unknown'}</strong></div>
+              <div className="flex items-center justify-between text-sm"><span className="text-[var(--text-muted)]">Client</span><strong className="text-[var(--text-strong)]">{selected.client?.name ?? 'Unknown'}</strong></div>
               <div className="flex items-center justify-between text-sm"><span className="text-[var(--text-muted)]">Service</span><strong className="text-[var(--text-strong)]">{selected.service?.name ?? '—'}</strong></div>
               <div className="flex items-center justify-between text-sm"><span className="text-[var(--text-muted)]">Status</span><StatusBadge tone={STATUS_TONE[selected.status]}>{STATUS_LABEL[selected.status]}</StatusBadge></div>
               <div className="mt-2 grid grid-cols-2 gap-2">

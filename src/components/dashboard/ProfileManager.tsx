@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { SectionEyebrow, SurfaceCard } from '@/components/clinic/shared'
+import { SectionEyebrow, SurfaceCard } from '@/components/dashboard/shared'
 
 const ROLE_LABEL: Record<string, string> = {
   owner: 'Owner',

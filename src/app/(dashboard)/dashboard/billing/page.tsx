@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getBusinessForUser, getSubscription } from '@/services/business'
 import { getPaymentConfigForBusiness, listBillingTransactions, getBillingSummary } from '@/services/billing'
-import { BillingManager } from '@/components/clinic/BillingManager'
+import { BillingManager } from '@/components/dashboard/BillingManager'
 
 export default async function BillingPage() {
   const supabase = await createClient()

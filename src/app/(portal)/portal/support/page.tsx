@@ -6,12 +6,12 @@ import { PortalTopBar } from '@/components/portal/PortalTopBar'
 import { PortalSupportManager } from '@/components/portal/PortalSupportManager'
 
 export default async function Page() {
-  const { user, patient, business } = await getPortalContext()
+  const { user, client, business } = await getPortalContext()
   if (!user) redirect('/portal/login')
-  if (!patient || !business) redirect('/portal/register')
+  if (!client || !business) redirect('/portal/register')
 
   const admin = createAdminClient()
-  const tickets = await listSupportTickets(admin, patient.businessId, { patientId: patient.id })
+  const tickets = await listSupportTickets(admin, client.businessId, { clientId: client.id })
 
   return (
     <>

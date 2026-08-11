@@ -31,12 +31,12 @@ export async function POST(request: Request) {
 
   const appointment = await rescheduleAppointment(supabase, business.id, parsed.data.appointmentId, parsed.data.scheduledAt)
 
-  if (appointment.patient?.email) {
+  if (appointment.client?.email) {
     await sendEmail({
-      to: appointment.patient.email,
+      to: appointment.client.email,
       subject: `Appointment rescheduled - ${business.name}`,
       html: buildAppointmentStatusEmail({
-        patientName: appointment.patient.name,
+        clientName: appointment.client.name,
         businessName: business.name,
         serviceName: appointment.service?.name || 'Appointment',
         scheduledAt: new Date(appointment.scheduledAt).toLocaleString('en-US'),

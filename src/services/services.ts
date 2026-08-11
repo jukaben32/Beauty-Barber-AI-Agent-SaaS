@@ -1,7 +1,7 @@
-import type { ClinicService } from '@/types'
+import type { Service } from '@/types'
 import type { DbClient } from './_shared'
 
-export function toService(row: any): ClinicService {
+export function toService(row: any): Service {
   return {
     id: row.id,
     businessId: row.business_id,
@@ -21,9 +21,9 @@ export function toService(row: any): ClinicService {
   }
 }
 
-export async function listClinicServices(supabase: DbClient, businessId: string) {
+export async function listServices(supabase: DbClient, businessId: string) {
   const { data, error } = await supabase
-    .from('clinic_services')
+    .from('services')
     .select('*')
     .eq('business_id', businessId)
     .order('sort_order', { ascending: true })
@@ -32,9 +32,9 @@ export async function listClinicServices(supabase: DbClient, businessId: string)
   return (data ?? []).map(toService)
 }
 
-export async function listActiveClinicServices(supabase: DbClient, businessId: string) {
+export async function listActiveServices(supabase: DbClient, businessId: string) {
   const { data, error } = await supabase
-    .from('clinic_services')
+    .from('services')
     .select('*')
     .eq('business_id', businessId)
     .eq('active', true)
@@ -44,20 +44,20 @@ export async function listActiveClinicServices(supabase: DbClient, businessId: s
   return (data ?? []).map(toService)
 }
 
-export async function getClinicServiceById(supabase: DbClient, businessId: string, serviceId: string) {
-  const { data, error } = await supabase.from('clinic_services').select('*').eq('business_id', businessId).eq('id', serviceId).maybeSingle()
+export async function getServiceById(supabase: DbClient, businessId: string, serviceId: string) {
+  const { data, error } = await supabase.from('services').select('*').eq('business_id', businessId).eq('id', serviceId).maybeSingle()
   if (error) throw error
   return data ? toService(data) : null
 }
 
-export async function createClinicService(
+export async function createService(
   supabase: DbClient,
   businessId: string,
   input: {
     name: string
     description?: string | null
     durationMinutes?: number
-    priceType?: ClinicService['priceType']
+    priceType?: Service['priceType']
     price?: number | null
     priceMin?: number | null
     priceMax?: number | null
@@ -69,7 +69,7 @@ export async function createClinicService(
   }
 ) {
   const { data, error } = await supabase
-    .from('clinic_services')
+    .from('services')
     .insert({
       business_id: businessId,
       name: input.name,
@@ -91,9 +91,9 @@ export async function createClinicService(
   return toService(data)
 }
 
-export async function updateClinicService(supabase: DbClient, businessId: string, serviceId: string, patch: Partial<ClinicService>) {
+export async function updateService(supabase: DbClient, businessId: string, serviceId: string, patch: Partial<Service>) {
   const { data, error } = await supabase
-    .from('clinic_services')
+    .from('services')
     .update({
       name: patch.name,
       description: patch.description,
@@ -115,10 +115,10 @@ export async function updateClinicService(supabase: DbClient, businessId: string
   return toService(data)
 }
 
-export async function setClinicServiceActive(supabase: DbClient, businessId: string, serviceId: string, active: boolean) {
-  return updateClinicService(supabase, businessId, serviceId, { active })
+export async function setServiceActive(supabase: DbClient, businessId: string, serviceId: string, active: boolean) {
+  return updateService(supabase, businessId, serviceId, { active })
 }
 
-export async function deleteClinicService(supabase: DbClient, businessId: string, serviceId: string) {
-  return setClinicServiceActive(supabase, businessId, serviceId, false)
+export async function deleteService(supabase: DbClient, businessId: string, serviceId: string) {
+  return setServiceActive(supabase, businessId, serviceId, false)
 }

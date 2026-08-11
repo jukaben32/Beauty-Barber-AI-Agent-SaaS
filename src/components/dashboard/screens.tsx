@@ -7,7 +7,7 @@ import {
   ClipboardList,
   CreditCard,
   Database,
-  HeartPulse,
+  Sparkles,
   LayoutDashboard,
   LifeBuoy,
   LineChart,
@@ -15,8 +15,7 @@ import {
   Mic,
   NotebookText,
   ShieldCheck,
-  Sparkles,
-  Stethoscope,
+  Scissors,
   Users,
   Wallet,
   Wrench,
@@ -78,7 +77,7 @@ const features = [
   {
     icon: Bot,
     title: 'AI Booking Assistant',
-    body: 'Clara answers patients naturally, books visits, collects details, and hands off to staff when needed.',
+    body: 'Clara answers clients naturally, books visits, collects details, and hands off to staff when needed.',
     tone: 'teal' as const,
   },
   {
@@ -89,8 +88,8 @@ const features = [
   },
   {
     icon: NotebookText,
-    title: 'Patient CRM',
-    body: 'Keep patient history, notes, booking context, reminders, and portal access in one place.',
+    title: 'Client CRM',
+    body: 'Keep client history, notes, booking context, reminders, and portal access in one place.',
     tone: 'emerald' as const,
   },
   {
@@ -141,12 +140,12 @@ const testimonials = [
     role: 'Family Practice',
   },
   {
-    quote: 'The widget feels natural for patients and the dashboard gives us exactly the operational clarity we wanted for a modern clinic.',
+    quote: 'The widget feels natural for clients and the dashboard gives us exactly the operational clarity we wanted for a modern clinic.',
     author: 'Dr. James Park',
     role: 'Cardiology',
   },
   {
-    quote: 'Setup was fast, the calendar is easy to manage, and the portal gives patients the self-service experience we were missing.',
+    quote: 'Setup was fast, the calendar is easy to manage, and the portal gives clients the self-service experience we were missing.',
     author: 'Dr. Maria Santos',
     role: 'Dermatology',
   },
@@ -170,7 +169,7 @@ const widgetSteps = [
   },
   {
     title: 'Add your details',
-    detail: 'Patients enter their name, phone, and optional email in the conversation.',
+    detail: 'Clients enter their name, phone, and optional email in the conversation.',
   },
   {
     title: 'Confirm booking',
@@ -198,7 +197,7 @@ const marketingFaqs = [
     a: 'Yes. Every location gets its own calendar, services, and dashboard, with row-level isolation between clinics.',
   },
   {
-    q: 'How is patient data protected?',
+    q: 'How is client data protected?',
     a: 'Encryption in transit and at rest, scoped role-based access, and audit-friendly records aligned with HIPAA-ready practices.',
   },
   {
@@ -211,7 +210,7 @@ function heroPreview() {
   return (
     <div className="relative">
       <div className="plate-corners relative rounded-[34px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(246,239,230,0.9))] shadow-[0_28px_90px_-56px_rgba(15,33,41,0.48)]">
-        <BrowserFrame title="Clinic dashboard" subtitle="Live bookings, schedules, and patient operations">
+        <BrowserFrame title="Clinic dashboard" subtitle="Live bookings, schedules, and client operations">
           <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
             <SurfaceCard className="p-5">
               <div className="flex items-center justify-between gap-3">
@@ -249,7 +248,7 @@ function heroPreview() {
       <div className="absolute -bottom-6 -left-6 hidden w-[220px] rounded-[24px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.94),rgba(236,248,245,0.96))] p-4 shadow-[0_24px_70px_-48px_rgba(15,33,41,0.45)] sm:block">
         <div className="font-display text-[10px] font-semibold uppercase tracking-[0.22em]" style={{ color: 'var(--brand)' }}>Live</div>
         <div className="mt-1 font-display text-2xl font-semibold tracking-[-0.04em] text-[var(--text-strong)]">12,400+</div>
-        <div className="text-xs text-[var(--text-muted)]">patients managed this month</div>
+        <div className="text-xs text-[var(--text-muted)]">clients managed this month</div>
       </div>
     </div>
   )
@@ -294,8 +293,8 @@ export function MarketingHomeScreen() {
               Every clinic gets an AI front desk that never misses the call.
             </h1>
             <p className="mt-6 max-w-lg text-lg leading-8 text-[var(--text-muted)]">
-              Clara AI centralizes appointments, patients, billing, and a voice agent in one dashboard —
-              so your front desk does less and your patients wait less.
+              Clara AI centralizes appointments, clients, billing, and a voice agent in one dashboard —
+              so your front desk does less and your clients wait less.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <ButtonLink href="/signup" icon="calendar">
@@ -332,7 +331,7 @@ export function MarketingHomeScreen() {
             {[
               { value: '67%', label: 'appointment completion rate', detail: 'The booking flow is guided end to end.' },
               { value: '-33%', label: 'no-shows after AI reminders', detail: 'Follow-ups happen before the visit slips.' },
-              { value: '13', label: 'average active patients per clinic', detail: 'Enough volume to feel the impact quickly.' },
+              { value: '13', label: 'average active clients per clinic', detail: 'Enough volume to feel the impact quickly.' },
               { value: '6 min', label: 'average time to activate a service', detail: 'Fast setup for new clinics and service lines.' },
             ].map((stat) => (
               <SurfaceCard key={stat.label} className="p-5">
@@ -351,7 +350,7 @@ export function MarketingHomeScreen() {
               Everything a modern clinic needs, on one dashboard
             </h2>
             <p className="mt-3 text-[var(--text-muted)]">
-              Six connected modules: what the voice agent books shows up instantly in the calendar, patient records, and billing.
+              Six connected modules: what the voice agent books shows up instantly in the calendar, client records, and billing.
             </p>
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -376,7 +375,7 @@ export function MarketingHomeScreen() {
                     </div>
                     <StatusBadge tone="teal">24/7</StatusBadge>
                   </div>
-                  <PhoneFrame title="Clara AI" subtitle="Patient intake live">
+                  <PhoneFrame title="Clara AI" subtitle="Client intake live">
                     <div className="space-y-3">
                       <div className="rounded-[20px] bg-[var(--brand-soft)] px-4 py-3 text-sm leading-6 text-[var(--brand-strong)]">
                         Hello, I can help you schedule a visit, check availability, or route you to the right person.
@@ -443,14 +442,14 @@ export function MarketingHomeScreen() {
         <section id="portal" className="border-y border-[var(--border-soft)]" style={{ background: 'var(--panel-soft)' }}>
           <div className="mx-auto w-full max-w-7xl px-6 py-24 lg:px-8">
             <div className="max-w-xl">
-              <SectionEyebrow>Patient portal &amp; widget</SectionEyebrow>
+              <SectionEyebrow>Client portal &amp; widget</SectionEyebrow>
               <h2 className="mt-4 font-display text-4xl font-bold tracking-tight text-[var(--text-strong)]">
                 Self-service booking, payments, and support
               </h2>
             </div>
             <div className="mt-10 grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
               <SurfaceCard className="p-6">
-                <SectionEyebrow>Patient portal</SectionEyebrow>
+                <SectionEyebrow>Client portal</SectionEyebrow>
                 <h3 className="mt-3 font-display text-2xl font-bold tracking-tight text-[var(--text-strong)]">
                   Reschedule, cancel, and pay without calling the front desk
                 </h3>
@@ -464,7 +463,7 @@ export function MarketingHomeScreen() {
                   <div>
                     <SectionEyebrow>Widget preview</SectionEyebrow>
                     <h3 className="mt-3 font-display text-2xl font-bold tracking-tight text-[var(--text-strong)]">
-                      A booking experience patients will actually use
+                      A booking experience clients will actually use
                     </h3>
                   </div>
                   <StatusBadge tone="teal">Live</StatusBadge>
@@ -515,7 +514,7 @@ export function MarketingHomeScreen() {
             <SectionHeading
               eyebrow={<SectionEyebrow>Pricing</SectionEyebrow>}
               title="Clear plans for clinics at every stage"
-              description="The first phase focuses on the widget, clinic dashboard, patient portal, and USDC billing. Stripe can be added later if you want it."
+              description="The first phase focuses on the widget, clinic dashboard, client portal, and USDC billing. Stripe can be added later if you want it."
               align="center"
             />
             <div className="mt-10 grid gap-px border border-[var(--border-soft)] bg-[var(--border-soft)] lg:grid-cols-4">
@@ -604,7 +603,7 @@ export function MarketingHomeScreen() {
           <div>
             <BrandMark compact />
             <p className="mt-3.5 max-w-[240px] text-[13px] leading-6 text-[var(--text-muted)]">
-              Calendar, patients, billing, and an AI voice agent — one dashboard for your clinic network.
+              Calendar, clients, billing, and an AI voice agent — one dashboard for your clinic network.
             </p>
           </div>
           <div>
@@ -618,7 +617,7 @@ export function MarketingHomeScreen() {
           <div>
             <div className="font-display text-xs font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">Company</div>
             <div className="mt-3.5 flex flex-col gap-2.5 text-sm">
-              <a href="#portal" className="hover:text-[var(--brand-strong)]">Patient portal</a>
+              <a href="#portal" className="hover:text-[var(--brand-strong)]">Client portal</a>
               <a href="#faq" className="hover:text-[var(--brand-strong)]">FAQ</a>
               <a href="/login" className="hover:text-[var(--brand-strong)]">Sign in</a>
             </div>
@@ -641,10 +640,10 @@ export function MarketingHomeScreen() {
 
 // DashboardOverviewScreen was removed from here — this was the single
 // biggest source of confusion in the whole app: "Dr. Harrington", "Sunday,
-// April 26, 2026", and the patient names in dashboardStats/dashboardSchedule
+// April 26, 2026", and the client names in dashboardStats/dashboardSchedule
 // (Dault Hussain, Md Shair...) looked convincing enough that they were
 // mistaken for real data during testing (Juan/Hermes both flagged this). A
-// real version now lives in src/components/clinic/DashboardOverviewManager.tsx:
+// real version now lives in src/components/dashboard/DashboardOverviewManager.tsx:
 // real greeting/date, real today's schedule and upcoming list
 // (listAppointmentsForBusiness), real stats (getDashboardAnalytics), real
 // live agent + knowledge doc counts, and real revenue (getBillingSummary).
@@ -652,23 +651,23 @@ export function MarketingHomeScreen() {
 // DashboardAppointmentsScreen was removed from here — same story: hardcoded
 // rows (Md Tajuddin, Shakib, Amit, Dault Hussain), status filter pills with
 // no onClick, action buttons that were links back to this same page. A real
-// version now lives in src/components/clinic/AppointmentsManager.tsx, wired
+// version now lives in src/components/dashboard/AppointmentsManager.tsx, wired
 // to services/appointments.ts (listAppointmentsForBusiness) and the already-
-// working POST /api/appointments/status route (which also sends the patient
+// working POST /api/appointments/status route (which also sends the client
 // email + creates the in-app notification — reusing it instead of calling
 // updateAppointmentStatus directly keeps that behavior).
 
 // DashboardWidgetScreen was removed from here — colors/tone/slot duration
 // were plain display values (not inputs) and the embed snippet pointed at
 // a hardcoded iframe src. A real version now lives in
-// src/components/clinic/WidgetManager.tsx, wired to services/widgets.ts
+// src/components/dashboard/WidgetManager.tsx, wired to services/widgets.ts
 // (getWidgetForBusiness/updateWidget) and the real /api/widget-script
 // embed route.
 
 // DashboardWebsiteScreen was removed from here — it was a static preview
 // mockup with fake copy ("Heart Care You Can Trust") and no connection to
 // the real websites table. A real, functional editor now lives in
-// src/components/clinic/WebsiteEditor.tsx, wired to the already-working
+// src/components/dashboard/WebsiteEditor.tsx, wired to the already-working
 // /api/website/save, /publish, and /upload-image routes.
 
 // DashboardServicesScreen was removed from here — same story as the other
@@ -676,23 +675,23 @@ export function MarketingHomeScreen() {
 // `const services = [...]` above), the "Quick create panel" fields were
 // plain <div>s (not <input>s), and "Create service" was a link to this same
 // page, not a submit handler. A real version now lives in
-// src/components/clinic/ServicesManager.tsx, wired directly to
-// services/services.ts's createClinicService/deleteClinicService/
-// setClinicServiceActive via the browser Supabase client (RLS-protected,
+// src/components/dashboard/ServicesManager.tsx, wired directly to
+// services/services.ts's createService/deleteService/
+// setServiceActive via the browser Supabase client (RLS-protected,
 // no dedicated API route needed for this one).
 
-// DashboardPatientsScreen was removed from here — same story: hardcoded
-// visitor list (Md Tajuddin, Shakib, Amit, "Just Funny"), "Add patient"
-// linked back to this same page, patient profile stats (13 appointments,
+// DashboardClientsScreen was removed from here — same story: hardcoded
+// visitor list (Md Tajuddin, Shakib, Amit, "Just Funny"), "Add client"
+// linked back to this same page, client profile stats (13 appointments,
 // "Dault Hussain") baked in as literal strings. A real version now lives in
-// src/components/clinic/PatientsManager.tsx, backed by services/patients.ts
-// (listPatientsForBusiness/createPatient) and the appointments already
-// loaded for this business to compute each patient's real visit stats.
+// src/components/dashboard/ClientsManager.tsx, backed by services/clients.ts
+// (listClientsForBusiness/createClient) and the appointments already
+// loaded for this business to compute each client's real visit stats.
 
 // DashboardSettingsScreen was removed from here — hours/breaks were plain
 // text (not inputs), "Save" and "Block date" were links back to this same
 // page, and "0 blocked" was a fixed literal. A real version now lives in
-// src/components/clinic/SettingsManager.tsx, wired to services/business.ts
+// src/components/dashboard/SettingsManager.tsx, wired to services/business.ts
 // (updateBusiness, getBusinessAvailability/upsertBusinessAvailability,
 // getClosedDates/addClosedDate/removeClosedDate — all already existed).
 // Fixed a real bug along the way: upsertBusinessAvailability/addClosedDate
@@ -701,7 +700,7 @@ export function MarketingHomeScreen() {
 
 // DashboardSupportScreen was removed from here — 3 hardcoded tickets and a
 // static "reschedule" thread with a composer that didn't submit anywhere.
-// A real version now lives in src/components/clinic/SupportManager.tsx,
+// A real version now lives in src/components/dashboard/SupportManager.tsx,
 // wired to services/support.ts (already existed: tickets + messages +
 // status) — replies actually post to support_messages and status buttons
 // call updateSupportTicketStatus.
@@ -710,14 +709,14 @@ export function MarketingHomeScreen() {
 // notifications plus a "Read and action statuses" panel with invented
 // delivery percentages (86% email delivery, 72% widget pings, none of it
 // backed by real data). A real version now lives in
-// src/components/clinic/NotificationsManager.tsx, wired to
+// src/components/dashboard/NotificationsManager.tsx, wired to
 // services/notifications.ts (already existed): a real activity feed with
 // mark-as-read / mark-all-read against the notifications table.
 
 // DashboardAnalyticsScreen was removed from here — every metric (67%
 // conversion, 33% no-show, the 7-day bar chart values, "$8.2k" revenue)
 // was a fixed literal. A real version now lives in
-// src/components/clinic/AnalyticsManager.tsx: conversion/no-show/
+// src/components/dashboard/AnalyticsManager.tsx: conversion/no-show/
 // completion computed from real appointments and conversations
 // (getDashboardAnalytics, listConversationsForBusiness — already
 // existed), revenue from getBillingSummary, and the weekly bar chart from
@@ -726,30 +725,30 @@ export function MarketingHomeScreen() {
 // DashboardBillingScreen was removed from here — plan cards and the
 // transaction list were both hardcoded literals (no plan was ever really
 // "Active", the tx hashes were fake). A real version now lives in
-// src/components/clinic/BillingManager.tsx, reading the real subscription
+// src/components/dashboard/BillingManager.tsx, reading the real subscription
 // (services/business.ts getSubscription), payment wallet config, and
 // billing_transactions history (services/billing.ts, already existed).
 
 // PortalHomeScreen was removed from here — "Welcome back, Dault Hussain",
 // a fixed "Apr 28, 2026" appointment and 3 fake "Messages" were all
 // literals. A real version now lives in
-// src/components/portal/PortalHomeManager.tsx, fed by real patient +
-// appointment data (services/patients.ts getPortalPatientForAuthUser,
-// services/appointments.ts getPatientAppointmentsForPortal) from
+// src/components/portal/PortalHomeManager.tsx, fed by real client +
+// appointment data (services/clients.ts getPortalClientForAuthUser,
+// services/appointments.ts getClientAppointmentsForPortal) from
 // src/app/(portal)/portal/page.tsx.
 
 // PortalRegisterScreen was removed from here — the "inputs" were static
 // divs with placeholder text, and the submit button just linked to
 // /portal without creating anything. A real version now lives in
 // src/components/portal/PortalRegisterForm.tsx, which posts to
-// /api/portal/check-email (pre-creates the patient record, then sends a
+// /api/portal/check-email (pre-creates the client record, then sends a
 // magic link).
 
 // PortalAppointmentsScreen was removed from here — the "Reschedule" and
 // "Cancel" buttons were ButtonLinks back to the same page, no-ops. A real
 // version now lives in src/components/portal/PortalAppointmentsManager.tsx,
 // wired to the new /api/portal/appointments/[id]/cancel, /reschedule and
-// /slots routes (patients have no direct RLS write access to appointments,
+// /slots routes (clients have no direct RLS write access to appointments,
 // so those routes run on the admin client after verifying ownership).
 
 export function PortalLoginScreen() {
@@ -760,7 +759,7 @@ export function PortalLoginScreen() {
         <div className="relative">
           <BrandMark />
           <h1 className="mt-10 max-w-xl text-5xl font-black tracking-tight sm:text-6xl">
-            The patient portal that feels like concierge care
+            The client portal that feels like concierge care
           </h1>
           <p className="mt-5 max-w-lg text-base leading-8 text-white/76">
             Access appointments, book a visit, and manage support requests with a secure magic-link or OTP flow.
@@ -768,7 +767,7 @@ export function PortalLoginScreen() {
           <div className="mt-8 space-y-3">
             <div className="rounded-[24px] border border-white/10 bg-white/6 px-5 py-4">
               <div className="text-sm font-bold">Magic link login</div>
-              <div className="text-xs text-white/70">Send a one-time login link to the patient email.</div>
+              <div className="text-xs text-white/70">Send a one-time login link to the client email.</div>
             </div>
             <div className="rounded-[24px] border border-white/10 bg-white/6 px-5 py-4">
               <div className="text-sm font-bold">OTP fallback</div>
@@ -799,7 +798,7 @@ export function PortalLoginScreen() {
 // was two hardcoded chat bubbles. A real version now lives in
 // src/components/portal/PortalSupportManager.tsx, wired to
 // /api/portal/support (create/list tickets) and
-// /api/portal/support/[id]/messages (thread + reply) — patients have no
+// /api/portal/support/[id]/messages (thread + reply) — clients have no
 // RLS write access to support_tickets/support_messages, so those routes
 // run on the admin client after verifying ticket ownership.
 
@@ -820,7 +819,7 @@ export function WidgetDemoScreen() {
                 <span className="block text-rose-300">You Can Trust</span>
               </h2>
               <p className="mt-4 max-w-lg text-sm leading-7 text-white/74">
-                Patients can book directly from the website while Clara captures the booking, reminders, and payment status.
+                Clients can book directly from the website while Clara captures the booking, reminders, and payment status.
               </p>
             </SurfaceCard>
             <PhoneFrame title="Clara AI" subtitle="AI Assistant Online" accent="rose">
@@ -868,7 +867,7 @@ export function SiteSlugScreen({ slug }: { slug: string }) {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6 lg:px-8">
           <div className="flex items-center gap-3">
             <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-rose-500 to-rose-600 text-white">
-              <HeartPulse className="h-5 w-5" />
+              <Sparkles className="h-5 w-5" />
             </div>
             <div>
               <div className="text-sm font-black tracking-tight">Dr. Jonathan M. Harrington</div>
@@ -876,7 +875,7 @@ export function SiteSlugScreen({ slug }: { slug: string }) {
             </div>
           </div>
           <nav className="hidden gap-8 text-sm font-semibold text-white/74 lg:flex">
-            {['Home', 'About', 'Services', 'Patient Info', 'Testimonials', 'Contact'].map((item) => (
+            {['Home', 'About', 'Services', 'Client Info', 'Testimonials', 'Contact'].map((item) => (
               <a key={item} href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} className="transition hover:text-white">
                 {item}
               </a>
@@ -896,14 +895,14 @@ export function SiteSlugScreen({ slug }: { slug: string }) {
               You Can Trust
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-8 text-white/74">
-              The {slug} clinic website blends premium branding, strong patient trust signals, and the Clara booking assistant.
+              The {slug} clinic website blends premium branding, strong client trust signals, and the Clara booking assistant.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <ButtonLink href="/widget-demo" icon="calendar">
                 Schedule consultation
               </ButtonLink>
               <ButtonLink href="/portal" variant="secondary" icon="arrow">
-                Patient portal
+                Client portal
               </ButtonLink>
             </div>
           </div>
@@ -918,8 +917,8 @@ export function SiteSlugScreen({ slug }: { slug: string }) {
                 <StatusBadge tone="rose">Top Doctor 2022-2024</StatusBadge>
               </div>
               <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                <ValueCard label="Years" value="20+" icon={HeartPulse} tone="rose" />
-                <ValueCard label="Patients" value="12,000+" icon={Users} tone="blue" />
+                <ValueCard label="Years" value="20+" icon={Sparkles} tone="rose" />
+                <ValueCard label="Clients" value="12,000+" icon={Users} tone="blue" />
                 <ValueCard label="Success" value="98.6%" icon={CheckCircle2} tone="emerald" />
               </div>
             </SurfaceCard>
@@ -1001,7 +1000,7 @@ export function SiteSlugScreen({ slug }: { slug: string }) {
             return (
               <div className="grid gap-4 lg:grid-cols-3">
                 {services.map((item) => (
-                  <FeatureCard key={item.title} icon={HeartPulse} title={item.title} body={item.body} tone={item.tone} />
+                  <FeatureCard key={item.title} icon={Sparkles} title={item.title} body={item.body} tone={item.tone} />
                 ))}
               </div>
             )
@@ -1027,7 +1026,7 @@ export function SiteSlugScreen({ slug }: { slug: string }) {
               <div className="inline-flex rounded-full bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em]">14-day free trial - no credit card</div>
               <h2 className="mt-5 text-4xl font-black tracking-tight sm:text-5xl">Ready to transform your practice?</h2>
               <p className="mt-4 max-w-2xl text-base leading-8 text-white/80">
-                Embed the widget, launch the portal, and give patients a clean digital front door without rebuilding the whole site.
+                Embed the widget, launch the portal, and give clients a clean digital front door without rebuilding the whole site.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">

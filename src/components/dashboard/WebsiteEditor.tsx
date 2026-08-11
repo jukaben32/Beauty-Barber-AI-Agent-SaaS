@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { Globe2, UploadCloud, ExternalLink, Save, Rocket, EyeOff } from 'lucide-react'
-import type { AiAgent, ClinicService, Website } from '@/types'
-import { SectionEyebrow, SurfaceCard, StatusBadge } from '@/components/clinic/shared'
+import type { AiAgent, Service, Website } from '@/types'
+import { SectionEyebrow, SurfaceCard, StatusBadge } from '@/components/dashboard/shared'
 
 const TEMPLATES = [
   { id: 'serenity', name: 'Serenity', tagline: 'Soft gradients, calm hero, strong booking CTA' },
@@ -35,7 +35,7 @@ type FormState = {
   contactAddress: string
   contactHours: string
   yearsExperience: string
-  patientsServed: string
+  clientsServed: string
   satisfactionPct: string
   trustBadgesText: string
 }
@@ -65,7 +65,7 @@ function toForm(w: Website): FormState {
     contactAddress: w.contactAddress ?? '',
     contactHours: w.contactHours ?? '',
     yearsExperience: w.yearsExperience?.toString() ?? '',
-    patientsServed: w.patientsServed?.toString() ?? '',
+    clientsServed: w.clientsServed?.toString() ?? '',
     satisfactionPct: w.satisfactionPct?.toString() ?? '',
     trustBadgesText: w.trustBadges.join('\n'),
   }
@@ -87,7 +87,7 @@ export function WebsiteEditor({
   businessSlug,
 }: {
   initialWebsite: Website
-  services: ClinicService[]
+  services: Service[]
   agents: AiAgent[]
   businessSlug: string
 }) {
@@ -176,7 +176,7 @@ export function WebsiteEditor({
       contactAddress: form.contactAddress || null,
       contactHours: form.contactHours || null,
       yearsExperience: form.yearsExperience ? Number(form.yearsExperience) : null,
-      patientsServed: form.patientsServed ? Number(form.patientsServed) : null,
+      clientsServed: form.clientsServed ? Number(form.clientsServed) : null,
       satisfactionPct: form.satisfactionPct ? Number(form.satisfactionPct) : null,
       trustBadges: form.trustBadgesText.split('\n').map((s) => s.trim()).filter(Boolean),
       featuredServiceIds,
@@ -333,8 +333,8 @@ export function WebsiteEditor({
             <Field label="Years exp.">
               <input value={form.yearsExperience} onChange={(e) => patch({ yearsExperience: e.target.value })} type="number" className="input-field w-full" />
             </Field>
-            <Field label="Patients served">
-              <input value={form.patientsServed} onChange={(e) => patch({ patientsServed: e.target.value })} type="number" className="input-field w-full" />
+            <Field label="Clients served">
+              <input value={form.clientsServed} onChange={(e) => patch({ clientsServed: e.target.value })} type="number" className="input-field w-full" />
             </Field>
             <Field label="Satisfaction %">
               <input value={form.satisfactionPct} onChange={(e) => patch({ satisfactionPct: e.target.value })} type="number" className="input-field w-full" />

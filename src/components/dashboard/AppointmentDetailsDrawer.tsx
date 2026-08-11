@@ -15,14 +15,13 @@ import {
   Phone,
   ReceiptText,
   RefreshCcw,
-  ShieldAlert,
   UserRound,
   Wallet,
   X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { AppointmentStatus, AppointmentWithRelations, BillingTransaction, PaymentStatus } from '@/types'
-import { SurfaceCard, StatusBadge, Pill } from '@/components/clinic/shared'
+import { SurfaceCard, StatusBadge, Pill } from '@/components/dashboard/shared'
 import { cn, formatCurrency } from '@/lib/utils'
 import {
   APPOINTMENT_SOURCE_LABEL,
@@ -346,7 +345,7 @@ export function AppointmentDetailsDrawer({
 
   if (!appointment) return null
 
-  const patient = appointment.patient
+  const client = appointment.client
   const appointmentDate = formatDateOnlyInTimeZone(appointment.scheduledAt, timezone)
   const appointmentTime = formatTimeInTimeZone(appointment.scheduledAt, timezone)
   const paymentStatusTone = PAYMENT_STATUS_TONE[appointment.paymentStatus]
@@ -404,15 +403,14 @@ export function AppointmentDetailsDrawer({
             <SurfaceCard className="p-4">
               <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">
                 <UserRound className="h-4 w-4 text-[var(--brand)]" />
-                Patient information
+                Client information
               </div>
 
               <div className="mt-4 space-y-3 rounded-[22px] border border-[var(--border-soft)] bg-white/78 p-4">
-                <InfoRow label="Full name" value={patient?.name ?? 'Unknown patient'} icon={UserRound} />
-                <InfoRow label="Phone" value={patient?.phone ?? 'Not on file'} icon={Phone} />
-                <InfoRow label="Email" value={patient?.email ?? 'Not on file'} icon={Mail} />
-                <InfoRow label="Insurance" value={patient?.insuranceProvider ?? 'Self pay'} icon={ShieldAlert} />
-                <InfoRow label="Date of birth" value={patient?.dateOfBirth ?? 'Not on file'} icon={CalendarDays} />
+                <InfoRow label="Full name" value={client?.name ?? 'Unknown client'} icon={UserRound} />
+                <InfoRow label="Phone" value={client?.phone ?? 'Not on file'} icon={Phone} />
+                <InfoRow label="Email" value={client?.email ?? 'Not on file'} icon={Mail} />
+                <InfoRow label="Date of birth" value={client?.dateOfBirth ?? 'Not on file'} icon={CalendarDays} />
                 <InfoRow label="Source" value={APPOINTMENT_SOURCE_LABEL[appointment.source]} icon={ReceiptText} />
               </div>
             </SurfaceCard>

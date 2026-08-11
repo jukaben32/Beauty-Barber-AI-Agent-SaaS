@@ -19,13 +19,13 @@ export function emailShell(title: string, body: string) {
     <div style="max-width:640px;margin:0 auto;padding:32px 16px;">
       <div style="background:#fff;border-radius:20px;overflow:hidden;border:1px solid #e2e8f0;">
         <div style="background:linear-gradient(135deg,#0f766e,#14b8a6);padding:24px;color:#fff;">
-          <div style="font-size:14px;opacity:.9;">Clara - AI medical receptionist</div>
+          <div style="font-size:14px;opacity:.9;">Clara - AI booking receptionist</div>
           <div style="font-size:26px;font-weight:700;line-height:1.2;margin-top:8px;">${escapeHtml(title)}</div>
         </div>
         <div style="padding:24px;line-height:1.7;font-size:15px;">${body}</div>
       </div>
       <div style="text-align:center;color:#64748b;font-size:12px;margin-top:16px;">
-        Sent by the clinic assistant automation.
+        Sent by the booking assistant automation.
       </div>
     </div>
   </body>

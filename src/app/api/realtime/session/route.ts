@@ -1,7 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { apiError, json, readJson } from '@/lib/api'
 import { resolveRealtimeClinicContext } from '@/lib/realtime'
-import { clinicRealtimeTools } from '@/ai/tools'
+import { realtimeTools } from '@/ai/tools'
 import { realtimeSessionSchema } from '@/validations'
 
 export async function POST(request: Request) {
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
       widget: context.widget,
       instructions: context.context.instructions,
       session: context.session,
-      tools: clinicRealtimeTools,
+      tools: realtimeTools,
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unable to create realtime session'

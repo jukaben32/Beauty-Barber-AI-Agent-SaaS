@@ -1,7 +1,7 @@
 import { apiError, json, readJson } from '@/lib/api'
 import { createClient as createServerSupabaseClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { getPortalPatientForAuthUser } from '@/services/patients'
+import { getPortalClientForAuthUser } from '@/services/clients'
 import { getAppointmentById, rescheduleAppointment } from '@/services/appointments'
 import { getBusinessById } from '@/services/business'
 import { createNotification } from '@/services/notifications'
@@ -19,9 +19,9 @@ export async function POST(request: Request, { params }: { params: { id: string 
     return apiError('Unauthorized', 401)
   }
 
-  const patient = await getPortalPatientForAuthUser(supabase, user.id)
-  if (!patient) {
-    return apiError('No patient record linked to this account', 404)
+  const client = await getPortalClientForAuthUser(supabase, user.id)
+  if (!client) {
+    return apiError('No client record linked to this account', 404)
   }
 
   let body: unknown
@@ -37,8 +37,8 @@ export async function POST(request: Request, { params }: { params: { id: string 
 
   const admin = createAdminClient()
 
-  const appointment = await getAppointmentById(admin, patient.businessId, params.id)
-  if (!appointment || appointment.patientId !== patient.id) {
+  const appointment = await getAppointmentById(admin, client.businessId, params.id)
+  if (!appointment || appointment.clientId !== client.id) {
     return apiError('Appointment not found', 404)
   }
   if (appointment.status === 'cancelled' || appointment.status === 'completed') {
@@ -47,13 +47,13 @@ export async function POST(request: Request, { params }: { params: { id: string 
 
   let updated
   try {
-    updated = await rescheduleAppointment(admin, patient.businessId, params.id, parsed.data.scheduledAt)
+    updated = await rescheduleAppointment(admin, client.businessId, params.id, parsed.data.scheduledAt)
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Could not reschedule appointment'
     return apiError(message, 409)
   }
 
-  const business = await getBusinessById(admin, patient.businessId)
+  const business = await getBusinessById(admin, client.businessId)
   const serviceName = updated.service?.name || 'Appointment'
   const scheduledAtLabel = new Date(updated.scheduledAt).toLocaleString('en-US')
 
@@ -61,12 +61,12 @@ export async function POST(request: Request, { params }: { params: { id: string 
     // rescheduleAppointment sets status to pending_confirmation - staff still
     // needs to confirm it, same as a brand-new booking, so this reads as a
     // "request received" notice rather than a final confirmation.
-    patient.email && business
+    client.email && business
       ? sendEmail({
-          to: patient.email,
+          to: client.email,
           subject: `Reschedule request received - ${business.name}`,
           html: buildAppointmentStatusEmail({
-            patientName: patient.name,
+            clientName: client.name,
             businessName: business.name,
             serviceName,
             scheduledAt: scheduledAtLabel,
@@ -77,22 +77,22 @@ export async function POST(request: Request, { params }: { params: { id: string 
     business?.bookingEmail
       ? sendEmail({
           to: business.bookingEmail,
-          subject: `Reschedule requested - ${patient.name}`,
+          subject: `Reschedule requested - ${client.name}`,
           html: buildBusinessAppointmentEmail({
             businessName: business.name,
-            patientName: patient.name,
-            patientPhone: patient.phone,
-            patientEmail: patient.email,
+            clientName: client.name,
+            clientPhone: client.phone,
+            clientEmail: client.email,
             serviceName,
             scheduledAt: scheduledAtLabel,
             event: 'reschedule_requested',
           }),
         })
       : Promise.resolve(),
-    createNotification(admin, patient.businessId, {
+    createNotification(admin, client.businessId, {
       category: 'appointment',
-      title: 'Reschedule requested by patient',
-      message: `${patient.name} requested to move their ${serviceName} appointment to ${scheduledAtLabel}.`,
+      title: 'Reschedule requested by client',
+      message: `${client.name} requested to move their ${serviceName} appointment to ${scheduledAtLabel}.`,
       data: { appointmentId: updated.id },
     }),
   ])

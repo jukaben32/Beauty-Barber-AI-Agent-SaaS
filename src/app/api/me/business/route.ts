@@ -4,7 +4,7 @@ import { getBusinessForCurrentUser, getBusinessMembershipRole, getServerSupabase
 import { businessSchema } from '@/validations'
 import { createBusiness, getBusinessAvailability, getBusinessById, getClosedDates, getDashboardAnalytics, getSubscription, listBusinessMembers, updateBusiness } from '@/services/business'
 import { listAgentsForBusiness } from '@/services/agents'
-import { listClinicServices } from '@/services/services'
+import { listServices } from '@/services/services'
 import { listWidgetsForBusiness } from '@/services/widgets'
 import { getWebsiteByBusinessId } from '@/services/websites'
 import { listNotificationsForBusiness, getUnreadNotificationCount } from '@/services/notifications'
@@ -42,7 +42,7 @@ async function loadBusinessContext(supabase: Awaited<ReturnType<typeof getServer
     getSubscription(supabase, businessId),
     listBusinessMembers(supabase, businessId),
     listAgentsForBusiness(supabase, businessId),
-    listClinicServices(supabase, businessId),
+    listServices(supabase, businessId),
     getBusinessAvailability(supabase, businessId),
     getClosedDates(supabase, businessId),
     listWidgetsForBusiness(supabase, businessId),

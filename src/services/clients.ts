@@ -1,7 +1,7 @@
-import type { Patient } from '@/types'
+import type { Client } from '@/types'
 import type { DbClient } from './_shared'
 
-export function toPatient(row: any): Patient {
+export function toClient(row: any): Client {
   return {
     id: row.id,
     businessId: row.business_id,
@@ -11,62 +11,61 @@ export function toPatient(row: any): Patient {
     email: row.email ?? null,
     dateOfBirth: row.date_of_birth ?? null,
     notes: row.notes ?? null,
-    insuranceProvider: row.insurance_provider ?? null,
     source: row.source,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }
 }
 
-export async function listPatientsForBusiness(supabase: DbClient, businessId: string) {
-  const { data, error } = await supabase.from('patients').select('*').eq('business_id', businessId).order('created_at', { ascending: false })
+export async function listClientsForBusiness(supabase: DbClient, businessId: string) {
+  const { data, error } = await supabase.from('clients').select('*').eq('business_id', businessId).order('created_at', { ascending: false })
   if (error) throw error
-  return (data ?? []).map(toPatient)
+  return (data ?? []).map(toClient)
 }
 
-export async function searchPatients(supabase: DbClient, businessId: string, query: string) {
+export async function searchClients(supabase: DbClient, businessId: string, query: string) {
   const trimmed = query.trim()
-  if (!trimmed) return listPatientsForBusiness(supabase, businessId)
+  if (!trimmed) return listClientsForBusiness(supabase, businessId)
 
   const { data, error } = await supabase
-    .from('patients')
+    .from('clients')
     .select('*')
     .eq('business_id', businessId)
     .or(`name.ilike.%${trimmed}%,email.ilike.%${trimmed}%,phone.ilike.%${trimmed}%`)
     .order('created_at', { ascending: false })
   if (error) throw error
-  return (data ?? []).map(toPatient)
+  return (data ?? []).map(toClient)
 }
 
-export async function getPatientById(supabase: DbClient, businessId: string, patientId: string) {
-  const { data, error } = await supabase.from('patients').select('*').eq('business_id', businessId).eq('id', patientId).maybeSingle()
+export async function getClientById(supabase: DbClient, businessId: string, clientId: string) {
+  const { data, error } = await supabase.from('clients').select('*').eq('business_id', businessId).eq('id', clientId).maybeSingle()
   if (error) throw error
-  return data ? toPatient(data) : null
+  return data ? toClient(data) : null
 }
 
-export async function getPatientByEmail(supabase: DbClient, businessId: string, email: string) {
+export async function getClientByEmail(supabase: DbClient, businessId: string, email: string) {
   const { data, error } = await supabase
-    .from('patients')
+    .from('clients')
     .select('*')
     .eq('business_id', businessId)
     .ilike('email', email)
     .maybeSingle()
   if (error) throw error
-  return data ? toPatient(data) : null
+  return data ? toClient(data) : null
 }
 
-export async function getPatientByPhone(supabase: DbClient, businessId: string, phone: string) {
+export async function getClientByPhone(supabase: DbClient, businessId: string, phone: string) {
   const { data, error } = await supabase
-    .from('patients')
+    .from('clients')
     .select('*')
     .eq('business_id', businessId)
     .eq('phone', phone)
     .maybeSingle()
   if (error) throw error
-  return data ? toPatient(data) : null
+  return data ? toClient(data) : null
 }
 
-export async function createPatient(
+export async function createClient(
   supabase: DbClient,
   businessId: string,
   input: {
@@ -75,13 +74,12 @@ export async function createPatient(
     phone?: string | null
     dateOfBirth?: string | null
     notes?: string | null
-    insuranceProvider?: string | null
-    source?: Patient['source']
+    source?: Client['source']
     authUserId?: string | null
   }
 ) {
   const { data, error } = await supabase
-    .from('patients')
+    .from('clients')
     .insert({
       business_id: businessId,
       auth_user_id: input.authUserId ?? null,
@@ -90,18 +88,17 @@ export async function createPatient(
       phone: input.phone ?? null,
       date_of_birth: input.dateOfBirth ?? null,
       notes: input.notes ?? null,
-      insurance_provider: input.insuranceProvider ?? null,
       source: input.source ?? 'manual',
     })
     .select('*')
     .single()
   if (error) throw error
-  return toPatient(data)
+  return toClient(data)
 }
 
-export async function updatePatient(supabase: DbClient, businessId: string, patientId: string, patch: Partial<Patient>) {
+export async function updateClient(supabase: DbClient, businessId: string, clientId: string, patch: Partial<Client>) {
   const { data, error } = await supabase
-    .from('patients')
+    .from('clients')
     .update({
       auth_user_id: patch.authUserId,
       name: patch.name,
@@ -109,18 +106,17 @@ export async function updatePatient(supabase: DbClient, businessId: string, pati
       email: patch.email,
       date_of_birth: patch.dateOfBirth,
       notes: patch.notes,
-      insurance_provider: patch.insuranceProvider,
       source: patch.source,
     })
     .eq('business_id', businessId)
-    .eq('id', patientId)
+    .eq('id', clientId)
     .select('*')
     .single()
   if (error) throw error
-  return toPatient(data)
+  return toClient(data)
 }
 
-export async function findOrCreatePatient(
+export async function findOrCreateClient(
   supabase: DbClient,
   businessId: string,
   input: {
@@ -129,25 +125,25 @@ export async function findOrCreatePatient(
     phone?: string | null
     dateOfBirth?: string | null
     authUserId?: string | null
-    source?: Patient['source']
+    source?: Client['source']
     notes?: string | null
   }
 ) {
   const authUserId = input.authUserId ?? null
 
-  let existing: Patient | null = null
+  let existing: Client | null = null
   if (authUserId) {
-    existing = await getPatientByAuthUserId(supabase, businessId, authUserId)
+    existing = await getClientByAuthUserId(supabase, businessId, authUserId)
   }
   if (!existing && input.email) {
-    existing = await getPatientByEmail(supabase, businessId, input.email)
+    existing = await getClientByEmail(supabase, businessId, input.email)
   }
   if (!existing && input.phone) {
-    existing = await getPatientByPhone(supabase, businessId, input.phone)
+    existing = await getClientByPhone(supabase, businessId, input.phone)
   }
 
   if (existing) {
-    return updatePatient(supabase, businessId, existing.id, {
+    return updateClient(supabase, businessId, existing.id, {
       ...existing,
       name: input.name || existing.name,
       email: input.email ?? existing.email,
@@ -159,7 +155,7 @@ export async function findOrCreatePatient(
     })
   }
 
-  return createPatient(supabase, businessId, {
+  return createClient(supabase, businessId, {
     name: input.name,
     email: input.email ?? null,
     phone: input.phone ?? null,
@@ -170,22 +166,22 @@ export async function findOrCreatePatient(
   })
 }
 
-export async function getPatientByAuthUserId(supabase: DbClient, businessId: string, authUserId: string) {
+export async function getClientByAuthUserId(supabase: DbClient, businessId: string, authUserId: string) {
   const { data, error } = await supabase
-    .from('patients')
+    .from('clients')
     .select('*')
     .eq('business_id', businessId)
     .eq('auth_user_id', authUserId)
     .maybeSingle()
   if (error) throw error
-  return data ? toPatient(data) : null
+  return data ? toClient(data) : null
 }
 
-// For the patient portal, which isn't scoped to a single businessId ahead of
-// time - the "patients can read their own record" RLS policy already scopes
-// this to the caller's own row(s), same as getPatientAppointmentsForPortal.
-export async function getPortalPatientForAuthUser(supabase: DbClient, authUserId: string) {
-  const { data, error } = await supabase.from('patients').select('*').eq('auth_user_id', authUserId).limit(1).maybeSingle()
+// For the client portal, which isn't scoped to a single businessId ahead of
+// time - the "clients can read their own record" RLS policy already scopes
+// this to the caller's own row(s), same as getClientAppointmentsForPortal.
+export async function getPortalClientForAuthUser(supabase: DbClient, authUserId: string) {
+  const { data, error } = await supabase.from('clients').select('*').eq('auth_user_id', authUserId).limit(1).maybeSingle()
   if (error) throw error
-  return data ? toPatient(data) : null
+  return data ? toClient(data) : null
 }

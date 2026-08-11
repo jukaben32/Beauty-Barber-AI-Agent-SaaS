@@ -29,7 +29,7 @@ import {
   UsersRound,
 } from 'lucide-react'
 import type { AiAgent, WebsiteContent, WebsiteFaq, WebsiteService, WebsiteSpecialty, WebsiteTeamMember, WebsiteTestimonial } from '@/types'
-import { StatusBadge, SurfaceCard } from '@/components/clinic/shared'
+import { StatusBadge, SurfaceCard } from '@/components/dashboard/shared'
 import { WebsiteTemplateRenderer } from './WebsiteTemplateRenderer'
 import { SOCIAL_PLATFORMS } from './socialLinks'
 
@@ -114,8 +114,8 @@ function createTestimonial(businessId: string): WebsiteTestimonial {
   return {
     id: createId(),
     businessId,
-    quote: 'Patient feedback goes here.',
-    authorName: 'Patient Name',
+    quote: 'Client feedback goes here.',
+    authorName: 'Client Name',
     authorRole: null,
     rating: 5,
     sortOrder: 0,
@@ -447,7 +447,7 @@ export function WebsiteEditor({
         contactHours: textOrNull(website.contactHours ?? ''),
         contactMapsUrl: textOrNull(website.contactMapsUrl ?? ''),
         yearsExperience: website.yearsExperience,
-        patientsServed: website.patientsServed,
+        clientsServed: website.clientsServed,
         satisfactionPct: website.satisfactionPct,
         trustBadges: website.trustBadges.map((item) => item.trim()).filter(Boolean),
         featuredServiceIds: website.featuredServiceIds,
@@ -715,7 +715,7 @@ export function WebsiteEditor({
                   onChange={(e) => patchWebsite({ aboutStory: e.target.value })}
                   className="input-field w-full"
                   rows={4}
-                  placeholder="Tell the clinic story and how the team helps patients."
+                  placeholder="Tell the clinic story and how the team helps clients."
                 />
               </Field>
 
@@ -737,11 +737,11 @@ export function WebsiteEditor({
                     className="input-field w-full"
                   />
                 </Field>
-                <Field label="Patients served">
+                <Field label="Clients served">
                   <input
                     type="number"
-                    value={website.patientsServed ?? ''}
-                    onChange={(e) => patchWebsite({ patientsServed: e.target.value === '' ? null : Number(e.target.value) })}
+                    value={website.clientsServed ?? ''}
+                    onChange={(e) => patchWebsite({ clientsServed: e.target.value === '' ? null : Number(e.target.value) })}
                     className="input-field w-full"
                   />
                 </Field>
@@ -938,7 +938,7 @@ export function WebsiteEditor({
             </div>
           </SectionCard>
 
-          <SectionCard title="Testimonials" subtitle="Short patient quotes and star ratings." icon={Quote}>
+          <SectionCard title="Testimonials" subtitle="Short client quotes and star ratings." icon={Quote}>
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="text-xs text-[var(--text-muted)]">{testimonials.length} testimonials</p>
               <button type="button" onClick={addTestimonial} className="btn-secondary !px-3 !py-2 !text-xs">

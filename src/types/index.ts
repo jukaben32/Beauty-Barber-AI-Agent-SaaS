@@ -13,7 +13,7 @@ export type ConversationStatus = 'in_progress' | 'completed' | 'failed'
 export type ConversationOutcome = 'booked_appointment' | 'qualified_lead' | 'no_action' | 'escalated'
 export type Sentiment = 'positive' | 'neutral' | 'negative'
 export type SupportTicketStatus = 'open' | 'pending' | 'resolved' | 'closed'
-export type SupportSenderType = 'patient' | 'staff' | 'system'
+export type SupportSenderType = 'client' | 'staff' | 'system'
 export type NotificationCategory = 'appointment' | 'billing' | 'widget' | 'support' | 'system'
 export type BillingTransactionStatus = 'pending' | 'confirmed' | 'failed' | 'refunded'
 export type BillingPaymentType = 'booking_deposit' | 'full_payment' | 'subscription' | 'portal_topup'
@@ -85,7 +85,7 @@ export interface AiAgent {
   updatedAt: string
 }
 
-export interface ClinicService {
+export interface Service {
   id: string
   businessId: string
   name: string
@@ -103,7 +103,7 @@ export interface ClinicService {
   updatedAt: string
 }
 
-export interface Patient {
+export interface Client {
   id: string
   businessId: string
   authUserId: string | null
@@ -112,7 +112,6 @@ export interface Patient {
   email: string | null
   dateOfBirth: string | null
   notes: string | null
-  insuranceProvider: string | null
   source: 'ai_call' | 'widget_chat' | 'manual' | 'portal' | 'website_form' | 'whatsapp'
   createdAt: string
   updatedAt: string
@@ -121,7 +120,7 @@ export interface Patient {
 export interface Appointment {
   id: string
   businessId: string
-  patientId: string | null
+  clientId: string | null
   agentId: string | null
   serviceId: string | null
   conversationId: string | null
@@ -135,7 +134,7 @@ export interface Appointment {
   confirmedAt: string | null
   cancelledAt: string | null
   cancellationReason: string | null
-  cancelledBy: 'patient' | 'business' | 'system' | null
+  cancelledBy: 'client' | 'business' | 'system' | null
   paymentStatus: PaymentStatus
   paymentAmount: number | null
   paymentCurrency: string
@@ -147,8 +146,8 @@ export interface Appointment {
 }
 
 export interface AppointmentWithRelations extends Appointment {
-  patient?: Patient | null
-  service?: ClinicService | null
+  client?: Client | null
+  service?: Service | null
   agent?: AiAgent | null
 }
 
@@ -178,7 +177,7 @@ export interface Conversation {
   id: string
   businessId: string
   agentId: string | null
-  patientId: string | null
+  clientId: string | null
   appointmentId: string | null
   channel: ConversationChannel
   status: ConversationStatus
@@ -264,7 +263,7 @@ export interface Website {
   contactHours: string | null
   contactMapsUrl: string | null
   yearsExperience: number | null
-  patientsServed: number | null
+  clientsServed: number | null
   satisfactionPct: number | null
   trustBadges: string[]
   featuredServiceIds: string[]
@@ -369,7 +368,7 @@ export interface WebsiteSubscriber {
 export interface SupportTicket {
   id: string
   businessId: string
-  patientId: string | null
+  clientId: string | null
   appointmentId: string | null
   subject: string
   description: string | null
@@ -377,7 +376,7 @@ export interface SupportTicket {
   priority: 'low' | 'medium' | 'high' | 'urgent'
   createdAt: string
   updatedAt: string
-  patient?: {
+  client?: {
     name: string
     email: string | null
     phone: string | null
@@ -413,7 +412,7 @@ export interface BillingTransaction {
   id: string
   businessId: string
   appointmentId: string | null
-  patientId: string | null
+  clientId: string | null
   amount: number
   currency: string
   chainId: number
@@ -428,7 +427,7 @@ export interface BillingTransaction {
 export interface DashboardAnalytics {
   appointmentsToday: number
   upcomingAppointments: number
-  totalPatients: number
+  totalClients: number
   cancelledAppointments: number
   completedAppointments: number
   noShowAppointments: number
@@ -442,7 +441,7 @@ export interface DashboardAnalytics {
 
 export interface PortalContext {
   business: Business
-  patient: Patient | null
+  client: Client | null
 }
 
 export interface WidgetConfig extends Widget {

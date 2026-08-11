@@ -1,4 +1,4 @@
-import type { AppointmentSource, AppointmentWithRelations, Business, ClinicService, KnowledgeDocument, Patient } from '@/types'
+import type { AppointmentSource, AppointmentWithRelations, Business, Service, KnowledgeDocument, Client } from '@/types'
 import { buildAppointmentConfirmationEmail } from '@/lib/email/appointmentConfirmation'
 import { buildAppointmentStatusEmail } from '@/lib/email/appointmentStatus'
 import { buildBusinessAppointmentEmail } from '@/lib/email/businessNotification'
@@ -6,8 +6,8 @@ import { sendEmail } from '@/lib/resend'
 import { createAppointment, cancelAppointment, confirmAppointment, getAppointmentById, getAvailableSlots, recordAppointmentPayment, rescheduleAppointment } from '@/services/appointments'
 import { createNotification } from '@/services/notifications'
 import { createSupportTicket } from '@/services/support'
-import { findOrCreatePatient, getPatientByEmail, searchPatients } from '@/services/patients'
-import { listActiveClinicServices } from '@/services/services'
+import { findOrCreateClient, getClientByEmail, searchClients } from '@/services/clients'
+import { listActiveServices } from '@/services/services'
 import { listKnowledgeDocuments, searchKnowledgeDocuments } from '@/services/faqs'
 import { getBusinessById } from '@/services/business'
 import type { DbClient } from '@/services/_shared'
@@ -19,11 +19,11 @@ export interface RealtimeToolDefinition {
   parameters: Record<string, unknown>
 }
 
-export const clinicRealtimeTools: RealtimeToolDefinition[] = [
+export const realtimeTools: RealtimeToolDefinition[] = [
   {
     type: 'function',
-    name: 'list_clinic_services',
-    description: 'List active clinic services with durations and pricing.',
+    name: 'list_services',
+    description: 'List active services with durations and pricing.',
     parameters: {
       type: 'object',
       properties: {},
@@ -46,8 +46,8 @@ export const clinicRealtimeTools: RealtimeToolDefinition[] = [
   },
   {
     type: 'function',
-    name: 'find_or_create_patient',
-    description: 'Find an existing patient or create a new patient record.',
+    name: 'find_or_create_client',
+    description: 'Find an existing client or create a new client record.',
     parameters: {
       type: 'object',
       properties: {
@@ -62,14 +62,14 @@ export const clinicRealtimeTools: RealtimeToolDefinition[] = [
   {
     type: 'function',
     name: 'create_appointment',
-    description: 'Create a clinic appointment after confirming service and time.',
+    description: 'Create an appointment after confirming service and time.',
     parameters: {
       type: 'object',
       properties: {
-        patientId: { type: 'string' },
-        patientName: { type: 'string' },
-        patientEmail: { type: 'string' },
-        patientPhone: { type: 'string' },
+        clientId: { type: 'string' },
+        clientName: { type: 'string' },
+        clientEmail: { type: 'string' },
+        clientPhone: { type: 'string' },
         serviceId: { type: 'string' },
         scheduledAt: { type: 'string' },
         notes: { type: 'string' },
@@ -88,8 +88,8 @@ export const clinicRealtimeTools: RealtimeToolDefinition[] = [
       type: 'object',
       properties: {
         appointmentId: { type: 'string' },
-        patientEmail: { type: 'string', description: 'Email on file for the appointment, used to verify the caller.' },
-        patientPhone: { type: 'string', description: 'Phone number on file for the appointment, used to verify the caller.' },
+        clientEmail: { type: 'string', description: 'Email on file for the appointment, used to verify the caller.' },
+        clientPhone: { type: 'string', description: 'Phone number on file for the appointment, used to verify the caller.' },
       },
       required: ['appointmentId'],
       additionalProperties: false,
@@ -105,8 +105,8 @@ export const clinicRealtimeTools: RealtimeToolDefinition[] = [
       properties: {
         appointmentId: { type: 'string' },
         scheduledAt: { type: 'string' },
-        patientEmail: { type: 'string', description: 'Email on file for the appointment, used to verify the caller.' },
-        patientPhone: { type: 'string', description: 'Phone number on file for the appointment, used to verify the caller.' },
+        clientEmail: { type: 'string', description: 'Email on file for the appointment, used to verify the caller.' },
+        clientPhone: { type: 'string', description: 'Phone number on file for the appointment, used to verify the caller.' },
       },
       required: ['appointmentId', 'scheduledAt'],
       additionalProperties: false,
@@ -122,8 +122,8 @@ export const clinicRealtimeTools: RealtimeToolDefinition[] = [
       properties: {
         appointmentId: { type: 'string' },
         reason: { type: 'string' },
-        patientEmail: { type: 'string', description: 'Email on file for the appointment, used to verify the caller.' },
-        patientPhone: { type: 'string', description: 'Phone number on file for the appointment, used to verify the caller.' },
+        clientEmail: { type: 'string', description: 'Email on file for the appointment, used to verify the caller.' },
+        clientPhone: { type: 'string', description: 'Phone number on file for the appointment, used to verify the caller.' },
       },
       required: ['appointmentId'],
       additionalProperties: false,
@@ -132,7 +132,7 @@ export const clinicRealtimeTools: RealtimeToolDefinition[] = [
   {
     type: 'function',
     name: 'search_faqs',
-    description: 'Search the clinic knowledge base for an answer.',
+    description: 'Search the knowledge base for an answer.',
     parameters: {
       type: 'object',
       properties: {
@@ -145,11 +145,11 @@ export const clinicRealtimeTools: RealtimeToolDefinition[] = [
   {
     type: 'function',
     name: 'create_support_ticket',
-    description: 'Open a support ticket for a patient or staff follow-up.',
+    description: 'Open a support ticket for a client or staff follow-up.',
     parameters: {
       type: 'object',
       properties: {
-        patientId: { type: 'string' },
+        clientId: { type: 'string' },
         appointmentId: { type: 'string' },
         subject: { type: 'string' },
         description: { type: 'string' },
@@ -167,14 +167,14 @@ export const clinicRealtimeTools: RealtimeToolDefinition[] = [
       type: 'object',
       properties: {
         appointmentId: { type: 'string' },
-        patientId: { type: 'string' },
+        clientId: { type: 'string' },
         amount: { type: 'number' },
         currency: { type: 'string' },
         chainId: { type: 'integer' },
         txHash: { type: 'string' },
         paymentType: { type: 'string' },
-        patientEmail: { type: 'string', description: 'Email on file for the appointment, used to verify the caller.' },
-        patientPhone: { type: 'string', description: 'Phone number on file for the appointment, used to verify the caller.' },
+        clientEmail: { type: 'string', description: 'Email on file for the appointment, used to verify the caller.' },
+        clientPhone: { type: 'string', description: 'Phone number on file for the appointment, used to verify the caller.' },
       },
       required: ['amount', 'currency', 'chainId', 'txHash'],
       additionalProperties: false,
@@ -183,7 +183,7 @@ export const clinicRealtimeTools: RealtimeToolDefinition[] = [
   {
     type: 'function',
     name: 'send_appointment_email',
-    description: 'Send a booking confirmation or appointment status email to the patient.',
+    description: 'Send a booking confirmation or appointment status email to the client.',
     parameters: {
       type: 'object',
       properties: {
@@ -198,9 +198,9 @@ export const clinicRealtimeTools: RealtimeToolDefinition[] = [
   },
 ]
 
-export function buildClinicAssistantInstructions(opts: {
+export function buildAssistantInstructions(opts: {
   business: Business
-  services: ClinicService[]
+  services: Service[]
   faqs: KnowledgeDocument[]
   timezone?: string | null
 }) {
@@ -214,15 +214,15 @@ export function buildClinicAssistantInstructions(opts: {
     .join('\n')
 
   return [
-    `You are Clara, the AI medical receptionist for ${opts.business.name}.`,
-    `Be warm, concise, and calm. Do not diagnose or provide emergency medical advice.`,
-    `Your job is to help patients book, reschedule, cancel, and understand clinic services.`,
-    `Always ask for the minimum required patient details and confirm date and time in the clinic timezone.`,
-    `Before confirming, rescheduling, cancelling, or recording a payment on an EXISTING appointment, always ask the caller to state the phone number or email on file for that booking and pass it as patientEmail/patientPhone — this verifies you are speaking with the person who made the booking.`,
-    `Clinic timezone: ${opts.timezone || opts.business.timezone || 'America/New_York'}.`,
-    `Clinic services:\n${serviceList || '- No active services configured yet.'}`,
+    `You are Clara, the AI booking receptionist for ${opts.business.name}, a salon/barbershop business.`,
+    `Be warm, concise, and welcoming. Do not give hair, skin, or health advice beyond describing what a service includes — if a caller asks about an allergic reaction, a skin or scalp condition, or anything medical, tell them to consult a licensed dermatologist or physician and do not attempt to diagnose or treat it yourself.`,
+    `Your job is to help clients book, reschedule, cancel, and understand our services.`,
+    `Always ask for the minimum required client details and confirm date and time in the business timezone.`,
+    `Before confirming, rescheduling, cancelling, or recording a payment on an EXISTING appointment, always ask the caller to state the phone number or email on file for that booking and pass it as clientEmail/clientPhone — this verifies you are speaking with the person who made the booking.`,
+    `Business timezone: ${opts.timezone || opts.business.timezone || 'America/New_York'}.`,
+    `Services:\n${serviceList || '- No active services configured yet.'}`,
     `FAQs:\n${faqList || '- No FAQs configured yet.'}`,
-    `If symptoms sound urgent, advise the caller to seek emergency care or contact local emergency services immediately.`,
+    `If a caller describes a skin reaction, injury, or health concern that goes beyond a normal service, advise them to seek medical care and offer to note it for the stylist ahead of the appointment.`,
     `If a human handoff is needed, summarize the request clearly and mark the conversation as escalated.`,
   ].join('\n\n')
 }
@@ -265,7 +265,7 @@ export function buildRealtimeSessionPayload(opts: {
         voice: opts.voice || 'alloy',
       },
     },
-    tools: clinicRealtimeTools,
+    tools: realtimeTools,
   }
 }
 
@@ -274,17 +274,18 @@ export function buildRealtimeSessionPayload(opts: {
 // tool call to the caller who found this appointmentId. Without this check,
 // anyone who learns an appointmentId (e.g. from a confirmation email) could
 // cancel/reschedule/confirm/pay for someone else's appointment. We require
-// the caller to state the email or phone on file, same as a clinic would
-// verify identity over the phone before touching an existing booking.
-function assertCallerMatchesPatient(patient: Patient | null, args: Record<string, unknown>) {
-  if (!patient) {
-    throw new Error('No patient is linked to this appointment yet, so identity cannot be verified.')
+// the caller to state the email or phone on file, same as a salon or
+// barbershop would verify identity over the phone before touching an
+// existing booking.
+function assertCallerMatchesClient(client: Client | null, args: Record<string, unknown>) {
+  if (!client) {
+    throw new Error('No client is linked to this appointment yet, so identity cannot be verified.')
   }
 
-  const providedEmail = typeof args.patientEmail === 'string' ? args.patientEmail.trim().toLowerCase() : ''
-  const providedPhone = typeof args.patientPhone === 'string' ? args.patientPhone.replace(/\D/g, '') : ''
-  const onFileEmail = (patient.email || '').trim().toLowerCase()
-  const onFilePhone = (patient.phone || '').replace(/\D/g, '')
+  const providedEmail = typeof args.clientEmail === 'string' ? args.clientEmail.trim().toLowerCase() : ''
+  const providedPhone = typeof args.clientPhone === 'string' ? args.clientPhone.replace(/\D/g, '') : ''
+  const onFileEmail = (client.email || '').trim().toLowerCase()
+  const onFilePhone = (client.phone || '').replace(/\D/g, '')
 
   const emailMatches = Boolean(providedEmail) && Boolean(onFileEmail) && providedEmail === onFileEmail
   const phoneMatches = Boolean(providedPhone) && Boolean(onFilePhone) && providedPhone === onFilePhone
@@ -297,32 +298,32 @@ function assertCallerMatchesPatient(patient: Patient | null, args: Record<string
 async function sendAppointmentEmailForTool(supabase: DbClient, appointmentId: string, type: 'confirmation' | 'status_update', reason?: string | null) {
   const { data: appointmentRow, error: appointmentError } = await supabase
     .from('appointments')
-    .select('*, patients(*), clinic_services(*), businesses(name, slug, booking_email)')
+    .select('*, clients(*), services(*), businesses(name, slug, booking_email)')
     .eq('id', appointmentId)
     .maybeSingle()
   if (appointmentError) throw appointmentError
   if (!appointmentRow) throw new Error('Appointment not found')
 
   const appointment: any = appointmentRow
-  const patientEmail = appointment.patients?.email
-  if (!patientEmail) throw new Error('Patient email not found')
+  const clientEmail = appointment.clients?.email
+  if (!clientEmail) throw new Error('Client email not found')
 
-  const businessName = appointment.businesses?.name || 'Clinic'
-  const serviceName = appointment.clinic_services?.name || 'Appointment'
+  const businessName = appointment.businesses?.name || 'Business'
+  const serviceName = appointment.services?.name || 'Appointment'
   const scheduledAt = new Date(appointment.scheduled_at).toLocaleString('en-US')
   const portalUrl = `${process.env.NEXT_PUBLIC_APP_URL || ''}/portal`
 
   const html =
     type === 'confirmation'
       ? buildAppointmentConfirmationEmail({
-          patientName: appointment.patients?.name || 'Patient',
+          clientName: appointment.clients?.name || 'Client',
           businessName,
           serviceName,
           scheduledAt,
           portalUrl,
         })
       : buildAppointmentStatusEmail({
-          patientName: appointment.patients?.name || 'Patient',
+          clientName: appointment.clients?.name || 'Client',
           businessName,
           serviceName,
           scheduledAt,
@@ -336,16 +337,16 @@ async function sendAppointmentEmailForTool(supabase: DbClient, appointmentId: st
       : `Appointment update - ${businessName}`
 
   return sendEmail({
-    to: patientEmail,
+    to: clientEmail,
     subject,
     html,
   })
 }
 
 // The AI voice agent books/cancels/reschedules appointments on the
-// business's behalf same as a patient would through the portal, but until
+// business's behalf same as a client would through the portal, but until
 // now staff only found out by opening the dashboard. Mirrors the
-// patient/reschedule/cancel routes: email the clinic's booking address and
+// client/reschedule/cancel routes: email the business's booking address and
 // drop a dashboard notification so voice-driven changes show up the same
 // way portal-driven ones do.
 async function notifyBusinessOfAppointmentEvent(
@@ -356,8 +357,8 @@ async function notifyBusinessOfAppointmentEvent(
   reason?: string | null
 ) {
   const business = await getBusinessById(supabase, businessId)
-  const patient = appointment.patient
-  if (!business || !patient) return
+  const client = appointment.client
+  if (!business || !client) return
 
   const serviceName = appointment.service?.name || 'Appointment'
   const scheduledAtLabel = new Date(appointment.scheduledAt).toLocaleString('en-US')
@@ -366,12 +367,12 @@ async function notifyBusinessOfAppointmentEvent(
     business.bookingEmail
       ? sendEmail({
           to: business.bookingEmail,
-          subject: `${event === 'booked' ? 'New appointment' : event === 'cancelled' ? 'Appointment cancelled' : 'Reschedule requested'} - ${patient.name}`,
+          subject: `${event === 'booked' ? 'New appointment' : event === 'cancelled' ? 'Appointment cancelled' : 'Reschedule requested'} - ${client.name}`,
           html: buildBusinessAppointmentEmail({
             businessName: business.name,
-            patientName: patient.name,
-            patientPhone: patient.phone,
-            patientEmail: patient.email,
+            clientName: client.name,
+            clientPhone: client.phone,
+            clientEmail: client.email,
             serviceName,
             scheduledAt: scheduledAtLabel,
             event,
@@ -387,7 +388,7 @@ async function notifyBusinessOfAppointmentEvent(
           : event === 'cancelled'
             ? 'Appointment cancelled by AI agent'
             : 'Reschedule requested by AI agent',
-      message: `${patient.name}'s ${serviceName} appointment was ${event === 'booked' ? 'booked' : event === 'cancelled' ? 'cancelled' : 'moved to ' + scheduledAtLabel} via the voice assistant.`,
+      message: `${client.name}'s ${serviceName} appointment was ${event === 'booked' ? 'booked' : event === 'cancelled' ? 'cancelled' : 'moved to ' + scheduledAtLabel} via the voice assistant.`,
       data: { appointmentId: appointment.id },
     }),
   ])
@@ -398,11 +399,11 @@ export async function executeRealtimeToolCall(
   businessId: string,
   toolName: string,
   args: Record<string, unknown> = {},
-  opts: { patientSource?: Patient['source']; appointmentSource?: AppointmentSource } = {}
+  opts: { clientSource?: Client['source']; appointmentSource?: AppointmentSource } = {}
 ) {
   switch (toolName) {
-    case 'list_clinic_services': {
-      return { services: await listActiveClinicServices(supabase, businessId) }
+    case 'list_services': {
+      return { services: await listActiveServices(supabase, businessId) }
     }
     case 'get_available_slots': {
       return {
@@ -413,51 +414,51 @@ export async function executeRealtimeToolCall(
         }),
       }
     }
-    case 'find_or_create_patient': {
-      const patient = await findOrCreatePatient(supabase, businessId, {
+    case 'find_or_create_client': {
+      const client = await findOrCreateClient(supabase, businessId, {
         name: String(args.name || 'Unknown'),
         email: typeof args.email === 'string' ? args.email : null,
         phone: typeof args.phone === 'string' ? args.phone : null,
-        source: opts.patientSource ?? 'ai_call',
+        source: opts.clientSource ?? 'ai_call',
       })
-      return { patient }
+      return { client }
     }
     case 'create_appointment': {
-      const patient =
-        typeof args.patientId === 'string'
+      const client =
+        typeof args.clientId === 'string'
           ? null
-          : await findOrCreatePatient(supabase, businessId, {
-              name: String(args.patientName || 'Unknown'),
-              email: typeof args.patientEmail === 'string' ? args.patientEmail : null,
-              phone: typeof args.patientPhone === 'string' ? args.patientPhone : null,
-              source: opts.patientSource ?? 'ai_call',
+          : await findOrCreateClient(supabase, businessId, {
+              name: String(args.clientName || 'Unknown'),
+              email: typeof args.clientEmail === 'string' ? args.clientEmail : null,
+              phone: typeof args.clientPhone === 'string' ? args.clientPhone : null,
+              source: opts.clientSource ?? 'ai_call',
             })
 
       const appointment = await createAppointment(supabase, businessId, {
-        patientId: typeof args.patientId === 'string' ? args.patientId : patient?.id ?? null,
+        clientId: typeof args.clientId === 'string' ? args.clientId : client?.id ?? null,
         agentId: typeof args.agentId === 'string' ? args.agentId : null,
         serviceId: typeof args.serviceId === 'string' ? args.serviceId : null,
         scheduledAt: String(args.scheduledAt),
         source: (opts.appointmentSource ?? (typeof args.source === 'string' ? args.source : 'ai_call')) as AppointmentSource,
         notes: typeof args.notes === 'string' ? args.notes : null,
       })
-      if ((patient?.email || typeof args.patientEmail === 'string') && appointment.id) {
+      if ((client?.email || typeof args.clientEmail === 'string') && appointment.id) {
         await sendAppointmentEmailForTool(supabase, appointment.id, 'confirmation')
       }
       await notifyBusinessOfAppointmentEvent(supabase, businessId, appointment, 'booked')
-      return { appointment, patient }
+      return { appointment, client }
     }
     case 'confirm_appointment': {
       const existing = await getAppointmentById(supabase, businessId, String(args.appointmentId))
       if (!existing) throw new Error('Appointment not found')
-      assertCallerMatchesPatient(existing.patient ?? null, args)
+      assertCallerMatchesClient(existing.client ?? null, args)
       const appointment = await confirmAppointment(supabase, businessId, String(args.appointmentId))
       return { appointment }
     }
     case 'reschedule_appointment': {
       const existing = await getAppointmentById(supabase, businessId, String(args.appointmentId))
       if (!existing) throw new Error('Appointment not found')
-      assertCallerMatchesPatient(existing.patient ?? null, args)
+      assertCallerMatchesClient(existing.client ?? null, args)
       const appointment = await rescheduleAppointment(supabase, businessId, String(args.appointmentId), String(args.scheduledAt))
       await notifyBusinessOfAppointmentEvent(supabase, businessId, appointment, 'reschedule_requested')
       return { appointment }
@@ -465,7 +466,7 @@ export async function executeRealtimeToolCall(
     case 'cancel_appointment': {
       const existing = await getAppointmentById(supabase, businessId, String(args.appointmentId))
       if (!existing) throw new Error('Appointment not found')
-      assertCallerMatchesPatient(existing.patient ?? null, args)
+      assertCallerMatchesClient(existing.client ?? null, args)
       const appointment = await cancelAppointment(supabase, businessId, String(args.appointmentId), typeof args.reason === 'string' ? args.reason : null)
       await sendAppointmentEmailForTool(supabase, appointment.id, 'status_update', typeof args.reason === 'string' ? args.reason : null)
       await notifyBusinessOfAppointmentEvent(supabase, businessId, appointment, 'cancelled', typeof args.reason === 'string' ? args.reason : null)
@@ -477,7 +478,7 @@ export async function executeRealtimeToolCall(
     }
     case 'create_support_ticket': {
       const ticket = await createSupportTicket(supabase, businessId, {
-        patientId: typeof args.patientId === 'string' ? args.patientId : null,
+        clientId: typeof args.clientId === 'string' ? args.clientId : null,
         appointmentId: typeof args.appointmentId === 'string' ? args.appointmentId : null,
         subject: String(args.subject || 'Support request'),
         description: typeof args.description === 'string' ? args.description : null,
@@ -487,7 +488,7 @@ export async function executeRealtimeToolCall(
     case 'record_payment': {
       const existing = await getAppointmentById(supabase, businessId, String(args.appointmentId || ''))
       if (!existing) throw new Error('Appointment not found')
-      assertCallerMatchesPatient(existing.patient ?? null, args)
+      assertCallerMatchesClient(existing.client ?? null, args)
       return {
         payment: await recordAppointmentPayment(supabase, businessId, String(args.appointmentId || ''), {
           amount: Number(args.amount),
@@ -507,10 +508,10 @@ export async function executeRealtimeToolCall(
   }
 }
 
-export async function buildClinicRealtimeContext(supabase: DbClient, businessId: string) {
+export async function buildRealtimeContext(supabase: DbClient, businessId: string) {
   const [business, services, faqs] = await Promise.all([
     getBusinessById(supabase, businessId),
-    listActiveClinicServices(supabase, businessId),
+    listActiveServices(supabase, businessId),
     listKnowledgeDocuments(supabase, businessId, true),
   ])
 
@@ -520,6 +521,6 @@ export async function buildClinicRealtimeContext(supabase: DbClient, businessId:
     business,
     services,
     faqs,
-    instructions: buildClinicAssistantInstructions({ business, services, faqs }),
+    instructions: buildAssistantInstructions({ business, services, faqs }),
   }
 }

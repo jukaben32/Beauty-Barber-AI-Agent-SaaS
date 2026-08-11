@@ -5,7 +5,7 @@ import { apiError, json, readJson } from '@/lib/api'
 import { portalRecordPaymentSchema } from '@/validations'
 import { getPublicBusinessProfile } from '@/services/business'
 import { getAppointmentPublic } from '@/services/appointments'
-import { getPatientById } from '@/services/patients'
+import { getClientById } from '@/services/clients'
 import { recordBillingTransaction } from '@/services/billing'
 import { recordAppointmentPayment } from '@/services/appointments'
 import { createNotification } from '@/services/notifications'
@@ -43,20 +43,20 @@ export async function POST(request: Request) {
     if (!appointment) {
       return apiError('Appointment not found', 404)
     }
-    if (appointment.patient?.authUserId !== user.id) {
+    if (appointment.client?.authUserId !== user.id) {
       return apiError('Forbidden', 403)
     }
     business = appointment.business ?? business
-  } else if (parsed.data.patientId) {
+  } else if (parsed.data.clientId) {
     if (!business) {
       return apiError('Business not found', 404)
     }
-    const patient = await getPatientById(admin, business.id, parsed.data.patientId)
-    if (!patient || patient.authUserId !== user.id) {
+    const client = await getClientById(admin, business.id, parsed.data.clientId)
+    if (!client || client.authUserId !== user.id) {
       return apiError('Forbidden', 403)
     }
   } else {
-    return apiError('appointmentId or patientId is required', 422)
+    return apiError('appointmentId or clientId is required', 422)
   }
 
   if (!business) {
@@ -66,13 +66,13 @@ export async function POST(request: Request) {
   const paymentType = parsed.data.paymentType || (parsed.data.appointmentId ? 'booking_deposit' : 'portal_topup')
   const isCash = parsed.data.currency.toUpperCase() === 'CASH'
   // Cash is never "confirmed" from the portal - nothing has actually been
-  // paid yet, the patient is just committing to pay at the clinic. Staff
+  // paid yet, the client is just committing to pay at the clinic. Staff
   // marks it received later from the dashboard (the existing "Mark as Cash
-  // Paid" action), same as a patient calling in to say the same thing.
+  // Paid" action), same as a client calling in to say the same thing.
   const status = isCash ? 'pending' : parsed.data.status || 'confirmed'
 
   // Only "confirmed" is a claim we need to check — 'pending'/'failed' don't
-  // assert money moved. A signed-in patient could otherwise report a
+  // assert money moved. A signed-in client could otherwise report a
   // fabricated txHash for their OWN appointment (the auth check above only
   // stops them acting on someone ELSE's) and have it accepted as paid.
   if (status === 'confirmed') {
@@ -109,7 +109,7 @@ export async function POST(request: Request) {
       })
     : await recordBillingTransaction(admin, business.id, {
         appointmentId: null,
-        patientId: parsed.data.patientId ?? null,
+        clientId: parsed.data.clientId ?? null,
         amount: parsed.data.amount,
         currency: parsed.data.currency,
         chainId: parsed.data.chainId ?? DEFAULT_CHAIN_ID,
@@ -125,7 +125,7 @@ export async function POST(request: Request) {
     message: `Payment recorded for ${parsed.data.appointmentId ? `appointment ${parsed.data.appointmentId}` : 'portal account'}.`,
     data: {
       appointmentId: parsed.data.appointmentId ?? null,
-      patientId: parsed.data.patientId ?? null,
+      clientId: parsed.data.clientId ?? null,
       txHash: parsed.data.txHash,
       amount: parsed.data.amount,
       currency: parsed.data.currency,

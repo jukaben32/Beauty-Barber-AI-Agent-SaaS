@@ -55,19 +55,18 @@ export const agentSchema = z.object({
   language: z.string().max(16).optional(),
 })
 
-export const patientSchema = z.object({
+export const clientSchema = z.object({
   name: z.string().min(2).max(120),
   email: z.string().email().optional().nullable(),
   phone: z.string().max(40).optional().nullable(),
   dateOfBirth: z.string().optional().nullable(),
   notes: z.string().max(5000).optional().nullable(),
-  insuranceProvider: z.string().max(120).optional().nullable(),
   source: z.enum(['ai_call', 'widget_chat', 'manual', 'portal', 'website_form', 'whatsapp']).optional(),
   authUserId: z.string().uuid().optional().nullable(),
 })
 
 export const appointmentCreateSchema = z.object({
-  patientId: z.string().uuid().optional().nullable(),
+  clientId: z.string().uuid().optional().nullable(),
   agentId: z.string().uuid().optional().nullable(),
   serviceId: z.string().uuid().optional().nullable(),
   conversationId: z.string().uuid().optional().nullable(),
@@ -83,7 +82,7 @@ export const appointmentStatusSchema = z.object({
   appointmentId: z.string().uuid(),
   status: z.enum(['scheduled', 'pending_confirmation', 'confirmed', 'completed', 'cancelled', 'no_show']),
   cancellationReason: z.string().max(2000).optional().nullable(),
-  cancelledBy: z.enum(['patient', 'business', 'system']).optional(),
+  cancelledBy: z.enum(['client', 'business', 'system']).optional(),
 })
 
 export const appointmentRescheduleSchema = z.object({
@@ -107,7 +106,7 @@ export const portalCheckEmailSchema = z.object({
   email: z.string().email(),
   businessSlug: z.string().optional(),
   next: z.string().optional(),
-  // Present only on the registration form - when set, the patient record is
+  // Present only on the registration form - when set, the client record is
   // created/updated with these details before the magic link is sent.
   name: z.string().min(1).max(120).optional(),
   phone: z.string().max(40).optional(),
@@ -123,11 +122,11 @@ export const portalRescheduleAppointmentSchema = z.object({
 
 export const portalRecordPaymentSchema = z.object({
   appointmentId: z.string().uuid().optional().nullable(),
-  patientId: z.string().uuid().optional().nullable(),
+  clientId: z.string().uuid().optional().nullable(),
   amount: z.number().positive(),
   // 'CASH' is a special case handled separately in the route: no on-chain
   // verification, no chainId/txHash required - it just flags that the
-  // patient committed to paying at the clinic.
+  // client committed to paying at the clinic.
   currency: z.string().min(3).max(10),
   chainId: z.number().int().positive().optional(),
   txHash: z.string().min(4).optional(),
@@ -179,7 +178,7 @@ export const websiteSchema = z.object({
   contactHours: z.string().max(240).optional().nullable(),
   contactMapsUrl: z.string().url().optional().nullable(),
   yearsExperience: z.number().int().min(0).optional().nullable(),
-  patientsServed: z.number().int().min(0).optional().nullable(),
+  clientsServed: z.number().int().min(0).optional().nullable(),
   satisfactionPct: z.number().min(0).max(100).optional().nullable(),
   trustBadges: z.array(z.string()).optional(),
   featuredServiceIds: z.array(z.string().uuid()).optional(),
@@ -250,8 +249,8 @@ export const websiteSiteUrlSchema = z.object({
 })
 
 // senderType is deliberately not accepted from the client here - the
-// portal message route always forces it to 'patient' server-side, so a
-// signed-in patient can't post a message that renders as if it came from
+// portal message route always forces it to 'client' server-side, so a
+// signed-in client can't post a message that renders as if it came from
 // staff or the system.
 export const portalSupportTicketSchema = z.object({
   appointmentId: z.string().uuid().optional().nullable(),
@@ -264,7 +263,7 @@ export const portalSupportMessageSchema = z.object({
 })
 
 export const supportTicketSchema = z.object({
-  patientId: z.string().uuid().optional().nullable(),
+  clientId: z.string().uuid().optional().nullable(),
   appointmentId: z.string().uuid().optional().nullable(),
   subject: z.string().min(2).max(200),
   description: z.string().max(5000).optional().nullable(),
@@ -274,7 +273,7 @@ export const supportTicketSchema = z.object({
 
 export const supportMessageSchema = z.object({
   ticketId: z.string().uuid(),
-  senderType: z.enum(['patient', 'staff', 'system']),
+  senderType: z.enum(['client', 'staff', 'system']),
   content: z.string().min(1).max(10000),
 })
 
@@ -330,7 +329,7 @@ export const realtimeConversationMessageSchema = z.object({
 export const realtimeConversationEndSchema = z.object({
   businessSlug: z.string().min(2),
   durationSeconds: z.number().int().min(0).optional(),
-  patientId: z.string().uuid().optional(),
+  clientId: z.string().uuid().optional(),
   appointmentId: z.string().uuid().optional(),
 })
 
@@ -348,7 +347,7 @@ export type StripeAccountInput = z.infer<typeof stripeAccountSchema>
 export type AvailabilityInput = z.infer<typeof availabilitySchema>
 export type ClinicServiceInput = z.infer<typeof clinicServiceSchema>
 export type AgentInput = z.infer<typeof agentSchema>
-export type PatientInput = z.infer<typeof patientSchema>
+export type ClientInput = z.infer<typeof clientSchema>
 export type AppointmentCreateInput = z.infer<typeof appointmentCreateSchema>
 export type AppointmentStatusInput = z.infer<typeof appointmentStatusSchema>
 export type AppointmentRescheduleInput = z.infer<typeof appointmentRescheduleSchema>

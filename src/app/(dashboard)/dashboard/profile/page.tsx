@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getBusinessForUser, getBusinessMembership } from '@/services/business'
-import { ProfileManager } from '@/components/clinic/ProfileManager'
+import { ProfileManager } from '@/components/dashboard/ProfileManager'
 
 export default async function ProfilePage() {
   const supabase = await createClient()

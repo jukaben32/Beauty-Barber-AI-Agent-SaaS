@@ -42,7 +42,7 @@ function toWebsite(row: any): Website {
     contactHours: row.contact_hours ?? null,
     contactMapsUrl: row.contact_maps_url ?? null,
     yearsExperience: row.years_experience ?? null,
-    patientsServed: row.patients_served ?? null,
+    clientsServed: row.clients_served ?? null,
     satisfactionPct: row.satisfaction_pct ?? null,
     trustBadges: row.trust_badges ?? [],
     featuredServiceIds: row.featured_service_ids ?? [],
@@ -154,7 +154,7 @@ function buildWebsiteRow(input: WebsiteInput, businessId: string, current?: Webs
     contact_hours: input.contactHours ?? current?.contactHours ?? null,
     contact_maps_url: input.contactMapsUrl ?? current?.contactMapsUrl ?? null,
     years_experience: input.yearsExperience ?? current?.yearsExperience ?? null,
-    patients_served: input.patientsServed ?? current?.patientsServed ?? null,
+    clients_served: input.clientsServed ?? current?.clientsServed ?? null,
     satisfaction_pct: input.satisfactionPct ?? current?.satisfactionPct ?? null,
     trust_badges: input.trustBadges ?? current?.trustBadges ?? [],
     featured_service_ids: input.featuredServiceIds ?? current?.featuredServiceIds ?? [],
@@ -285,7 +285,7 @@ export async function createOrUpdateWebsite(
     contactHours?: string | null
     contactMapsUrl?: string | null
     yearsExperience?: number | null
-    patientsServed?: number | null
+    clientsServed?: number | null
     satisfactionPct?: number | null
     trustBadges?: string[]
     featuredServiceIds?: string[]
@@ -326,7 +326,7 @@ export async function createOrUpdateWebsite(
       contactHours: input.contactHours ?? current?.contactHours ?? null,
       contactMapsUrl: input.contactMapsUrl ?? current?.contactMapsUrl ?? null,
       yearsExperience: input.yearsExperience ?? current?.yearsExperience ?? null,
-      patientsServed: input.patientsServed ?? current?.patientsServed ?? null,
+      clientsServed: input.clientsServed ?? current?.clientsServed ?? null,
       satisfactionPct: input.satisfactionPct ?? current?.satisfactionPct ?? null,
       trustBadges: input.trustBadges ?? current?.trustBadges ?? [],
       featuredServiceIds: input.featuredServiceIds ?? current?.featuredServiceIds ?? [],
@@ -394,7 +394,7 @@ export async function updateWebsite(supabase: DbClient, businessId: string, webs
     contactHours: patch.contactHours ?? current.contactHours,
     contactMapsUrl: patch.contactMapsUrl ?? current.contactMapsUrl,
     yearsExperience: patch.yearsExperience ?? current.yearsExperience,
-    patientsServed: patch.patientsServed ?? current.patientsServed,
+    clientsServed: patch.clientsServed ?? current.clientsServed,
     satisfactionPct: patch.satisfactionPct ?? current.satisfactionPct,
     trustBadges: patch.trustBadges ?? current.trustBadges,
     featuredServiceIds: patch.featuredServiceIds ?? current.featuredServiceIds,

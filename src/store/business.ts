@@ -5,19 +5,19 @@ import type {
   Business,
   BusinessAvailability,
   BusinessSubscription,
-  ClinicService,
+  Service,
   DashboardAnalytics,
   Notification,
-  Patient,
+  Client,
 } from '@/types'
 
 interface BusinessStoreState {
   business: Business | null
   subscription: BusinessSubscription | null
   agent: AiAgent | null
-  services: ClinicService[]
+  services: Service[]
   availability: BusinessAvailability[]
-  patients: Patient[]
+  clients: Client[]
   appointments: Appointment[]
   notifications: Notification[]
   analytics: DashboardAnalytics | null
@@ -25,9 +25,9 @@ interface BusinessStoreState {
   setBusiness: (business: Business | null) => void
   setSubscription: (subscription: BusinessSubscription | null) => void
   setAgent: (agent: AiAgent | null) => void
-  setServices: (services: ClinicService[]) => void
+  setServices: (services: Service[]) => void
   setAvailability: (availability: BusinessAvailability[]) => void
-  setPatients: (patients: Patient[]) => void
+  setClients: (clients: Client[]) => void
   setAppointments: (appointments: Appointment[]) => void
   setNotifications: (notifications: Notification[]) => void
   setAnalytics: (analytics: DashboardAnalytics | null) => void
@@ -41,7 +41,7 @@ export const useBusinessStore = create<BusinessStoreState>((set) => ({
   agent: null,
   services: [],
   availability: [],
-  patients: [],
+  clients: [],
   appointments: [],
   notifications: [],
   analytics: null,
@@ -51,7 +51,7 @@ export const useBusinessStore = create<BusinessStoreState>((set) => ({
   setAgent: (agent) => set({ agent }),
   setServices: (services) => set({ services }),
   setAvailability: (availability) => set({ availability }),
-  setPatients: (patients) => set({ patients }),
+  setClients: (clients) => set({ clients }),
   setAppointments: (appointments) => set({ appointments }),
   setNotifications: (notifications) => set({ notifications }),
   setAnalytics: (analytics) => set({ analytics }),
@@ -63,7 +63,7 @@ export const useBusinessStore = create<BusinessStoreState>((set) => ({
       agent: null,
       services: [],
       availability: [],
-      patients: [],
+      clients: [],
       appointments: [],
       notifications: [],
       analytics: null,

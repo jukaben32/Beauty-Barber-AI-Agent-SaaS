@@ -2,15 +2,15 @@ import { z } from 'zod'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { apiError, json, readJson } from '@/lib/api'
 import { resolveRealtimeClinicContext } from '@/lib/realtime'
-import { clinicRealtimeTools } from '@/ai/tools'
-import { findOrCreatePatient } from '@/services/patients'
+import { realtimeTools } from '@/ai/tools'
+import { findOrCreateClient } from '@/services/clients'
 import { createConversation, linkConversationToAppointment } from '@/services/conversations'
 import { realtimeSessionSchema } from '@/validations'
 
 const connectSchema = realtimeSessionSchema.extend({
-  patientName: z.string().max(120).optional(),
-  patientEmail: z.string().email().optional(),
-  patientPhone: z.string().max(40).optional(),
+  clientName: z.string().max(120).optional(),
+  clientEmail: z.string().email().optional(),
+  clientPhone: z.string().max(40).optional(),
   appointmentId: z.string().uuid().optional(),
 })
 
@@ -36,20 +36,20 @@ export async function POST(request: Request) {
       language: parsed.data.language ?? 'en',
     })
 
-    const hasPatientDetails = Boolean(parsed.data.patientName || parsed.data.patientEmail || parsed.data.patientPhone)
-    let patient = null
+    const hasClientDetails = Boolean(parsed.data.clientName || parsed.data.clientEmail || parsed.data.clientPhone)
+    let client = null
     let conversation = null
 
-    if (hasPatientDetails || parsed.data.appointmentId) {
-      patient = await findOrCreatePatient(admin, context.business.id, {
-        name: parsed.data.patientName || 'Unknown patient',
-        email: parsed.data.patientEmail ?? null,
-        phone: parsed.data.patientPhone ?? null,
+    if (hasClientDetails || parsed.data.appointmentId) {
+      client = await findOrCreateClient(admin, context.business.id, {
+        name: parsed.data.clientName || 'Unknown client',
+        email: parsed.data.clientEmail ?? null,
+        phone: parsed.data.clientPhone ?? null,
         source: 'widget_chat',
       })
 
       conversation = await createConversation(admin, context.business.id, {
-        patientId: patient.id,
+        clientId: client.id,
         appointmentId: parsed.data.appointmentId ?? null,
         channel: parsed.data.mode === 'chat' ? 'widget_chat' : 'widget_voice',
         status: 'in_progress',
@@ -65,8 +65,8 @@ export async function POST(request: Request) {
       widget: context.widget,
       instructions: context.context.instructions,
       session: context.session,
-      tools: clinicRealtimeTools,
-      patient,
+      tools: realtimeTools,
+      client,
       conversation,
     })
   } catch (error) {

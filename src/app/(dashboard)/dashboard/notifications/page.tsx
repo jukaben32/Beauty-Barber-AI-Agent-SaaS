@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getBusinessForUser } from '@/services/business'
 import { listNotificationsForBusiness, getUnreadNotificationCount } from '@/services/notifications'
-import { NotificationsManager } from '@/components/clinic/NotificationsManager'
+import { NotificationsManager } from '@/components/dashboard/NotificationsManager'
 
 export default async function NotificationsPage() {
   const supabase = await createClient()

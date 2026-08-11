@@ -1,6 +1,6 @@
 import { Home, Search } from 'lucide-react'
 
-import { ButtonLink, SectionEyebrow, SurfaceCard } from '@/components/clinic/shared'
+import { ButtonLink, SectionEyebrow, SurfaceCard } from '@/components/dashboard/shared'
 
 export default function NotFound() {
   return (

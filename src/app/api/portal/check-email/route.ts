@@ -3,7 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { apiError, json, readJson } from '@/lib/api'
 import { portalCheckEmailSchema } from '@/validations'
 import { getBusinessBySlug } from '@/services/business'
-import { findOrCreatePatient, getPatientByEmail } from '@/services/patients'
+import { findOrCreateClient, getClientByEmail } from '@/services/clients'
 
 function isPortalPath(pathname: string) {
   return pathname === '/portal' || pathname.startsWith('/portal/')
@@ -55,14 +55,14 @@ export async function POST(request: Request) {
     return apiError('Business not found', 404)
   }
 
-  let patient = await getPatientByEmail(admin, business.id, parsed.data.email)
+  let client = await getClientByEmail(admin, business.id, parsed.data.email)
 
-  // Registration form: create/update the patient record with the name and
+  // Registration form: create/update the client record with the name and
   // phone the visitor just typed, before the magic link goes out, so that
   // when they click through, the auth callback finds this record (by
-  // email) instead of creating a bare placeholder patient.
+  // email) instead of creating a bare placeholder client.
   if (parsed.data.name) {
-    patient = await findOrCreatePatient(admin, business.id, {
+    client = await findOrCreateClient(admin, business.id, {
       name: parsed.data.name,
       email: parsed.data.email,
       phone: parsed.data.phone || null,
@@ -94,6 +94,6 @@ export async function POST(request: Request) {
       name: business.name,
       slug: business.slug,
     },
-    patientExists: Boolean(patient),
+    clientExists: Boolean(client),
   })
 }

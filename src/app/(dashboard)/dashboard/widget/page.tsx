@@ -5,7 +5,7 @@ import { slugify } from '@/lib/utils'
 import { getBusinessForUser } from '@/services/business'
 import { listAgentsForBusiness } from '@/services/agents'
 import { createWidget, listWidgetsForBusiness } from '@/services/widgets'
-import { WidgetManager } from '@/components/clinic/WidgetManager'
+import { WidgetManager } from '@/components/dashboard/WidgetManager'
 
 export default async function WidgetPage() {
   const supabase = await createClient()

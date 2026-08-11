@@ -1,7 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { getBusinessForUser, getBusinessById } from '@/services/business'
-import { getPortalPatientForAuthUser } from '@/services/patients'
+import { getPortalClientForAuthUser } from '@/services/clients'
 import type { BusinessMemberRole } from '@/types'
 
 export async function getServerSupabaseAndUser() {
@@ -50,11 +50,11 @@ export function canManageBusiness(role: BusinessMemberRole | null) {
   return role === 'owner' || role === 'admin'
 }
 
-// Used by the patient-facing portal pages (home, appointments, support):
-// resolves the signed-in user's linked patient record and clinic in one
-// call. The patient lookup uses the authenticated client (RLS allows a
-// user to read a patients row that already carries their own auth_user_id);
-// the business lookup needs the admin client since patients have no RLS
+// Used by the client-facing portal pages (home, appointments, support):
+// resolves the signed-in user's linked client record and clinic in one
+// call. The client lookup uses the authenticated client (RLS allows a
+// user to read a clients row that already carries their own auth_user_id);
+// the business lookup needs the admin client since clients have no RLS
 // grant on the businesses table.
 export async function getPortalContext() {
   const supabase = await createServerClient()
@@ -63,16 +63,16 @@ export async function getPortalContext() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    return { user: null, patient: null, business: null }
+    return { user: null, client: null, business: null }
   }
 
-  const patient = await getPortalPatientForAuthUser(supabase, user.id)
-  if (!patient) {
-    return { user, patient: null, business: null }
+  const client = await getPortalClientForAuthUser(supabase, user.id)
+  if (!client) {
+    return { user, client: null, business: null }
   }
 
   const admin = createAdminClient()
-  const business = await getBusinessById(admin, patient.businessId)
+  const business = await getBusinessById(admin, client.businessId)
 
-  return { user, patient, business }
+  return { user, client, business }
 }

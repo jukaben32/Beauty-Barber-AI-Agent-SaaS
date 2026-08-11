@@ -8,8 +8,8 @@ import type {
   BillingTransactionStatus,
   BusinessAvailability,
   Business,
-  ClinicService,
-  Patient,
+  Service,
+  Client,
   PublicBusinessProfile,
 } from '@/types'
 import { DEFAULT_APPOINTMENT_SLOT_MINUTES, DEFAULT_CURRENCY, DEFAULT_CHAIN_ID } from '@/constants'
@@ -24,7 +24,7 @@ import {
   zonedTimeToUtc,
 } from './_shared'
 import type { DbClient } from './_shared'
-import { toPatient } from './patients'
+import { toClient } from './clients'
 import { toService } from './services'
 
 type AppointmentRow = any
@@ -35,7 +35,7 @@ function toAppointment(row: any): Appointment {
   return {
     id: row.id,
     businessId: row.business_id,
-    patientId: row.patient_id ?? null,
+    clientId: row.client_id ?? null,
     agentId: row.agent_id ?? null,
     serviceId: row.service_id ?? null,
     conversationId: row.conversation_id ?? null,
@@ -64,13 +64,13 @@ function toAppointment(row: any): Appointment {
 function toRelation(row: AppointmentRow): AppointmentWithRelations {
   return {
     ...toAppointment(row),
-    // row.patients/row.clinic_services come back snake_case from Supabase;
-    // toPatient/toService convert them to the camelCase shape the rest of
+    // row.clients/row.services come back snake_case from Supabase;
+    // toClient/toService convert them to the camelCase shape the rest of
     // the app (AppointmentsManager, AppointmentDetailsDrawer, etc.) expects
-    // — without this, fields like insuranceProvider/dateOfBirth/
-    // durationMinutes were always undefined even though data existed.
-    patient: row.patients ? toPatient(row.patients) : null,
-    service: row.clinic_services ? toService(row.clinic_services) : null,
+    // — without this, fields like dateOfBirth/durationMinutes were always
+    // undefined even though data existed.
+    client: row.clients ? toClient(row.clients) : null,
+    service: row.services ? toService(row.services) : null,
     agent: row.ai_agents ?? null,
   }
 }
@@ -92,7 +92,7 @@ function toAvailability(row: any): BusinessAvailability {
 }
 
 function getAppointmentDurationMinutes(row: AppointmentRow, fallback = DEFAULT_APPOINTMENT_SLOT_MINUTES) {
-  return row.clinic_services?.duration_minutes || fallback
+  return row.services?.duration_minutes || fallback
 }
 
 async function getBusinessForAppointment(supabase: DbClient, businessId: string) {
@@ -107,7 +107,7 @@ async function getBusinessForAppointment(supabase: DbClient, businessId: string)
 
 async function getServiceForAppointment(supabase: DbClient, businessId: string, serviceId?: string | null) {
   if (!serviceId) return null
-  const { data, error } = await supabase.from('clinic_services').select('*').eq('business_id', businessId).eq('id', serviceId).maybeSingle()
+  const { data, error } = await supabase.from('services').select('*').eq('business_id', businessId).eq('id', serviceId).maybeSingle()
   if (error) throw error
   return data
 }
@@ -132,7 +132,7 @@ async function getBookedAppointments(
 ) {
   const { data, error } = await supabase
     .from('appointments')
-    .select('*, clinic_services(duration_minutes)')
+    .select('*, services(duration_minutes)')
     .eq('business_id', businessId)
     .not('status', 'in', '(cancelled)')
     .gte('scheduled_at', fromIso)
@@ -157,11 +157,11 @@ function addMinutes(date: Date, minutes: number) {
 export async function listAppointmentsForBusiness(
   supabase: DbClient,
   businessId: string,
-  filters: { status?: AppointmentStatus | 'all'; limit?: number; patientId?: string } = {}
+  filters: { status?: AppointmentStatus | 'all'; limit?: number; clientId?: string } = {}
 ) {
   let query = supabase
     .from('appointments')
-    .select('*, patients(*), clinic_services(*), ai_agents(id, name, voice)')
+    .select('*, clients(*), services(*), ai_agents(id, name, voice)')
     .eq('business_id', businessId)
     .order('scheduled_at', { ascending: false })
 
@@ -169,8 +169,8 @@ export async function listAppointmentsForBusiness(
     query = query.eq('status', filters.status)
   }
 
-  if (filters.patientId) {
-    query = query.eq('patient_id', filters.patientId)
+  if (filters.clientId) {
+    query = query.eq('client_id', filters.clientId)
   }
 
   if (filters.limit) {
@@ -182,14 +182,14 @@ export async function listAppointmentsForBusiness(
   return ((data ?? []) as unknown as AppointmentRow[]).map(toRelation)
 }
 
-export async function listAppointmentsForPatient(supabase: DbClient, businessId: string, patientId: string) {
-  return listAppointmentsForBusiness(supabase, businessId, { patientId })
+export async function listAppointmentsForClient(supabase: DbClient, businessId: string, clientId: string) {
+  return listAppointmentsForBusiness(supabase, businessId, { clientId })
 }
 
 export async function getAppointmentById(supabase: DbClient, businessId: string, appointmentId: string) {
   const { data, error } = await supabase
     .from('appointments')
-    .select('*, patients(*), clinic_services(*), ai_agents(id, name, voice)')
+    .select('*, clients(*), services(*), ai_agents(id, name, voice)')
     .eq('business_id', businessId)
     .eq('id', appointmentId)
     .maybeSingle()
@@ -201,7 +201,7 @@ export async function getAppointmentPublic(supabase: DbClient, appointmentId: st
   const { data, error } = await supabase
     .from('appointments')
     .select(
-      '*, patients(*), clinic_services(*), ai_agents(id, name, voice), businesses(id, name, slug, specialty, description, logo_url, phone, booking_email, timezone, address, website, city, state, zip_code, payment_wallet_address, payment_chain_id, payment_currency)'
+      '*, clients(*), services(*), ai_agents(id, name, voice), businesses(id, name, slug, specialty, description, logo_url, phone, booking_email, timezone, address, website, city, state, zip_code, payment_wallet_address, payment_chain_id, payment_currency)'
     )
     .eq('id', appointmentId)
     .maybeSingle()
@@ -333,7 +333,7 @@ export async function createAppointment(
   supabase: DbClient,
   businessId: string,
   input: {
-    patientId?: string | null
+    clientId?: string | null
     agentId?: string | null
     serviceId?: string | null
     conversationId?: string | null
@@ -362,7 +362,7 @@ export async function createAppointment(
     .from('appointments')
     .insert({
       business_id: businessId,
-      patient_id: input.patientId ?? null,
+      client_id: input.clientId ?? null,
       agent_id: input.agentId ?? null,
       service_id: input.serviceId ?? null,
       conversation_id: input.conversationId ?? null,
@@ -376,7 +376,7 @@ export async function createAppointment(
       payment_currency: business.payment_currency || DEFAULT_CURRENCY,
       payment_chain_id: business.payment_chain_id || DEFAULT_CHAIN_ID,
     })
-    .select('*, patients(*), clinic_services(*), ai_agents(id, name, voice)')
+    .select('*, clients(*), services(*), ai_agents(id, name, voice)')
     .single()
   if (error) throw error
   return toRelation(data as unknown as AppointmentRow)
@@ -391,7 +391,7 @@ export async function updateAppointment(
   const { data, error } = await supabase
     .from('appointments')
     .update({
-      patient_id: patch.patientId,
+      client_id: patch.clientId,
       agent_id: patch.agentId,
       service_id: patch.serviceId,
       conversation_id: patch.conversationId,
@@ -415,7 +415,7 @@ export async function updateAppointment(
     })
     .eq('business_id', businessId)
     .eq('id', appointmentId)
-    .select('*, patients(*), clinic_services(*), ai_agents(id, name, voice)')
+    .select('*, clients(*), services(*), ai_agents(id, name, voice)')
     .single()
   if (error) throw error
   return toRelation(data as unknown as AppointmentRow)
@@ -481,7 +481,7 @@ export async function rescheduleAppointment(
     })
     .eq('business_id', businessId)
     .eq('id', appointmentId)
-    .select('*, patients(*), clinic_services(*), ai_agents(id, name, voice)')
+    .select('*, clients(*), services(*), ai_agents(id, name, voice)')
     .single()
   if (error) throw error
   return toRelation(data as unknown as AppointmentRow)
@@ -506,12 +506,12 @@ export async function recordAppointmentPayment(
   if (!appointment) throw new Error('Appointment not found')
 
   const paymentAmount = appointment.paymentAmount ?? appointment.service?.price ?? input.amount
-  const resolvedTxHash = input.txHash?.trim() || `clinic-${appointmentId}-${crypto.randomUUID()}`
+  const resolvedTxHash = input.txHash?.trim() || `booking-${appointmentId}-${crypto.randomUUID()}`
 
   const { error: insertError } = await supabase.from('billing_transactions').insert({
     business_id: businessId,
     appointment_id: appointmentId,
-    patient_id: appointment.patientId ?? null,
+    client_id: appointment.clientId ?? null,
     amount: input.amount,
     currency: input.currency || DEFAULT_CURRENCY,
     chain_id: input.chainId || DEFAULT_CHAIN_ID,
@@ -533,7 +533,7 @@ export async function recordAppointmentPayment(
     })
     .eq('business_id', businessId)
     .eq('id', appointmentId)
-    .select('*, patients(*), clinic_services(*), ai_agents(id, name, voice)')
+    .select('*, clients(*), services(*), ai_agents(id, name, voice)')
     .single()
   if (error) throw error
   return toRelation(data as unknown as AppointmentRow)
@@ -548,13 +548,13 @@ export async function listAppointmentStatuses(supabase: DbClient, businessId: st
   return data ?? []
 }
 
-export async function getPatientAppointmentsForPortal(supabase: DbClient, patientAuthUserId: string) {
-  const { data: patientRows, error: patientError } = await supabase.from('patients').select('id, business_id').eq('auth_user_id', patientAuthUserId)
-  if (patientError) throw patientError
-  const patient = patientRows?.[0]
-  if (!patient) return []
+export async function getClientAppointmentsForPortal(supabase: DbClient, clientAuthUserId: string) {
+  const { data: clientRows, error: clientError } = await supabase.from('clients').select('id, business_id').eq('auth_user_id', clientAuthUserId)
+  if (clientError) throw clientError
+  const client = clientRows?.[0]
+  if (!client) return []
 
-  return listAppointmentsForBusiness(supabase, patient.business_id, { patientId: patient.id })
+  return listAppointmentsForBusiness(supabase, client.business_id, { clientId: client.id })
 }
 
 export async function getAvailabilityContext(supabase: DbClient, businessId: string) {

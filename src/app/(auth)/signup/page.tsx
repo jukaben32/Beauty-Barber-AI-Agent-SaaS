@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, ArrowLeft, MailCheck, Rocket } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { createBusiness } from '@/services/business'
-import { BrandMark, SectionEyebrow, SurfaceCard } from '@/components/clinic/shared'
+import { BrandMark, SectionEyebrow, SurfaceCard } from '@/components/dashboard/shared'
 import { getErrorMessage } from '@/lib/utils'
 
 export default function SignupPage() {

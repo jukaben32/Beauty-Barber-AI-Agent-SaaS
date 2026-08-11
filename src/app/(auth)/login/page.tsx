@@ -4,7 +4,7 @@ import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Eye, EyeOff, LogIn } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { BrandMark, SectionEyebrow, SurfaceCard } from '@/components/clinic/shared'
+import { BrandMark, SectionEyebrow, SurfaceCard } from '@/components/dashboard/shared'
 import { getErrorMessage } from '@/lib/utils'
 
 const DASHBOARD_BASE = 'http://localhost'
@@ -86,7 +86,7 @@ function LoginForm() {
           <div className="mt-8 space-y-3">
             <div className="rounded-[24px] border border-white/10 bg-white/6 px-5 py-4">
               <div className="text-sm font-bold">Clara-powered AI booking assistant</div>
-              <div className="text-xs text-white/70">Patients can call, chat, or use the website widget.</div>
+              <div className="text-xs text-white/70">Clients can call, chat, or use the website widget.</div>
             </div>
             <div className="rounded-[24px] border border-white/10 bg-white/6 px-5 py-4">
               <div className="text-sm font-bold">Secure, multi-tenant data model</div>

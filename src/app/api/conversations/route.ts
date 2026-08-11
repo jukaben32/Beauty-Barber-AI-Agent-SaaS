@@ -13,7 +13,7 @@ import {
 const conversationSchema = z.object({
   conversationId: z.string().uuid().optional(),
   agentId: z.string().uuid().optional().nullable(),
-  patientId: z.string().uuid().optional().nullable(),
+  clientId: z.string().uuid().optional().nullable(),
   appointmentId: z.string().uuid().optional().nullable(),
   channel: z.enum(['widget_voice', 'widget_chat', 'phone', 'whatsapp']).optional(),
   status: z.enum(['in_progress', 'completed', 'failed']).optional(),
@@ -88,7 +88,7 @@ export async function POST(request: Request) {
 
   const conversation = await createConversation(supabase, business.id, {
     agentId: parsed.data.agentId ?? null,
-    patientId: parsed.data.patientId ?? null,
+    clientId: parsed.data.clientId ?? null,
     appointmentId: parsed.data.appointmentId ?? null,
     channel: parsed.data.channel ?? 'widget_voice',
     status: parsed.data.status ?? 'in_progress',
@@ -132,7 +132,7 @@ export async function PATCH(request: Request) {
 
   const conversation = await updateConversationStatus(supabase, business.id, parsed.data.conversationId, {
     agentId: parsed.data.agentId ?? undefined,
-    patientId: parsed.data.patientId ?? undefined,
+    clientId: parsed.data.clientId ?? undefined,
     appointmentId: parsed.data.appointmentId ?? undefined,
     channel: parsed.data.channel,
     status: parsed.data.status,

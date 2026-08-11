@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { Inbox } from 'lucide-react'
 
-import { ButtonLink, SurfaceCard } from '@/components/clinic/shared'
+import { ButtonLink, SurfaceCard } from '@/components/dashboard/shared'
 
 type EmptyStateProps = {
   title: string

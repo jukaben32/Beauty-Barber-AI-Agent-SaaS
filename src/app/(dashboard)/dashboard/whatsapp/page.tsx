@@ -5,8 +5,8 @@ import { createClient } from '@/lib/supabase/server'
 import { getBusinessForUser } from '@/services/business'
 import { getWhatsappConnection, toPublicWhatsappConnection } from '@/services/whatsapp'
 import { listAgentsForBusiness } from '@/services/agents'
-import { WhatsappManager } from '@/components/clinic/WhatsappManager'
-import { SectionEyebrow, SectionHeading, StatusBadge, SurfaceCard } from '@/components/clinic/shared'
+import { WhatsappManager } from '@/components/dashboard/WhatsappManager'
+import { SectionEyebrow, SectionHeading, StatusBadge, SurfaceCard } from '@/components/dashboard/shared'
 
 function statusTone(status: string | null | undefined) {
   if (status === 'connected') return 'emerald' as const
@@ -34,7 +34,7 @@ export default async function WhatsappPage() {
       <SectionHeading
         eyebrow={<SectionEyebrow>Setup</SectionEyebrow>}
         title="WhatsApp"
-        description="Connect Evolution API so the same clinic assistant can answer WhatsApp, qualify patients and book appointments."
+        description="Connect Evolution API so the same clinic assistant can answer WhatsApp, qualify clients and book appointments."
       />
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.18fr)_minmax(320px,0.82fr)]">

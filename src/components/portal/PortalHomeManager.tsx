@@ -1,19 +1,19 @@
 import { CalendarDays, CheckCircle2, ShieldCheck, Wallet } from 'lucide-react'
-import type { AppointmentWithRelations, Patient } from '@/types'
-import { SectionEyebrow, SurfaceCard, StatusBadge, ButtonLink, ValueCard } from '@/components/clinic/shared'
+import type { AppointmentWithRelations, Client } from '@/types'
+import { SectionEyebrow, SurfaceCard, StatusBadge, ButtonLink, ValueCard } from '@/components/dashboard/shared'
 import {
   APPOINTMENT_STATUS_LABEL,
   APPOINTMENT_STATUS_TONE,
   formatDateTimeInTimeZone,
-} from '@/components/clinic/appointments-utils'
+} from '@/components/dashboard/appointments-utils'
 
 export function PortalHomeManager({
-  patient,
+  client,
   businessName,
   timezone,
   appointments,
 }: {
-  patient: Patient
+  client: Client
   businessName: string
   timezone: string
   appointments: AppointmentWithRelations[]
@@ -32,8 +32,8 @@ export function PortalHomeManager({
       <SurfaceCard className="p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <SectionEyebrow>Patient portal</SectionEyebrow>
-            <h1 className="mt-4 text-3xl font-black tracking-tight text-[var(--text-strong)]">Welcome back, {patient.name}</h1>
+            <SectionEyebrow>Client portal</SectionEyebrow>
+            <h1 className="mt-4 text-3xl font-black tracking-tight text-[var(--text-strong)]">Welcome back, {client.name}</h1>
             <p className="mt-2 text-sm text-[var(--text-muted)]">
               Manage your {businessName} appointments, payments, and support requests.
             </p>

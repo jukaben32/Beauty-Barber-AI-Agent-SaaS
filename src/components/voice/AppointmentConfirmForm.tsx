@@ -2,10 +2,10 @@
 import React, { useState } from 'react'
 import { CalendarDays, Clock, Check, X } from 'lucide-react'
 import Button from '@/components/ui/Button'
-import type { AvailableSlot, ClinicService } from '@/types'
+import type { AvailableSlot, Service } from '@/types'
 
 type AppointmentConfirmFormProps = {
-  services: ClinicService[]
+  services: Service[]
   slots: AvailableSlot[]
   selectedServiceId?: string | null
   onConfirm: (data: { serviceId: string; slotStart: string; slotEnd: string }) => void | Promise<void>

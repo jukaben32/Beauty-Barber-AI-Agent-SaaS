@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getBusinessForUser } from '@/services/business'
 import { listSupportTickets } from '@/services/support'
-import { SupportManager } from '@/components/clinic/SupportManager'
+import { SupportManager } from '@/components/dashboard/SupportManager'
 
 export default async function SupportPage() {
   const supabase = await createClient()

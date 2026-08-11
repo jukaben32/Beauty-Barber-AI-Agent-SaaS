@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getBusinessForUser } from '@/services/business'
 import { listKnowledgeDocuments } from '@/services/faqs'
-import { KnowledgeManager } from '@/components/clinic/KnowledgeManager'
+import { KnowledgeManager } from '@/components/dashboard/KnowledgeManager'
 
 export default async function FaqsPage() {
   const supabase = await createClient()

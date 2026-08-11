@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronRight, Search } from 'lucide-react'
 import type { AppointmentStatus, AppointmentWithRelations } from '@/types'
-import { SurfaceCard, StatusBadge, Pill } from '@/components/clinic/shared'
+import { SurfaceCard, StatusBadge, Pill } from '@/components/dashboard/shared'
 import { cn, formatCurrency } from '@/lib/utils'
 import { AppointmentDetailsDrawer } from './AppointmentDetailsDrawer'
 import {
@@ -26,11 +26,10 @@ const STATUS_FILTERS: Array<{ label: string; value: AppointmentStatus | 'all' }>
 
 function buildSearchIndex(appointment: AppointmentWithRelations) {
   return [
-    appointment.patient?.name,
-    appointment.patient?.phone,
-    appointment.patient?.email,
-    appointment.patient?.insuranceProvider,
-    appointment.patient?.dateOfBirth,
+    appointment.client?.name,
+    appointment.client?.phone,
+    appointment.client?.email,
+    appointment.client?.dateOfBirth,
     appointment.service?.name,
     appointment.notes,
     appointment.source,
@@ -146,7 +145,7 @@ export function AppointmentsManager({
                 Manage bookings, call outcomes, and clinic payments
               </h1>
               <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--text-muted)]">
-                Review patient bookings in real time, inspect the appointment drawer, and keep cash or partial payments in sync with the schedule.
+                Review client bookings in real time, inspect the appointment drawer, and keep cash or partial payments in sync with the schedule.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 <Pill tone="teal">{summary.total} total</Pill>
@@ -197,8 +196,8 @@ export function AppointmentsManager({
                 gridTemplateColumns: 'minmax(220px, 1.3fr) minmax(180px, 1fr) minmax(180px, 1fr) minmax(180px, 1fr) minmax(150px, 0.9fr) minmax(130px, 0.85fr) 56px',
               }}
             >
-              <div>Patient</div>
-              <div>Insurance / DOB</div>
+              <div>Client</div>
+              <div>Date of Birth</div>
               <div>Service</div>
               <div>Scheduled</div>
               <div>Payment</div>
@@ -229,19 +228,16 @@ export function AppointmentsManager({
                     >
                       <div className="min-w-0">
                         <div className="truncate font-semibold text-[var(--text-strong)]">
-                          {appointment.patient?.name ?? 'Unknown patient'}
+                          {appointment.client?.name ?? 'Unknown client'}
                         </div>
                         <div className="mt-1 truncate text-xs text-[var(--text-muted)]">
-                          {appointment.patient?.phone ?? appointment.patient?.email ?? 'No contact on file'}
+                          {appointment.client?.phone ?? appointment.client?.email ?? 'No contact on file'}
                         </div>
                       </div>
 
                       <div className="min-w-0">
                         <div className="truncate font-semibold text-[var(--text-strong)]">
-                          {appointment.patient?.insuranceProvider ?? 'Self pay'}
-                        </div>
-                        <div className="mt-1 truncate text-xs text-[var(--text-muted)]">
-                          DOB: {appointment.patient?.dateOfBirth ?? 'N/A'}
+                          {appointment.client?.dateOfBirth ?? 'N/A'}
                         </div>
                       </div>
 
