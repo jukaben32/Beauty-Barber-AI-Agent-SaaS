@@ -1,6 +1,6 @@
 import '@/styles/globals.css'
 
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 
 export const metadata: Metadata = {
@@ -9,6 +9,14 @@ export const metadata: Metadata = {
     template: '%s | Clara AI',
   },
   description: 'AI voice and WhatsApp booking receptionist for modern salons and barbershops.',
+}
+
+// Without this, mobile browsers render the page at a desktop width
+// (~980px) and scale it down to fit, so everything looks tiny and needs
+// pinch-zoom. This makes the layout render at the device's real width.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
