@@ -1,9 +1,10 @@
-export const DEFAULT_TIME_ZONE = 'America/New_York'
+export const DEFAULT_TIME_ZONE = 'America/Santo_Domingo'
 export const DEFAULT_WELCOME_MESSAGE = 'Hola, soy Clara, tu asistente medica virtual. En que te ayudo hoy?'
 export const DEFAULT_WIDGET_WIDTH = 420
 export const DEFAULT_WIDGET_HEIGHT = 680
 export const DEFAULT_APPOINTMENT_SLOT_MINUTES = 30
-export const DEFAULT_CURRENCY = 'USDC'
+export const DEFAULT_CURRENCY = 'DOP'
+export const LOCAL_PAYMENT_METHODS = ['cash', 'transfer', 'card_cardnet', 'card_azul'] as const
 export const DEFAULT_CHAIN_ID = 137
 export const DEFAULT_PRIMARY_COLOR = '#0f766e'
 export const DEFAULT_SECONDARY_COLOR = '#14b8a6'

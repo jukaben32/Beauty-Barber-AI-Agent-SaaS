@@ -7,6 +7,7 @@ export type AgentStatus = 'draft' | 'live' | 'paused'
 export type ServicePriceType = 'fixed' | 'starting_at' | 'contact'
 export type AppointmentStatus = 'scheduled' | 'pending_confirmation' | 'confirmed' | 'completed' | 'cancelled' | 'no_show'
 export type PaymentStatus = 'not_required' | 'pending' | 'partial' | 'paid' | 'cash' | 'refunded'
+export type PaymentMethod = 'cash' | 'transfer' | 'card_cardnet' | 'card_azul' | 'usdc'
 export type AppointmentSource = 'widget' | 'portal' | 'manual' | 'ai_call' | 'phone' | 'whatsapp'
 export type ConversationChannel = 'widget_voice' | 'widget_chat' | 'phone' | 'whatsapp'
 export type ConversationStatus = 'in_progress' | 'completed' | 'failed'
@@ -40,6 +41,14 @@ export interface Business {
   paymentChainId: number | null
   paymentCurrency: string
   bookingDepositAmount: number | null
+  bankName: string | null
+  bankAccountHolder: string | null
+  bankAccountNumber: string | null
+  bankAccountType: string | null
+  taxId: string | null
+  acceptsCash: boolean
+  acceptsTransfer: boolean
+  acceptsCard: boolean
   onboardingStep: BusinessOnboardingStep
   createdAt: string
   updatedAt: string
@@ -140,6 +149,8 @@ export interface Appointment {
   paymentCurrency: string
   paymentChainId: number | null
   paymentTxHash: string | null
+  paymentMethod: PaymentMethod | null
+  paymentReference: string | null
   reminderSentAt: string | null
   createdAt: string
   updatedAt: string
@@ -419,6 +430,8 @@ export interface BillingTransaction {
   txHash: string
   status: BillingTransactionStatus
   paymentType: BillingPaymentType
+  paymentMethod: PaymentMethod | null
+  paymentReference: string | null
   metadata: Json | null
   createdAt: string
   updatedAt: string
@@ -478,4 +491,11 @@ export interface PublicBusinessProfile {
   paymentWalletAddress: string | null
   paymentChainId: number | null
   paymentCurrency: string
+  bankName: string | null
+  bankAccountHolder: string | null
+  bankAccountNumber: string | null
+  bankAccountType: string | null
+  acceptsCash: boolean
+  acceptsTransfer: boolean
+  acceptsCard: boolean
 }

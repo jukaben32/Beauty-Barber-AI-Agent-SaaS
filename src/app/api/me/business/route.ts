@@ -17,6 +17,14 @@ const updateBusinessSchema = businessSchema
     paymentChainId: z.number().int().positive().optional().nullable(),
     paymentCurrency: z.string().min(3).max(10).optional(),
     bookingDepositAmount: z.number().positive().optional().nullable(),
+    bankName: z.string().max(120).optional().nullable(),
+    bankAccountHolder: z.string().max(120).optional().nullable(),
+    bankAccountNumber: z.string().max(60).optional().nullable(),
+    bankAccountType: z.string().max(40).optional().nullable(),
+    taxId: z.string().max(40).optional().nullable(),
+    acceptsCash: z.boolean().optional(),
+    acceptsTransfer: z.boolean().optional(),
+    acceptsCard: z.boolean().optional(),
     onboardingStep: z.enum(['created', 'profile', 'agent', 'services', 'billing', 'done']).optional(),
   })
   .partial()

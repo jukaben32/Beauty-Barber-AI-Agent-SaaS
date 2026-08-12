@@ -96,11 +96,19 @@ create table if not exists businesses (
   city text,
   state text,
   zip_code text,
-  timezone text not null default 'America/New_York',
+  timezone text not null default 'America/Santo_Domingo',
   payment_wallet_address text,
   payment_chain_id integer not null default 137,
-  payment_currency text not null default 'USDC',
+  payment_currency text not null default 'DOP',
   booking_deposit_amount numeric(12,2),
+  bank_name text,
+  bank_account_holder text,
+  bank_account_number text,
+  bank_account_type text,
+  tax_id text,
+  accepts_cash boolean not null default true,
+  accepts_transfer boolean not null default false,
+  accepts_card boolean not null default false,
   onboarding_step text not null default 'created'
     check (onboarding_step in ('created', 'profile', 'agent', 'services', 'billing', 'done')),
   created_at timestamptz not null default now(),
@@ -241,7 +249,7 @@ create table if not exists services (
   price numeric(12,2),
   price_min numeric(12,2),
   price_max numeric(12,2),
-  currency text not null default 'USDC',
+  currency text not null default 'DOP',
   active boolean not null default true,
   color text,
   instructions text,
@@ -404,9 +412,12 @@ create table if not exists appointments (
   payment_status text not null default 'not_required'
     check (payment_status in ('not_required', 'pending', 'partial', 'paid', 'cash', 'refunded')),
   payment_amount numeric(12,2),
-  payment_currency text not null default 'USDC',
+  payment_currency text not null default 'DOP',
   payment_chain_id integer not null default 137,
   payment_tx_hash text,
+  payment_method text
+    check (payment_method in ('cash', 'transfer', 'card_cardnet', 'card_azul', 'usdc')),
+  payment_reference text,
   reminder_sent_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -973,13 +984,16 @@ create table if not exists billing_transactions (
   appointment_id uuid references appointments(id) on delete set null,
   client_id uuid references clients(id) on delete set null,
   amount numeric(12,2) not null,
-  currency text not null default 'USDC',
+  currency text not null default 'DOP',
   chain_id integer not null default 137,
   tx_hash text not null unique,
   status text not null default 'pending'
     check (status in ('pending', 'confirmed', 'failed', 'refunded')),
   payment_type text not null default 'booking_deposit'
     check (payment_type in ('booking_deposit', 'full_payment', 'subscription', 'portal_topup')),
+  payment_method text
+    check (payment_method in ('cash', 'transfer', 'card_cardnet', 'card_azul', 'usdc')),
+  payment_reference text,
   metadata jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

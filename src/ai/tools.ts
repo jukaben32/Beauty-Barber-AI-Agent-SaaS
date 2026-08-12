@@ -1,4 +1,5 @@
 import type { AppointmentSource, AppointmentWithRelations, Business, Service, KnowledgeDocument, Client } from '@/types'
+import { DEFAULT_TIME_ZONE } from '@/constants'
 import { buildAppointmentConfirmationEmail } from '@/lib/email/appointmentConfirmation'
 import { buildAppointmentStatusEmail } from '@/lib/email/appointmentStatus'
 import { buildBusinessAppointmentEmail } from '@/lib/email/businessNotification'
@@ -219,7 +220,7 @@ export function buildAssistantInstructions(opts: {
     `Your job is to help clients book, reschedule, cancel, and understand our services.`,
     `Always ask for the minimum required client details and confirm date and time in the business timezone.`,
     `Before confirming, rescheduling, cancelling, or recording a payment on an EXISTING appointment, always ask the caller to state the phone number or email on file for that booking and pass it as clientEmail/clientPhone — this verifies you are speaking with the person who made the booking.`,
-    `Business timezone: ${opts.timezone || opts.business.timezone || 'America/New_York'}.`,
+    `Business timezone: ${opts.timezone || opts.business.timezone || DEFAULT_TIME_ZONE}.`,
     `Services:\n${serviceList || '- No active services configured yet.'}`,
     `FAQs:\n${faqList || '- No FAQs configured yet.'}`,
     `If a caller describes a skin reaction, injury, or health concern that goes beyond a normal service, advise them to seek medical care and offer to note it for the stylist ahead of the appointment.`,

@@ -13,6 +13,8 @@ function toBilling(row: any): BillingTransaction {
     txHash: row.tx_hash,
     status: row.status,
     paymentType: row.payment_type,
+    paymentMethod: row.payment_method ?? null,
+    paymentReference: row.payment_reference ?? null,
     metadata: row.metadata ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -69,6 +71,8 @@ export async function recordBillingTransaction(
     txHash: string
     status?: BillingTransaction['status']
     paymentType?: BillingTransaction['paymentType']
+    paymentMethod?: BillingTransaction['paymentMethod']
+    paymentReference?: string | null
     metadata?: Record<string, unknown> | null
   }
 ) {
@@ -84,6 +88,8 @@ export async function recordBillingTransaction(
       tx_hash: input.txHash,
       status: input.status ?? 'pending',
       payment_type: input.paymentType ?? 'booking_deposit',
+      payment_method: input.paymentMethod ?? null,
+      payment_reference: input.paymentReference ?? null,
       metadata: input.metadata ?? null,
     })
     .select('*')
