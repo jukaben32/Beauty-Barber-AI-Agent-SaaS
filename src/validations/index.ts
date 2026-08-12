@@ -98,6 +98,8 @@ export const appointmentPaymentSchema = z.object({
   txHash: z.string().min(4).optional(),
   status: z.enum(['pending', 'confirmed', 'failed', 'refunded']).optional(),
   paymentType: z.enum(['booking_deposit', 'full_payment', 'subscription', 'portal_topup']).optional(),
+  paymentMethod: z.enum(['cash', 'transfer', 'card_cardnet', 'card_azul', 'usdc']).optional(),
+  paymentReference: z.string().max(120).optional().nullable(),
   appointmentPaymentStatus: z.enum(['not_required', 'pending', 'partial', 'paid', 'cash', 'refunded']).optional(),
   metadata: z.record(z.unknown()).optional().nullable(),
 })
@@ -132,6 +134,8 @@ export const portalRecordPaymentSchema = z.object({
   txHash: z.string().min(4).optional(),
   status: z.enum(['pending', 'confirmed', 'failed', 'refunded']).optional(),
   paymentType: z.enum(['booking_deposit', 'full_payment', 'subscription', 'portal_topup']).optional(),
+  paymentMethod: z.enum(['cash', 'transfer', 'card_cardnet', 'card_azul', 'usdc']).optional(),
+  paymentReference: z.string().max(120).optional().nullable(),
   metadata: z.record(z.unknown()).optional().nullable(),
 })
 

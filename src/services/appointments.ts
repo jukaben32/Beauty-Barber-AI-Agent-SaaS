@@ -12,7 +12,7 @@ import type {
   Client,
   PublicBusinessProfile,
 } from '@/types'
-import { DEFAULT_APPOINTMENT_SLOT_MINUTES, DEFAULT_CURRENCY, DEFAULT_CHAIN_ID } from '@/constants'
+import { DEFAULT_APPOINTMENT_SLOT_MINUTES, DEFAULT_CURRENCY, DEFAULT_CHAIN_ID, DEFAULT_TIME_ZONE } from '@/constants'
 import {
   buildTimeLabel,
   formatDateInTimeZone,
@@ -55,6 +55,8 @@ function toAppointment(row: any): Appointment {
     paymentCurrency: row.payment_currency ?? DEFAULT_CURRENCY,
     paymentChainId: row.payment_chain_id ?? DEFAULT_CHAIN_ID,
     paymentTxHash: row.payment_tx_hash ?? null,
+    paymentMethod: row.payment_method ?? null,
+    paymentReference: row.payment_reference ?? null,
     reminderSentAt: row.reminder_sent_at ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -230,7 +232,7 @@ export async function getAvailableSlots(
   const business = await getBusinessForAppointment(supabase, businessId)
   if (!business) return []
 
-  const timezone = business.timezone || 'America/New_York'
+  const timezone = business.timezone || DEFAULT_TIME_ZONE
   const availability = await getAvailabilityForBusiness(supabase, businessId)
   const closedDateKeys = await getClosedDateKeys(supabase, businessId)
 
@@ -299,7 +301,7 @@ export async function isSlotAvailable(
 ) {
   const business = await getBusinessForAppointment(supabase, businessId)
   if (!business) return false
-  const timezone = business.timezone || 'America/New_York'
+  const timezone = business.timezone || DEFAULT_TIME_ZONE
   const start = new Date(scheduledAt)
   const end = addMinutes(start, durationMinutes)
   const dateKey = getDateKeyInTimeZone(start, timezone)
@@ -411,6 +413,8 @@ export async function updateAppointment(
       payment_currency: patch.paymentCurrency,
       payment_chain_id: patch.paymentChainId,
       payment_tx_hash: patch.paymentTxHash,
+      payment_method: patch.paymentMethod,
+      payment_reference: patch.paymentReference,
       reminder_sent_at: patch.reminderSentAt,
     })
     .eq('business_id', businessId)
@@ -498,6 +502,8 @@ export async function recordAppointmentPayment(
     txHash?: string
     status?: BillingTransactionStatus
     paymentType?: BillingPaymentType
+    paymentMethod?: Appointment['paymentMethod']
+    paymentReference?: string | null
     appointmentPaymentStatus?: Appointment['paymentStatus']
     metadata?: Record<string, unknown> | null
   }
@@ -518,6 +524,8 @@ export async function recordAppointmentPayment(
     tx_hash: resolvedTxHash,
     status: input.status || 'pending',
     payment_type: input.paymentType || 'booking_deposit',
+    payment_method: input.paymentMethod ?? null,
+    payment_reference: input.paymentReference ?? null,
     metadata: input.metadata ?? null,
   })
   if (insertError) throw insertError
@@ -530,6 +538,8 @@ export async function recordAppointmentPayment(
       payment_currency: input.currency || appointment.paymentCurrency || DEFAULT_CURRENCY,
       payment_chain_id: input.chainId || DEFAULT_CHAIN_ID,
       payment_tx_hash: resolvedTxHash,
+      payment_method: input.paymentMethod ?? null,
+      payment_reference: input.paymentReference ?? null,
     })
     .eq('business_id', businessId)
     .eq('id', appointmentId)

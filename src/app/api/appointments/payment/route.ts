@@ -36,6 +36,8 @@ export async function POST(request: Request) {
     txHash,
     status: parsed.data.status,
     paymentType: parsed.data.paymentType,
+    paymentMethod: parsed.data.paymentMethod,
+    paymentReference: parsed.data.paymentReference,
     appointmentPaymentStatus: parsed.data.appointmentPaymentStatus,
     metadata: parsed.data.metadata ?? null,
   })

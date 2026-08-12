@@ -57,8 +57,13 @@ export function formatCurrency(amount: number | null | undefined, currency = 'US
     return `${formatPlainAmount(amount)} ${normalizedCurrency}`
   }
 
+  // 'en-US' has no localized symbol for DOP and falls back to printing the
+  // ISO code ("DOP 1,000.00") - 'es-DO' renders the familiar "RD$" prefix
+  // Dominican clients actually expect.
+  const locale = normalizedCurrency === 'DOP' ? 'es-DO' : 'en-US'
+
   try {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: normalizedCurrency,
       maximumFractionDigits: amount % 1 === 0 ? 0 : 2,

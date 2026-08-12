@@ -25,6 +25,14 @@ function toBusiness(row: any): Business {
     paymentChainId: row.payment_chain_id ?? 137,
     paymentCurrency: row.payment_currency ?? DEFAULT_CURRENCY,
     bookingDepositAmount: row.booking_deposit_amount ?? null,
+    bankName: row.bank_name ?? null,
+    bankAccountHolder: row.bank_account_holder ?? null,
+    bankAccountNumber: row.bank_account_number ?? null,
+    bankAccountType: row.bank_account_type ?? null,
+    taxId: row.tax_id ?? null,
+    acceptsCash: row.accepts_cash ?? true,
+    acceptsTransfer: row.accepts_transfer ?? false,
+    acceptsCard: row.accepts_card ?? false,
     onboardingStep: row.onboarding_step,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -90,6 +98,13 @@ function toPublicProfile(row: any): PublicBusinessProfile {
     paymentWalletAddress: row.payment_wallet_address ?? null,
     paymentChainId: row.payment_chain_id ?? 137,
     paymentCurrency: row.payment_currency ?? DEFAULT_CURRENCY,
+    bankName: row.bank_name ?? null,
+    bankAccountHolder: row.bank_account_holder ?? null,
+    bankAccountNumber: row.bank_account_number ?? null,
+    bankAccountType: row.bank_account_type ?? null,
+    acceptsCash: row.accepts_cash ?? true,
+    acceptsTransfer: row.accepts_transfer ?? false,
+    acceptsCard: row.accepts_card ?? false,
   }
 }
 
@@ -159,7 +174,7 @@ export async function getBusinessById(supabase: DbClient, businessId: string) {
 export async function getPublicBusinessProfile(supabase: DbClient, slug: string) {
   const { data, error } = await supabase
     .from('businesses')
-    .select('id, name, slug, specialty, description, logo_url, phone, booking_email, timezone, address, website, city, state, zip_code, payment_wallet_address, payment_chain_id, payment_currency')
+    .select('id, name, slug, specialty, description, logo_url, phone, booking_email, timezone, address, website, city, state, zip_code, payment_wallet_address, payment_chain_id, payment_currency, bank_name, bank_account_holder, bank_account_number, bank_account_type, accepts_cash, accepts_transfer, accepts_card')
     .eq('slug', slug)
     .maybeSingle()
   if (error) throw error
@@ -410,6 +425,14 @@ export async function updateBusiness(
       payment_chain_id: patch.paymentChainId,
       payment_currency: patch.paymentCurrency,
       booking_deposit_amount: patch.bookingDepositAmount,
+      bank_name: patch.bankName,
+      bank_account_holder: patch.bankAccountHolder,
+      bank_account_number: patch.bankAccountNumber,
+      bank_account_type: patch.bankAccountType,
+      tax_id: patch.taxId,
+      accepts_cash: patch.acceptsCash,
+      accepts_transfer: patch.acceptsTransfer,
+      accepts_card: patch.acceptsCard,
       onboarding_step: patch.onboardingStep,
     })
     .eq('id', businessId)

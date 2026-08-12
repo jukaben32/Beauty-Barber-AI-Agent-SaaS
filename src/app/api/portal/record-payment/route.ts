@@ -104,6 +104,8 @@ export async function POST(request: Request) {
         txHash: parsed.data.txHash,
         status,
         paymentType,
+        paymentMethod: parsed.data.paymentMethod ?? (isCash ? 'cash' : undefined),
+        paymentReference: parsed.data.paymentReference,
         appointmentPaymentStatus: isCash ? 'cash' : undefined,
         metadata: parsed.data.metadata ?? null,
       })
@@ -116,6 +118,8 @@ export async function POST(request: Request) {
         txHash: parsed.data.txHash ?? `cash-${randomUUID()}`,
         status,
         paymentType,
+        paymentMethod: parsed.data.paymentMethod ?? (isCash ? 'cash' : undefined),
+        paymentReference: parsed.data.paymentReference,
         metadata: parsed.data.metadata ?? null,
       })
 
