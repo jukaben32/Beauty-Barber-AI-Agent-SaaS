@@ -1,4 +1,5 @@
 import type { Service } from '@/types'
+import { DEFAULT_CURRENCY } from '@/constants'
 import type { DbClient } from './_shared'
 
 export function toService(row: any): Service {
@@ -79,7 +80,7 @@ export async function createService(
       price: input.price ?? null,
       price_min: input.priceMin ?? null,
       price_max: input.priceMax ?? null,
-      currency: input.currency ?? 'USDC',
+      currency: input.currency ?? DEFAULT_CURRENCY,
       active: input.active ?? true,
       color: input.color ?? null,
       instructions: input.instructions ?? null,

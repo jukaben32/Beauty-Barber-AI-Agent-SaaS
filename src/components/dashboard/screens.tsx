@@ -106,8 +106,8 @@ const features = [
   },
   {
     icon: Wallet,
-    title: 'USDC Billing',
-    body: 'Record deposits, track tx hashes, and attach payments directly to appointments.',
+    title: 'Local Payments',
+    body: 'Accept cash, bank transfer, and card, and attach deposits directly to appointments.',
     tone: 'teal' as const,
   },
 ] as const
@@ -514,7 +514,7 @@ export function MarketingHomeScreen() {
             <SectionHeading
               eyebrow={<SectionEyebrow>Pricing</SectionEyebrow>}
               title="Clear plans for businesses at every stage"
-              description="The first phase focuses on the widget, business dashboard, client portal, and USDC billing. Stripe can be added later if you want it."
+              description="The first phase focuses on the widget, business dashboard, client portal, and local payments (cash, transfer, card)."
               align="center"
             />
             <div className="mt-10 grid gap-px border border-[var(--border-soft)] bg-[var(--border-soft)] lg:grid-cols-4">
@@ -724,9 +724,9 @@ export function MarketingHomeScreen() {
 
 // DashboardBillingScreen was removed from here — plan cards and the
 // transaction list were both hardcoded literals (no plan was ever really
-// "Active", the tx hashes were fake). A real version now lives in
+// "Active", the transactions were fake). A real version now lives in
 // src/components/dashboard/BillingManager.tsx, reading the real subscription
-// (services/business.ts getSubscription), payment wallet config, and
+// (services/business.ts getSubscription), payment config, and
 // billing_transactions history (services/billing.ts, already existed).
 
 // PortalHomeScreen was removed from here — "Welcome back, Dault Hussain",

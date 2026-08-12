@@ -163,7 +163,7 @@ export const realtimeTools: RealtimeToolDefinition[] = [
     type: 'function',
     name: 'record_payment',
     description:
-      'Record a billing transaction and link it to an appointment if needed. Requires the phone number or email on file for that appointment to verify the caller.',
+      'Record that a client has committed to paying (or paid) for an appointment, e.g. after they tell you they paid cash or made a bank transfer. Requires the phone number or email on file for that appointment to verify the caller. This never marks a payment as confirmed - staff verify it once the money actually shows up.',
     parameters: {
       type: 'object',
       properties: {
@@ -171,13 +171,13 @@ export const realtimeTools: RealtimeToolDefinition[] = [
         clientId: { type: 'string' },
         amount: { type: 'number' },
         currency: { type: 'string' },
-        chainId: { type: 'integer' },
-        txHash: { type: 'string' },
+        paymentMethod: { type: 'string', description: 'One of: cash, transfer, card_cardnet, card_azul.' },
+        paymentReference: { type: 'string', description: 'Transfer or card confirmation number, if the client has one.' },
         paymentType: { type: 'string' },
         clientEmail: { type: 'string', description: 'Email on file for the appointment, used to verify the caller.' },
         clientPhone: { type: 'string', description: 'Phone number on file for the appointment, used to verify the caller.' },
       },
-      required: ['amount', 'currency', 'chainId', 'txHash'],
+      required: ['amount'],
       additionalProperties: false,
     },
   },
@@ -493,9 +493,9 @@ export async function executeRealtimeToolCall(
       return {
         payment: await recordAppointmentPayment(supabase, businessId, String(args.appointmentId || ''), {
           amount: Number(args.amount),
-          currency: String(args.currency || 'USDC'),
-          chainId: Number(args.chainId || 137),
-          txHash: String(args.txHash || ''),
+          currency: typeof args.currency === 'string' ? args.currency : undefined,
+          paymentMethod: typeof args.paymentMethod === 'string' ? (args.paymentMethod as any) : undefined,
+          paymentReference: typeof args.paymentReference === 'string' ? args.paymentReference : undefined,
           paymentType: typeof args.paymentType === 'string' ? (args.paymentType as any) : 'booking_deposit',
         }),
       }

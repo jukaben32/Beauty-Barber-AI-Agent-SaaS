@@ -1,12 +1,11 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Check, CreditCard, Eye, EyeOff, Landmark, Plus, Trash2 } from 'lucide-react'
+import { Check, Landmark, Plus, Trash2 } from 'lucide-react'
 import type { Business, BusinessAvailability } from '@/types'
 import { DAYS_OF_WEEK } from '@/constants'
 import { createClient } from '@/lib/supabase/client'
 import { updateBusiness, upsertBusinessAvailability, addClosedDate, removeClosedDate } from '@/services/business'
-import type { StripeAccountStatus } from '@/services/stripeAccounts'
 import { SectionEyebrow, SectionHeading, SurfaceCard, StatusBadge } from '@/components/dashboard/shared'
 import Tabs from '@/components/ui/Tabs'
 
@@ -50,10 +49,8 @@ function getSupportedTimezones() {
 // Currencies actually handled by formatCurrency (lib/utils.ts) plus common
 // ISO-4217 fiat codes Intl.NumberFormat already supports out of the box.
 const CURRENCY_OPTIONS = [
-  { value: 'USDC', label: 'USDC (USD Coin)' },
-  { value: 'USDT', label: 'USDT (Tether)' },
-  { value: 'USD', label: 'USD - US Dollar' },
   { value: 'DOP', label: 'DOP - Dominican Peso' },
+  { value: 'USD', label: 'USD - US Dollar' },
   { value: 'MXN', label: 'MXN - Mexican Peso' },
   { value: 'EUR', label: 'EUR - Euro' },
   { value: 'GBP', label: 'GBP - British Pound' },
@@ -84,12 +81,10 @@ export function SettingsManager({
   business,
   initialAvailability,
   initialClosedDates,
-  initialStripeStatus,
 }: {
   business: Business
   initialAvailability: BusinessAvailability[]
   initialClosedDates: ClosedDateRow[]
-  initialStripeStatus: StripeAccountStatus
 }) {
   const [tab, setTab] = useState<'profile' | 'hours' | 'payments'>('profile')
 
@@ -141,13 +136,6 @@ export function SettingsManager({
   })
   const [savingLocalPayments, setSavingLocalPayments] = useState(false)
   const [localPaymentsSaved, setLocalPaymentsSaved] = useState(false)
-
-  const [stripe, setStripe] = useState(initialStripeStatus)
-  const [stripeForm, setStripeForm] = useState({ publishableKey: stripe.publishableKey ?? '', secretKey: '' })
-  const [showSecretKey, setShowSecretKey] = useState(false)
-  const [savingStripe, setSavingStripe] = useState(false)
-  const [disconnectingStripe, setDisconnectingStripe] = useState(false)
-  const [stripeError, setStripeError] = useState<string | null>(null)
 
   async function handleSaveProfile(e: React.FormEvent) {
     e.preventDefault()
@@ -231,48 +219,6 @@ export function SettingsManager({
       setLocalPaymentsSaved(true)
     } finally {
       setSavingLocalPayments(false)
-    }
-  }
-
-  async function handleSaveStripe(e: React.FormEvent) {
-    e.preventDefault()
-    setStripeError(null)
-    setSavingStripe(true)
-    try {
-      const response = await fetch('/api/business/stripe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(stripeForm),
-      })
-      const body = await response.json()
-      if (!response.ok) {
-        throw new Error(body?.error || 'Could not save Stripe keys')
-      }
-      setStripe(body.stripe)
-      setStripeForm((f) => ({ ...f, secretKey: '' }))
-    } catch (err) {
-      setStripeError(err instanceof Error ? err.message : 'Could not save Stripe keys')
-    } finally {
-      setSavingStripe(false)
-    }
-  }
-
-  async function handleDisconnectStripe() {
-    if (!window.confirm('Disconnect Stripe? Clients will only be able to pay in cash until you reconnect it.')) return
-    setDisconnectingStripe(true)
-    setStripeError(null)
-    try {
-      const response = await fetch('/api/business/stripe', { method: 'DELETE' })
-      const body = await response.json()
-      if (!response.ok) {
-        throw new Error(body?.error || 'Could not disconnect Stripe')
-      }
-      setStripe(body.stripe)
-      setStripeForm({ publishableKey: '', secretKey: '' })
-    } catch (err) {
-      setStripeError(err instanceof Error ? err.message : 'Could not disconnect Stripe')
-    } finally {
-      setDisconnectingStripe(false)
     }
   }
 
@@ -493,7 +439,6 @@ export function SettingsManager({
       ) : null}
 
       {tab === 'payments' ? (
-        <div className="space-y-6">
         <SurfaceCard className="p-6">
           <div className="flex items-center gap-3">
             <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[rgba(15,118,110,0.1)] text-[var(--brand-strong)]">
@@ -599,93 +544,6 @@ export function SettingsManager({
             </div>
           </form>
         </SurfaceCard>
-
-        <SurfaceCard className="p-6">
-          <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[rgba(15,118,110,0.1)] text-[var(--brand-strong)]">
-              <CreditCard className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Card payments</div>
-              <h2 className="font-display text-2xl font-bold tracking-tight text-[var(--text-strong)]">Your Stripe account</h2>
-            </div>
-          </div>
-          <p className="mt-2 text-sm text-[var(--text-muted)]">
-            Clients pay appointment deposits directly into your own Stripe account — this is separate from the cash, transfer,
-            and card methods configured above.
-          </p>
-
-          <div className="mt-5 flex items-start gap-3 border border-[var(--border-soft)] bg-[var(--panel-soft)] px-4 py-3">
-            <StatusBadge tone={stripe.connected ? 'emerald' : 'amber'}>{stripe.connected ? 'Connected' : 'Not connected'}</StatusBadge>
-            <p className="text-sm text-[var(--text-muted)]">
-              {stripe.connected
-                ? 'Card payments are enabled for this business. Paste new keys below to rotate them.'
-                : 'Clients can only pay in cash until you connect Stripe. Enter your keys below to enable online payments.'}
-            </p>
-          </div>
-
-          {stripeError ? (
-            <div className="mt-4 border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{stripeError}</div>
-          ) : null}
-
-          <form onSubmit={handleSaveStripe} className="mt-5 space-y-4">
-            <div className="space-y-2">
-              <FieldLabel>Publishable key (starts with pk_)</FieldLabel>
-              <input
-                value={stripeForm.publishableKey}
-                onChange={(e) => setStripeForm((f) => ({ ...f, publishableKey: e.target.value }))}
-                placeholder="pk_live_... or pk_test_..."
-                className="input-field w-full font-mono text-sm"
-                required
-              />
-              <p className="text-xs text-[var(--text-muted)]">Safe to share - this key is public.</p>
-            </div>
-            <div className="space-y-2">
-              <FieldLabel>Secret key (starts with sk_)</FieldLabel>
-              <div className="relative">
-                <input
-                  type={showSecretKey ? 'text' : 'password'}
-                  value={stripeForm.secretKey}
-                  onChange={(e) => setStripeForm((f) => ({ ...f, secretKey: e.target.value }))}
-                  placeholder={stripe.connected ? 'sk_•••••••••••••••••••• (leave blank to keep current key)' : 'sk_live_... or sk_test_...'}
-                  className="input-field w-full pr-10 font-mono text-sm"
-                  required={!stripe.connected}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowSecretKey((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"
-                  aria-label={showSecretKey ? 'Hide secret key' : 'Show secret key'}
-                >
-                  {showSecretKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-              <p className="text-xs text-[var(--text-muted)]">
-                Stored encrypted. Never shared with clients. Only used server-side to create payment intents.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3 border-t border-[var(--border-soft)] pt-4">
-              <button type="submit" disabled={savingStripe} className="btn-primary">
-                {savingStripe ? 'Saving…' : stripe.connected ? 'Update Stripe keys' : 'Connect Stripe'}
-              </button>
-              {stripe.connected ? (
-                <button
-                  type="button"
-                  onClick={() => void handleDisconnectStripe()}
-                  disabled={disconnectingStripe}
-                  className="text-sm font-semibold text-[var(--coral)]"
-                >
-                  {disconnectingStripe ? 'Disconnecting…' : 'Disconnect'}
-                </button>
-              ) : null}
-              <span className="text-xs text-[var(--text-muted)]">
-                Get your keys at dashboard.stripe.com → Developers → API keys
-              </span>
-            </div>
-          </form>
-        </SurfaceCard>
-        </div>
       ) : null}
     </div>
   )

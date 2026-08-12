@@ -24,7 +24,7 @@ function toBilling(row: any): BillingTransaction {
 export async function getPaymentConfigForBusiness(supabase: DbClient, businessId: string) {
   const { data, error } = await supabase
     .from('businesses')
-    .select('payment_wallet_address, payment_chain_id, payment_currency, booking_deposit_amount')
+    .select('payment_currency, booking_deposit_amount')
     .eq('id', businessId)
     .maybeSingle()
   if (error) throw error
