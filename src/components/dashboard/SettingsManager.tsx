@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Check, CreditCard, Eye, EyeOff, Plus, Trash2 } from 'lucide-react'
+import { Check, CreditCard, Eye, EyeOff, Landmark, Plus, Trash2 } from 'lucide-react'
 import type { Business, BusinessAvailability } from '@/types'
 import { DAYS_OF_WEEK } from '@/constants'
 import { createClient } from '@/lib/supabase/client'
@@ -129,6 +129,19 @@ export function SettingsManager({
   const [newDate, setNewDate] = useState('')
   const [newReason, setNewReason] = useState('')
 
+  const [localPaymentsForm, setLocalPaymentsForm] = useState({
+    acceptsCash: business.acceptsCash,
+    acceptsTransfer: business.acceptsTransfer,
+    acceptsCard: business.acceptsCard,
+    bankName: business.bankName ?? '',
+    bankAccountHolder: business.bankAccountHolder ?? '',
+    bankAccountNumber: business.bankAccountNumber ?? '',
+    bankAccountType: business.bankAccountType ?? 'checking',
+    taxId: business.taxId ?? '',
+  })
+  const [savingLocalPayments, setSavingLocalPayments] = useState(false)
+  const [localPaymentsSaved, setLocalPaymentsSaved] = useState(false)
+
   const [stripe, setStripe] = useState(initialStripeStatus)
   const [stripeForm, setStripeForm] = useState({ publishableKey: stripe.publishableKey ?? '', secretKey: '' })
   const [showSecretKey, setShowSecretKey] = useState(false)
@@ -197,6 +210,28 @@ export function SettingsManager({
     const supabase = createClient()
     await removeClosedDate(supabase, business.id, blockedDate)
     setClosedDates((prev) => prev.filter((d) => d.blocked_date !== blockedDate))
+  }
+
+  async function handleSaveLocalPayments(e: React.FormEvent) {
+    e.preventDefault()
+    setLocalPaymentsSaved(false)
+    setSavingLocalPayments(true)
+    try {
+      const supabase = createClient()
+      await updateBusiness(supabase, business.id, {
+        acceptsCash: localPaymentsForm.acceptsCash,
+        acceptsTransfer: localPaymentsForm.acceptsTransfer,
+        acceptsCard: localPaymentsForm.acceptsCard,
+        bankName: localPaymentsForm.bankName.trim() || null,
+        bankAccountHolder: localPaymentsForm.bankAccountHolder.trim() || null,
+        bankAccountNumber: localPaymentsForm.bankAccountNumber.trim() || null,
+        bankAccountType: localPaymentsForm.acceptsTransfer ? localPaymentsForm.bankAccountType : null,
+        taxId: localPaymentsForm.taxId.trim() || null,
+      })
+      setLocalPaymentsSaved(true)
+    } finally {
+      setSavingLocalPayments(false)
+    }
   }
 
   async function handleSaveStripe(e: React.FormEvent) {
@@ -458,19 +493,126 @@ export function SettingsManager({
       ) : null}
 
       {tab === 'payments' ? (
+        <div className="space-y-6">
+        <SurfaceCard className="p-6">
+          <div className="flex items-center gap-3">
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[rgba(15,118,110,0.1)] text-[var(--brand-strong)]">
+              <Landmark className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Appointment payments</div>
+              <h2 className="font-display text-2xl font-bold tracking-tight text-[var(--text-strong)]">How clients pay you locally</h2>
+            </div>
+          </div>
+          <p className="mt-2 text-sm text-[var(--text-muted)]">
+            Turn on the payment methods you actually accept. Clients see these options in their portal when they book or pay a deposit.
+          </p>
+
+          <form onSubmit={handleSaveLocalPayments} className="mt-5 space-y-5">
+            <div className="grid gap-3 sm:grid-cols-3">
+              {(
+                [
+                  { key: 'acceptsCash', label: 'Cash' },
+                  { key: 'acceptsTransfer', label: 'Bank transfer' },
+                  { key: 'acceptsCard', label: 'Card (Cardnet / Azul)' },
+                ] as const
+              ).map(({ key, label }) => (
+                <label
+                  key={key}
+                  className="flex items-center gap-3 border border-[var(--border-soft)] bg-[var(--panel-soft)] px-4 py-3 text-sm font-semibold text-[var(--text-strong)]"
+                >
+                  <input
+                    type="checkbox"
+                    checked={localPaymentsForm[key]}
+                    onChange={(e) => setLocalPaymentsForm((f) => ({ ...f, [key]: e.target.checked }))}
+                    className="h-4 w-4"
+                  />
+                  {label}
+                </label>
+              ))}
+            </div>
+
+            {localPaymentsForm.acceptsTransfer ? (
+              <div className="border border-[var(--border-soft)] bg-[var(--panel-soft)] p-4">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">
+                  Bank details shown to clients
+                </div>
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <FieldLabel>Bank</FieldLabel>
+                    <input
+                      value={localPaymentsForm.bankName}
+                      onChange={(e) => setLocalPaymentsForm((f) => ({ ...f, bankName: e.target.value }))}
+                      placeholder="Banco Popular"
+                      className="input-field w-full"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <FieldLabel>Account holder</FieldLabel>
+                    <input
+                      value={localPaymentsForm.bankAccountHolder}
+                      onChange={(e) => setLocalPaymentsForm((f) => ({ ...f, bankAccountHolder: e.target.value }))}
+                      className="input-field w-full"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <FieldLabel>Account number</FieldLabel>
+                    <input
+                      value={localPaymentsForm.bankAccountNumber}
+                      onChange={(e) => setLocalPaymentsForm((f) => ({ ...f, bankAccountNumber: e.target.value }))}
+                      className="input-field w-full font-mono"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <FieldLabel>Account type</FieldLabel>
+                    <select
+                      value={localPaymentsForm.bankAccountType}
+                      onChange={(e) => setLocalPaymentsForm((f) => ({ ...f, bankAccountType: e.target.value }))}
+                      className="input-field w-full"
+                    >
+                      <option value="checking">Checking</option>
+                      <option value="savings">Savings</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            <div className="space-y-2 sm:max-w-xs">
+              <FieldLabel>Tax ID / RNC (optional)</FieldLabel>
+              <input
+                value={localPaymentsForm.taxId}
+                onChange={(e) => setLocalPaymentsForm((f) => ({ ...f, taxId: e.target.value }))}
+                className="input-field w-full"
+              />
+            </div>
+
+            <div className="flex items-center gap-3 border-t border-[var(--border-soft)] pt-4">
+              <button type="submit" disabled={savingLocalPayments} className="btn-primary">
+                {savingLocalPayments ? 'Saving…' : 'Save payment methods'}
+              </button>
+              {localPaymentsSaved && (
+                <span className="text-sm font-medium" style={{ color: 'var(--brand-strong)' }}>
+                  Saved.
+                </span>
+              )}
+            </div>
+          </form>
+        </SurfaceCard>
+
         <SurfaceCard className="p-6">
           <div className="flex items-center gap-3">
             <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[rgba(15,118,110,0.1)] text-[var(--brand-strong)]">
               <CreditCard className="h-5 w-5" />
             </div>
             <div>
-              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Appointment payments</div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Card payments</div>
               <h2 className="font-display text-2xl font-bold tracking-tight text-[var(--text-strong)]">Your Stripe account</h2>
             </div>
           </div>
           <p className="mt-2 text-sm text-[var(--text-muted)]">
-            Clients pay appointment deposits directly into your own Stripe account — this is separate from the USDC wallet payment
-            option already configured under Business Profile.
+            Clients pay appointment deposits directly into your own Stripe account — this is separate from the cash, transfer,
+            and card methods configured above.
           </p>
 
           <div className="mt-5 flex items-start gap-3 border border-[var(--border-soft)] bg-[var(--panel-soft)] px-4 py-3">
@@ -543,6 +685,7 @@ export function SettingsManager({
             </div>
           </form>
         </SurfaceCard>
+        </div>
       ) : null}
     </div>
   )

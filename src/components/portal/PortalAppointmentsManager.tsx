@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { CalendarClock, Loader2, Wallet, X } from 'lucide-react'
+import { Banknote, CalendarClock, Loader2, Wallet, X } from 'lucide-react'
 import type { AppointmentWithRelations, AvailableSlot } from '@/types'
 import { SurfaceCard, StatusBadge } from '@/components/dashboard/shared'
 import Modal from '@/components/ui/Modal'
@@ -14,10 +14,18 @@ import {
   formatDateTimeInTimeZone,
 } from '@/components/dashboard/appointments-utils'
 
+type BankDetails = {
+  bankName: string | null
+  bankAccountHolder: string | null
+  bankAccountNumber: string | null
+  bankAccountType: string | null
+}
+
 type ActiveModal =
   | { kind: 'cancel'; appointment: AppointmentWithRelations }
   | { kind: 'reschedule'; appointment: AppointmentWithRelations }
   | { kind: 'pay'; appointment: AppointmentWithRelations }
+  | { kind: 'transfer'; appointment: AppointmentWithRelations }
   | null
 
 const ACTIONABLE_STATUSES = new Set(['scheduled', 'pending_confirmation', 'confirmed'])
@@ -26,9 +34,17 @@ const PAYABLE_STATUSES = new Set(['pending', 'partial'])
 export function PortalAppointmentsManager({
   initialAppointments,
   timezone,
+  paymentCurrency,
+  acceptsCash,
+  acceptsTransfer,
+  bankDetails,
 }: {
   initialAppointments: AppointmentWithRelations[]
   timezone: string
+  paymentCurrency: string
+  acceptsCash: boolean
+  acceptsTransfer: boolean
+  bankDetails: BankDetails
 }) {
   const [appointments, setAppointments] = useState(initialAppointments)
   const [modal, setModal] = useState<ActiveModal>(null)
@@ -98,7 +114,7 @@ export function PortalAppointmentsManager({
                           Reschedule
                         </button>
                       ) : null}
-                      {canPay ? (
+                      {canPay && acceptsCash ? (
                         <button
                           type="button"
                           onClick={() => setModal({ kind: 'pay', appointment })}
@@ -106,6 +122,16 @@ export function PortalAppointmentsManager({
                         >
                           <Wallet className="h-4 w-4" />
                           Pay in cash
+                        </button>
+                      ) : null}
+                      {canPay && acceptsTransfer ? (
+                        <button
+                          type="button"
+                          onClick={() => setModal({ kind: 'transfer', appointment })}
+                          className="btn-secondary px-4 py-2 text-sm"
+                        >
+                          <Banknote className="h-4 w-4" />
+                          Pay by transfer
                         </button>
                       ) : null}
                       {canManage ? (
@@ -140,6 +166,13 @@ export function PortalAppointmentsManager({
       />
       <PayCashModal
         appointment={modal?.kind === 'pay' ? modal.appointment : null}
+        onClose={() => setModal(null)}
+        onPaid={updateAppointment}
+      />
+      <PayTransferModal
+        appointment={modal?.kind === 'transfer' ? modal.appointment : null}
+        paymentCurrency={paymentCurrency}
+        bankDetails={bankDetails}
         onClose={() => setModal(null)}
         onPaid={updateAppointment}
       />
@@ -441,6 +474,181 @@ function PayCashModal({
               {suggestedAmount != null ? (
                 <p className="text-xs text-[var(--text-muted)]">Suggested amount: {formatCurrency(suggestedAmount, appointment.paymentCurrency)}</p>
               ) : null}
+            </div>
+            {error ? <p className="text-sm font-medium text-[var(--coral)]">{error}</p> : null}
+            <div className="flex flex-wrap gap-3">
+              <button type="button" onClick={handleConfirm} disabled={loading} className="btn-primary flex-1 justify-center py-3">
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                Confirm
+              </button>
+              <button type="button" onClick={resetAndClose} className="btn-secondary flex-1 justify-center py-3">
+                Cancel
+              </button>
+            </div>
+          </div>
+        )
+      ) : null}
+    </Modal>
+  )
+}
+
+const BANK_ACCOUNT_TYPE_LABEL: Record<string, string> = {
+  checking: 'Checking',
+  savings: 'Savings',
+}
+
+function BankDetailRow({ label, value }: { label: string; value: string | null }) {
+  if (!value) return null
+  return (
+    <div className="flex items-center justify-between gap-3 border-b border-[var(--border-soft)] py-2 last:border-0">
+      <span className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">{label}</span>
+      <span className="text-sm font-bold text-[var(--text-strong)]">{value}</span>
+    </div>
+  )
+}
+
+function PayTransferModal({
+  appointment,
+  paymentCurrency,
+  bankDetails,
+  onClose,
+  onPaid,
+}: {
+  appointment: AppointmentWithRelations | null
+  paymentCurrency: string
+  bankDetails: BankDetails
+  onClose: () => void
+  onPaid: (updated: AppointmentWithRelations) => void
+}) {
+  const [amount, setAmount] = useState('')
+  const [reference, setReference] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [done, setDone] = useState(false)
+
+  const suggestedAmount = appointment?.paymentAmount ?? appointment?.service?.price ?? null
+
+  function resetAndClose() {
+    setAmount('')
+    setReference('')
+    setError(null)
+    setDone(false)
+    onClose()
+  }
+
+  async function handleConfirm() {
+    if (!appointment) return
+    const numericAmount = Number(amount || suggestedAmount)
+    if (!numericAmount || numericAmount <= 0) {
+      setError('Enter a valid amount.')
+      return
+    }
+    if (!reference.trim()) {
+      setError('Enter the transfer confirmation number.')
+      return
+    }
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await fetch('/api/portal/record-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          appointmentId: appointment.id,
+          amount: numericAmount,
+          currency: paymentCurrency,
+          paymentType: 'booking_deposit',
+          paymentMethod: 'transfer',
+          paymentReference: reference.trim(),
+          // Explicit 'pending': this is a self-reported transfer, not a
+          // verified payment. Staff confirms it once the funds show up in
+          // the account (same review step as a cash commitment).
+          status: 'pending',
+        }),
+      })
+      const payload = await response.json().catch(() => null)
+      if (!response.ok) {
+        setError(payload?.error || 'Could not record the payment.')
+        return
+      }
+      if (payload.payment) {
+        onPaid({
+          ...appointment,
+          paymentStatus: 'pending',
+          paymentAmount: appointment.paymentAmount ?? numericAmount,
+          paymentCurrency,
+          paymentMethod: 'transfer',
+          paymentReference: reference.trim(),
+        })
+      }
+      setDone(true)
+    } catch {
+      setError('Network error. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const hasBankDetails = Boolean(bankDetails.bankName || bankDetails.bankAccountNumber)
+
+  return (
+    <Modal
+      open={Boolean(appointment)}
+      title="Pay by transfer"
+      description="Send the transfer to the account below, then submit your confirmation number."
+      onClose={resetAndClose}
+    >
+      {appointment ? (
+        done ? (
+          <div className="space-y-4 text-center">
+            <p className="text-sm leading-7 text-[var(--text-muted)]">
+              Noted. The business will confirm your transfer of{' '}
+              {formatCurrency(Number(amount || suggestedAmount), paymentCurrency)} once it shows up in the account.
+            </p>
+            <button type="button" onClick={resetAndClose} className="btn-primary w-full justify-center py-3">
+              Done
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {hasBankDetails ? (
+              <div className="rounded-2xl border border-[var(--border-soft)] bg-[var(--panel-soft)] px-4 py-3">
+                <BankDetailRow label="Bank" value={bankDetails.bankName} />
+                <BankDetailRow label="Account holder" value={bankDetails.bankAccountHolder} />
+                <BankDetailRow label="Account number" value={bankDetails.bankAccountNumber} />
+                <BankDetailRow
+                  label="Account type"
+                  value={bankDetails.bankAccountType ? BANK_ACCOUNT_TYPE_LABEL[bankDetails.bankAccountType] ?? bankDetails.bankAccountType : null}
+                />
+              </div>
+            ) : (
+              <p className="text-sm text-[var(--text-muted)]">
+                The business hasn&apos;t published bank details yet — contact them directly for transfer instructions.
+              </p>
+            )}
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-[var(--text-strong)]">Amount transferred</label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={amount}
+                onChange={(event) => setAmount(event.target.value)}
+                placeholder={suggestedAmount != null ? String(suggestedAmount) : '0.00'}
+                className="input-field w-full"
+              />
+              {suggestedAmount != null ? (
+                <p className="text-xs text-[var(--text-muted)]">Suggested amount: {formatCurrency(suggestedAmount, paymentCurrency)}</p>
+              ) : null}
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-[var(--text-strong)]">Transfer confirmation number</label>
+              <input
+                value={reference}
+                onChange={(event) => setReference(event.target.value)}
+                placeholder="e.g. 000123456"
+                className="input-field w-full"
+              />
             </div>
             {error ? <p className="text-sm font-medium text-[var(--coral)]">{error}</p> : null}
             <div className="flex flex-wrap gap-3">
