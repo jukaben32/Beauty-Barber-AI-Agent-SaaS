@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import {
   Check,
   GripVertical,
@@ -283,12 +283,15 @@ function ServiceFormDialog({
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (!open) return
-    setForm(createServiceSeed(service))
-    setError(null)
-    setSaving(false)
-  }, [open, service])
+  const [syncedKey, setSyncedKey] = useState({ open, service })
+  if (syncedKey.open !== open || syncedKey.service !== service) {
+    setSyncedKey({ open, service })
+    if (open) {
+      setForm(createServiceSeed(service))
+      setError(null)
+      setSaving(false)
+    }
+  }
 
   if (!open) return null
 

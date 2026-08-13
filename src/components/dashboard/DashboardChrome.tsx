@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState, type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import {
   Bell,
@@ -109,9 +109,11 @@ export function DashboardChrome({
   // Below lg, the <aside> is hidden entirely (no sidebar rendered at all),
   // so without this drawer there was no way to navigate the dashboard on a
   // phone. Close it whenever the route actually changes underneath it.
-  useEffect(() => {
+  const [syncedPathname, setSyncedPathname] = useState(pathname)
+  if (syncedPathname !== pathname) {
+    setSyncedPathname(pathname)
     setMobileNavOpen(false)
-  }, [pathname])
+  }
 
   async function handleSignOut() {
     const supabase = createClient()

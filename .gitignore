@@ -30,6 +30,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
+# auto-generados por `next dev` (Next.js 16 agentRules)
+/AGENTS.md
+/CLAUDE.md
+
 # local env files (never commit real secrets — use .env.example as the template)
 .env
 .env.local

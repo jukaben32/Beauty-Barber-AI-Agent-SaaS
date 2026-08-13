@@ -445,20 +445,21 @@ export function SupportManager({
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const endOfThreadRef = useRef<HTMLDivElement | null>(null)
 
-  useEffect(() => {
+  const [ticketsSyncKey, setTicketsSyncKey] = useState(initialTickets)
+  if (ticketsSyncKey !== initialTickets) {
+    setTicketsSyncKey(initialTickets)
     setTickets(sortTickets(initialTickets))
-  }, [initialTickets])
+  }
 
-  useEffect(() => {
+  const [selectionSyncKey, setSelectionSyncKey] = useState({ tickets, selectedId })
+  if (selectionSyncKey.tickets !== tickets || selectionSyncKey.selectedId !== selectedId) {
+    setSelectionSyncKey({ tickets, selectedId })
     if (tickets.length === 0) {
       setSelectedId(null)
-      return
-    }
-
-    if (!selectedId || !tickets.some((ticket) => ticket.id === selectedId)) {
+    } else if (!selectedId || !tickets.some((ticket) => ticket.id === selectedId)) {
       setSelectedId(tickets[0].id)
     }
-  }, [tickets, selectedId])
+  }
 
   const selected = tickets.find((ticket) => ticket.id === selectedId) ?? null
   const selectedStatusMeta = selected ? STATUS_META[selected.status] : null
@@ -468,14 +469,22 @@ export function SupportManager({
   const selectedAppointmentLabel =
     selected?.appointment != null ? formatDateTimeInTimeZone(selected.appointment.scheduledAt, timezone) : null
 
+  const [hadSelectedId, setHadSelectedId] = useState(selectedId != null)
+  if (!selectedId && hadSelectedId) {
+    setHadSelectedId(false)
+    setMessages([])
+    setThreadError(null)
+  } else if (selectedId && !hadSelectedId) {
+    setHadSelectedId(true)
+  }
+
   useEffect(() => {
     if (!selectedId) {
-      setMessages([])
-      setThreadError(null)
       return
     }
 
     let cancelled = false
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- setting loading state before an async fetch, not a render-sync anti-pattern
     setLoadingMessages(true)
     setThreadError(null)
     setReply('')

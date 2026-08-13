@@ -116,14 +116,21 @@ export function AppointmentDetailsDrawer({
   const paymentCurrency = history?.summary.currency ?? appointment?.paymentCurrency ?? 'USD'
   const paymentTransactions = history?.transactions ?? []
 
+  const [hadAppointment, setHadAppointment] = useState(appointment != null)
+  if (!appointment && hadAppointment) {
+    setHadAppointment(false)
+    setHistory(null)
+    setHistoryError(null)
+    setPanelError(null)
+    setPartialOpen(false)
+    setPartialAmount('')
+  } else if (appointment && !hadAppointment) {
+    setHadAppointment(true)
+  }
+
   useEffect(() => {
     if (!appointment) {
       lastLoadedAppointmentId.current = null
-      setHistory(null)
-      setHistoryError(null)
-      setPanelError(null)
-      setPartialOpen(false)
-      setPartialAmount('')
       return
     }
 

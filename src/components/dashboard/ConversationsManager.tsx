@@ -212,18 +212,29 @@ export function ConversationsManager({
   const selectedTranscript = selectedConversationId ? transcriptCache[selectedConversationId] ?? null : null
   const selectedClient = selectedConversation?.clientId ? clientById[selectedConversation.clientId] : null
 
+  const [transcriptSyncKey, setTranscriptSyncKey] = useState({ selectedConversationId, transcriptCache })
+  if (
+    transcriptSyncKey.selectedConversationId !== selectedConversationId ||
+    transcriptSyncKey.transcriptCache !== transcriptCache
+  ) {
+    setTranscriptSyncKey({ selectedConversationId, transcriptCache })
+    if (selectedConversationId && transcriptCache[selectedConversationId]) {
+      setTranscriptStatus('ready')
+      setTranscriptError(null)
+    }
+  }
+
   useEffect(() => {
     if (!selectedConversationId) return
     const conversationId = selectedConversationId
 
     const cached = transcriptCache[conversationId]
     if (cached) {
-      setTranscriptStatus('ready')
-      setTranscriptError(null)
       return
     }
 
     const controller = new AbortController()
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- setting loading state before an async fetch, not a render-sync anti-pattern
     setTranscriptStatus('loading')
     setTranscriptError(null)
 

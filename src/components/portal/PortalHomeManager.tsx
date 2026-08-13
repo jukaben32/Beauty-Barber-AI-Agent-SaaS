@@ -18,6 +18,7 @@ export function PortalHomeManager({
   timezone: string
   appointments: AppointmentWithRelations[]
 }) {
+  // eslint-disable-next-line react-hooks/purity -- Server Component, renders once per request; not subject to client re-render instability
   const now = Date.now()
   const upcoming = appointments
     .filter((appt) => appt.status !== 'cancelled' && appt.status !== 'completed' && new Date(appt.scheduledAt).getTime() >= now)

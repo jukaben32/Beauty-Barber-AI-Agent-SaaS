@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import {
   ArrowLeft,
   CalendarDays,
@@ -159,7 +159,9 @@ export function AgentDetailManager({
     notes: '',
   })
 
-  useEffect(() => {
+  const [syncedKey, setSyncedKey] = useState({ agent, initialMode, services })
+  if (syncedKey.agent !== agent || syncedKey.initialMode !== initialMode || syncedKey.services !== services) {
+    setSyncedKey({ agent, initialMode, services })
     setCurrentAgent(agent)
     setMode(initialMode)
     setForm(createDetailSeed(agent))
@@ -168,7 +170,7 @@ export function AgentDetailManager({
       ...current,
       serviceId: getServiceIds(agent)[0] ?? services[0]?.id ?? '',
     }))
-  }, [agent, initialMode, services])
+  }
 
   function pushToast(toast: Omit<ManagerToast, 'id'>) {
     const id = crypto.randomUUID()

@@ -83,12 +83,14 @@ export const VoiceWidget: React.FC<VoiceWidgetProps> = ({
   }, [viewState, session, connect, businessSlug, widgetSlug])
 
   // Handle tool calls that request appointment confirmation
-  useEffect(() => {
+  const [syncedMessages, setSyncedMessages] = useState(messages)
+  if (syncedMessages !== messages) {
+    setSyncedMessages(messages)
     const lastMsg = messages[messages.length - 1]
     if (lastMsg?.role === 'system' && lastMsg.content.includes('function_call')) {
       setShowAppointmentForm(true)
     }
-  }, [messages])
+  }
 
   const orbStatus: VoiceOrbStatus = useMemo(() => {
     if (status === 'error') return 'error'

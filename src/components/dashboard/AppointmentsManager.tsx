@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ChevronRight, Search } from 'lucide-react'
 import type { AppointmentStatus, AppointmentWithRelations } from '@/types'
 import { SurfaceCard, StatusBadge, Pill } from '@/components/dashboard/shared'
@@ -109,18 +109,21 @@ export function AppointmentsManager({
 
   const selectedAppointment = appointments.find((appointment) => appointment.id === selectedId) ?? null
 
-  useEffect(() => {
-    if (!drawerOpen) return
-
-    if (visibleAppointments.length === 0) {
-      setDrawerOpen(false)
-      return
+  const [clampKey, setClampKey] = useState({ drawerOpen, selectedId, visibleAppointments })
+  if (
+    clampKey.drawerOpen !== drawerOpen ||
+    clampKey.selectedId !== selectedId ||
+    clampKey.visibleAppointments !== visibleAppointments
+  ) {
+    setClampKey({ drawerOpen, selectedId, visibleAppointments })
+    if (drawerOpen) {
+      if (visibleAppointments.length === 0) {
+        setDrawerOpen(false)
+      } else if (!selectedId || !visibleAppointments.some((appointment) => appointment.id === selectedId)) {
+        setSelectedId(visibleAppointments[0].id)
+      }
     }
-
-    if (!selectedId || !visibleAppointments.some((appointment) => appointment.id === selectedId)) {
-      setSelectedId(visibleAppointments[0].id)
-    }
-  }, [drawerOpen, selectedId, visibleAppointments])
+  }
 
   function handleAppointmentUpdated(updated: AppointmentWithRelations) {
     setAppointments((current) => current.map((appointment) => (appointment.id === updated.id ? { ...appointment, ...updated } : appointment)))

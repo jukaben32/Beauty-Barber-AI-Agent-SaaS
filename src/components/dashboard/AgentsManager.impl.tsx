@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   Activity,
   ArrowRight,
@@ -298,20 +298,23 @@ function AgentWizardModal({
   const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>([])
   const [form, setForm] = useState<WizardFormState>(() => createWizardSeed(agent, template))
 
-  useEffect(() => {
-    if (!open) return
-    setStep(1)
-    setError(null)
-    setSearch('')
-    setForm(createWizardSeed(agent, template))
-    setSelectedServiceIds(
-      agent?.assignedServiceIds?.length
-        ? agent.assignedServiceIds
-        : template
-          ? matchTemplateServiceIds(template, services)
-          : services.filter((service) => service.active).slice(0, 2).map((service) => service.id),
-    )
-  }, [agent, open, services, template])
+  const [syncedKey, setSyncedKey] = useState({ agent, open, services, template })
+  if (syncedKey.agent !== agent || syncedKey.open !== open || syncedKey.services !== services || syncedKey.template !== template) {
+    setSyncedKey({ agent, open, services, template })
+    if (open) {
+      setStep(1)
+      setError(null)
+      setSearch('')
+      setForm(createWizardSeed(agent, template))
+      setSelectedServiceIds(
+        agent?.assignedServiceIds?.length
+          ? agent.assignedServiceIds
+          : template
+            ? matchTemplateServiceIds(template, services)
+            : services.filter((service) => service.active).slice(0, 2).map((service) => service.id),
+      )
+    }
+  }
 
   if (!open) return null
 

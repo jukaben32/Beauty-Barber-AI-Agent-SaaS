@@ -247,6 +247,7 @@ function RescheduleModal({
   useEffect(() => {
     if (!appointment) return
     let cancelled = false
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- setting loading state before an async fetch, not a render-sync anti-pattern
     setLoadingSlots(true)
     setSlots(null)
     setError(null)

@@ -42,13 +42,21 @@ export function PortalSupportManager({
 
   const selected = tickets.find((ticket) => ticket.id === selectedId) ?? null
 
+  const [hadSelectedId, setHadSelectedId] = useState(selectedId != null)
+  if (!selectedId && hadSelectedId) {
+    setHadSelectedId(false)
+    setMessages([])
+  } else if (selectedId && !hadSelectedId) {
+    setHadSelectedId(true)
+  }
+
   useEffect(() => {
     if (!selectedId) {
-      setMessages([])
       return
     }
 
     let cancelled = false
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- setting loading state before an async fetch, not a render-sync anti-pattern
     setLoadingMessages(true)
     setThreadError(null)
     fetch(`/api/portal/support/${selectedId}/messages`)

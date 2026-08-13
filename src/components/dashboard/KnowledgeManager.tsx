@@ -614,7 +614,7 @@ export function KnowledgeManager({
     selectedCategory === 'all' ? 'Add visible topics' : `Add all ${selectedCategory === 'appointments' ? 'appointments' : getKnowledgeTemplateCategoryLabel(selectedCategory)}`
 
   function pushToast(toast: Omit<KnowledgeToast, 'id'>) {
-    const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+    const id = crypto.randomUUID()
     setToasts((current) => [...current, { id, ...toast }])
     window.setTimeout(() => {
       setToasts((current) => current.filter((item) => item.id !== id))

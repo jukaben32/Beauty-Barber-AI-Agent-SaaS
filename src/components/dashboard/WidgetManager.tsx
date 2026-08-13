@@ -474,31 +474,40 @@ function WidgetWizardModal({
   const [error, setError] = useState<string | null>(null)
   const [form, setForm] = useState<WidgetDraftState>(() => getDefaultDraft(sourceWidget, agents, businessName))
 
-  useEffect(() => {
-    if (!open) return
-    const selectedWidget = sourceWidget ?? null
-    const selectedAgent = sourceAgent ?? (selectedWidget?.agentId ? agents.find((agent) => agent.id === selectedWidget.agentId) ?? null : null)
-    setError(null)
-    setSaving(false)
-    setForm(
-      selectedWidget
-        ? getDefaultDraft(selectedWidget, agents, businessName)
-        : {
-            name: `${selectedAgent?.name ?? businessName} Widget`,
-            agentId: selectedAgent?.id ?? null,
-            position: 'bottom-right',
-            theme: 'light',
-            primaryColor: DEFAULT_PRIMARY_COLOR,
-            secondaryColor: DEFAULT_SECONDARY_COLOR,
-            greetingMessage: DEFAULT_WELCOME_MESSAGE,
-            enabled: true,
-            tone: DEFAULT_WIDGET_TONE,
-            slotDuration: DEFAULT_APPOINTMENT_SLOT_MINUTES,
-            showBranding: true,
-            allowedOrigins: [],
-          },
-    )
-  }, [agents, businessName, open, sourceAgent, sourceWidget])
+  const [syncedKey, setSyncedKey] = useState({ agents, businessName, open, sourceAgent, sourceWidget })
+  if (
+    syncedKey.agents !== agents ||
+    syncedKey.businessName !== businessName ||
+    syncedKey.open !== open ||
+    syncedKey.sourceAgent !== sourceAgent ||
+    syncedKey.sourceWidget !== sourceWidget
+  ) {
+    setSyncedKey({ agents, businessName, open, sourceAgent, sourceWidget })
+    if (open) {
+      const selectedWidget = sourceWidget ?? null
+      const selectedAgent = sourceAgent ?? (selectedWidget?.agentId ? agents.find((agent) => agent.id === selectedWidget.agentId) ?? null : null)
+      setError(null)
+      setSaving(false)
+      setForm(
+        selectedWidget
+          ? getDefaultDraft(selectedWidget, agents, businessName)
+          : {
+              name: `${selectedAgent?.name ?? businessName} Widget`,
+              agentId: selectedAgent?.id ?? null,
+              position: 'bottom-right',
+              theme: 'light',
+              primaryColor: DEFAULT_PRIMARY_COLOR,
+              secondaryColor: DEFAULT_SECONDARY_COLOR,
+              greetingMessage: DEFAULT_WELCOME_MESSAGE,
+              enabled: true,
+              tone: DEFAULT_WIDGET_TONE,
+              slotDuration: DEFAULT_APPOINTMENT_SLOT_MINUTES,
+              showBranding: true,
+              allowedOrigins: [],
+            },
+      )
+    }
+  }
 
   if (!open) return null
 
@@ -1109,16 +1118,15 @@ export function WidgetManager({
   const [deleteTarget, setDeleteTarget] = useState<WidgetRecord | null>(null)
   const [toasts, setToasts] = useState<ManagerToast[]>([])
 
-  useEffect(() => {
+  const [widgetSelectionSyncKey, setWidgetSelectionSyncKey] = useState({ selectedWidgetId, widgets })
+  if (widgetSelectionSyncKey.selectedWidgetId !== selectedWidgetId || widgetSelectionSyncKey.widgets !== widgets) {
+    setWidgetSelectionSyncKey({ selectedWidgetId, widgets })
     if (widgets.length === 0) {
       setSelectedWidgetId(null)
-      return
-    }
-
-    if (!selectedWidgetId || !widgets.some((widget) => widget.id === selectedWidgetId)) {
+    } else if (!selectedWidgetId || !widgets.some((widget) => widget.id === selectedWidgetId)) {
       setSelectedWidgetId(widgets[0].id)
     }
-  }, [selectedWidgetId, widgets])
+  }
 
   const sortedAgents = [...agents].sort((a, b) => {
     if (a.status === b.status) {
