@@ -1037,13 +1037,12 @@ create policy "clients can see their billing rows"
 -- explicit, narrow column list and re-add RLS-aware filtering.
 drop view if exists business_public_profiles;
 
--- 18. BUSINESS STRIPE ACCOUNTS
--- Lets a business collect its own appointment payments via Stripe (as an
--- alternative to the existing USDC/wallet flow), separate from this SaaS's
--- own billing. secret_key_encrypted is AES-256-GCM ciphertext (see
--- src/lib/cryptoSecrets.ts) - the app must never return it to the browser;
--- only /api/business/stripe (server-side, service-role client) reads or
--- writes this table.
+-- 18. BUSINESS STRIPE ACCOUNTS (legacy, inert)
+-- Previously let a business collect its own appointment payments via Stripe.
+-- Stripe and on-chain USDC support were removed from the app (not viable in
+-- the DR market) along with the routes and code that read/wrote this table
+-- (/api/business/stripe, src/lib/cryptoSecrets.ts). Left in place rather than
+-- dropped for reversibility; nothing in the app touches it anymore.
 create table if not exists business_stripe_accounts (
   business_id uuid primary key references businesses(id) on delete cascade,
   publishable_key text,
@@ -1068,4 +1067,48 @@ alter table business_stripe_accounts enable row level security;
 drop policy if exists "stripe account read by business members" on business_stripe_accounts;
 create policy "stripe account read by business members"
   on business_stripe_accounts for select using (has_business_access(business_id));
+
+-- 19. RATE LIMITING
+-- Fixed-window request counter for public, unauthenticated endpoints (widget
+-- realtime voice/chat, portal magic-link email, website contact form) - see
+-- src/lib/rateLimit.ts. Each (key, window) pair gets its own row, keyed by
+-- "<key>:<window index>" so a window's row is naturally fresh - no reset
+-- logic needed.
+create table if not exists rate_limit_hits (
+  bucket_key text primary key,
+  count integer not null default 1,
+  expires_at timestamptz not null
+);
+
+create index if not exists rate_limit_hits_expires_at_idx on rate_limit_hits (expires_at);
+
+create or replace function increment_rate_limit(p_bucket_key text, p_expires_at timestamptz)
+returns integer
+language plpgsql
+as $$
+declare
+  v_count integer;
+begin
+  insert into rate_limit_hits (bucket_key, count, expires_at)
+  values (p_bucket_key, 1, p_expires_at)
+  on conflict (bucket_key)
+  do update set count = rate_limit_hits.count + 1
+  returning count into v_count;
+  return v_count;
+end;
+$$;
+
+-- Best-effort cleanup so the table doesn't grow forever. Safe to call
+-- repeatedly; a stray expired row just gets caught on the next run.
+create or replace function cleanup_rate_limit_hits()
+returns void
+language sql
+as $$
+  delete from rate_limit_hits where expires_at < now() - interval '1 hour';
+$$;
+
+alter table rate_limit_hits enable row level security;
+
+-- Only the service-role admin client (used exclusively by src/lib/rateLimit.ts,
+-- itself server-only) ever touches this table - no end-user policy needed.
 

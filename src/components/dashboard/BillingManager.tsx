@@ -24,9 +24,12 @@ const PAYMENT_TYPE_LABEL: Record<string, string> = {
   portal_topup: 'Portal top up',
 }
 
-function truncateHash(hash: string) {
-  if (hash.length <= 12) return hash
-  return `${hash.slice(0, 6)}...${hash.slice(-4)}`
+const PAYMENT_METHOD_LABEL: Record<string, string> = {
+  cash: 'Cash',
+  transfer: 'Bank transfer',
+  card_cardnet: 'Card (Cardnet)',
+  card_azul: 'Card (Azul)',
+  usdc: 'USDC',
 }
 
 export function BillingManager({
@@ -36,7 +39,7 @@ export function BillingManager({
   summary,
 }: {
   subscription: BusinessSubscription | null
-  paymentConfig: { payment_wallet_address: string | null; payment_chain_id: number; payment_currency: string; booking_deposit_amount: number | null } | null
+  paymentConfig: { payment_currency: string; booking_deposit_amount: number | null } | null
   transactions: BillingTransaction[]
   summary: { total: number; confirmed: number; pending: number; count: number }
 }) {
@@ -46,8 +49,8 @@ export function BillingManager({
     <div className="space-y-8">
       <SectionHeading
         eyebrow={<SectionEyebrow>Billing</SectionEyebrow>}
-        title="USDC billing, deposits, and subscription plans"
-        description="Track tx hashes, payment types, and appointment-linked transactions directly from the business dashboard."
+        title="Deposits, payments, and subscription plans"
+        description="Track payment methods, references, and appointment-linked transactions directly from the business dashboard."
       />
 
       <div className="grid gap-4 sm:grid-cols-3">
@@ -95,30 +98,25 @@ export function BillingManager({
 
           {paymentConfig && (
             <div className="mt-6 space-y-3 border border-[var(--border-soft)] bg-[var(--panel-soft)] p-5">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Payment wallet</div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-[var(--text-muted)]">Address</span>
-                <strong className="text-[var(--text-strong)]">{paymentConfig.payment_wallet_address ? truncateHash(paymentConfig.payment_wallet_address) : 'Not configured'}</strong>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-[var(--text-muted)]">Chain ID</span>
-                <strong className="text-[var(--text-strong)]">{paymentConfig.payment_chain_id}</strong>
-              </div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Payment settings</div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-[var(--text-muted)]">Currency</span>
                 <strong className="text-[var(--text-strong)]">{paymentConfig.payment_currency}</strong>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-[var(--text-muted)]">Default deposit</span>
+                <strong className="text-[var(--text-strong)]">
+                  {paymentConfig.booking_deposit_amount != null ? paymentConfig.booking_deposit_amount : 'Not configured'}
+                </strong>
               </div>
             </div>
           )}
         </SurfaceCard>
 
         <SurfaceCard className="p-6">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Transactions</div>
-              <h2 className="mt-2 font-display text-2xl font-bold tracking-tight text-[var(--text-strong)]">Recent billing activity</h2>
-            </div>
-            <StatusBadge tone="teal">Polygon</StatusBadge>
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Transactions</div>
+            <h2 className="mt-2 font-display text-2xl font-bold tracking-tight text-[var(--text-strong)]">Recent billing activity</h2>
           </div>
           <div className="mt-6 space-y-3">
             {transactions.length === 0 && <p className="text-sm text-[var(--text-muted)]">No transactions recorded yet.</p>}
@@ -127,7 +125,10 @@ export function BillingManager({
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <div className="text-sm font-bold text-[var(--text-strong)]">{PAYMENT_TYPE_LABEL[tx.paymentType] ?? tx.paymentType}</div>
-                    <div className="text-xs text-[var(--text-muted)]">{truncateHash(tx.txHash)}</div>
+                    <div className="text-xs text-[var(--text-muted)]">
+                      {tx.paymentMethod ? PAYMENT_METHOD_LABEL[tx.paymentMethod] ?? tx.paymentMethod : 'Method not set'}
+                      {tx.paymentReference ? ` · ${tx.paymentReference}` : ''}
+                    </div>
                   </div>
                   <div className="text-right">
                     <div className="text-sm font-bold text-[var(--text-strong)]">${tx.amount} {tx.currency}</div>

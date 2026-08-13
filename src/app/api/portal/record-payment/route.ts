@@ -9,7 +9,6 @@ import { getClientById } from '@/services/clients'
 import { recordBillingTransaction } from '@/services/billing'
 import { recordAppointmentPayment } from '@/services/appointments'
 import { createNotification } from '@/services/notifications'
-import { verifyUsdcPayment } from '@/lib/onchain'
 import { DEFAULT_CHAIN_ID } from '@/constants'
 import type { PublicBusinessProfile } from '@/types'
 
@@ -71,29 +70,15 @@ export async function POST(request: Request) {
   // Paid" action), same as a client calling in to say the same thing.
   const status = isCash ? 'pending' : parsed.data.status || 'confirmed'
 
-  // Only "confirmed" is a claim we need to check — 'pending'/'failed' don't
-  // assert money moved. A signed-in client could otherwise report a
-  // fabricated txHash for their OWN appointment (the auth check above only
-  // stops them acting on someone ELSE's) and have it accepted as paid.
+  // The portal has no automated way to verify a payment actually happened
+  // (no card processor, no on-chain check) — every method here (cash,
+  // transfer, card) is a client self-report. A signed-in client could
+  // otherwise claim "confirmed" for their OWN appointment (the auth check
+  // above only stops them acting on someone ELSE's) and have it accepted
+  // as paid without staff ever seeing the money. Staff confirm it from the
+  // dashboard once the funds actually show up.
   if (status === 'confirmed') {
-    if (parsed.data.currency.toUpperCase() !== 'USDC') {
-      return apiError(`Unsupported payment currency for verification: ${parsed.data.currency}`, 422)
-    }
-    if (!business.paymentWalletAddress) {
-      return apiError('This business has not configured a payment wallet yet', 422)
-    }
-    if (!parsed.data.txHash || !parsed.data.chainId) {
-      return apiError('txHash and chainId are required to verify a confirmed payment', 422)
-    }
-    const verification = await verifyUsdcPayment({
-      txHash: parsed.data.txHash,
-      chainId: parsed.data.chainId,
-      expectedRecipient: business.paymentWalletAddress,
-      expectedMinAmount: parsed.data.amount,
-    })
-    if (!verification.ok) {
-      return apiError(`Payment could not be verified on-chain: ${verification.reason}`, 402)
-    }
+    return apiError('Payments reported from the client portal cannot be marked confirmed automatically. Staff must confirm it from the dashboard.', 422)
   }
 
   const payment = parsed.data.appointmentId

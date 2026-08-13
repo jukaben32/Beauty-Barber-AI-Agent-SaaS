@@ -17,7 +17,19 @@ export default async function Page() {
     <>
       <PortalTopBar businessName={business.name} />
       <div className="px-4 pb-10 lg:px-8">
-        <PortalAppointmentsManager initialAppointments={appointments} timezone={business.timezone} />
+        <PortalAppointmentsManager
+          initialAppointments={appointments}
+          timezone={business.timezone}
+          paymentCurrency={business.paymentCurrency}
+          acceptsCash={business.acceptsCash}
+          acceptsTransfer={business.acceptsTransfer}
+          bankDetails={{
+            bankName: business.bankName,
+            bankAccountHolder: business.bankAccountHolder,
+            bankAccountNumber: business.bankAccountNumber,
+            bankAccountType: business.bankAccountType,
+          }}
+        />
       </div>
     </>
   )

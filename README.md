@@ -22,7 +22,7 @@ This project provides AI-powered voice and WhatsApp booking assistants designed 
 - A public booking website builder with live preview
 - A self-service client portal (reschedule, cancel, pay, support tickets)
 - Supabase-backed authentication, database, and row-level multi-tenant security
-- On-chain (USDC) and card payment support for deposits and bookings
+- Local payment methods for deposits and bookings (cash, bank transfer, card)
 
 This starter is intended for developers, SaaS founders, and freelancers building AI-driven booking automation and management software for the beauty and grooming industry.
 

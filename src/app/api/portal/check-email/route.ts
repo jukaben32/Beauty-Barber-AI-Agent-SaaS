@@ -1,6 +1,7 @@
 import { createClient as createServerSupabaseClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { apiError, json, readJson } from '@/lib/api'
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 import { portalCheckEmailSchema } from '@/validations'
 import { getBusinessBySlug } from '@/services/business'
 import { findOrCreateClient, getClientByEmail } from '@/services/clients'
@@ -50,6 +51,17 @@ export async function POST(request: Request) {
   }
 
   const admin = createAdminClient()
+
+  // Two limits: per IP (stop one caller from spamming many inboxes) and per
+  // email (stop many callers from email-bombing one victim's inbox).
+  const [ipLimit, emailLimit] = await Promise.all([
+    checkRateLimit(admin, { key: `check-email-ip:${getClientIp(request)}`, limit: 10, windowSeconds: 300 }),
+    checkRateLimit(admin, { key: `check-email-addr:${parsed.data.email.toLowerCase()}`, limit: 5, windowSeconds: 300 }),
+  ])
+  if (!ipLimit.allowed || !emailLimit.allowed) {
+    return apiError('Too many requests. Please try again in a few minutes.', 429)
+  }
+
   const business = await getBusinessBySlug(admin, businessSlug)
   if (!business) {
     return apiError('Business not found', 404)
