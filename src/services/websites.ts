@@ -52,6 +52,7 @@ function toWebsite(row: any): Website {
     socialTiktok: row.social_tiktok ?? null,
     socialLinkedin: row.social_linkedin ?? null,
     socialPinterest: row.social_pinterest ?? null,
+    socialTwitter: row.social_twitter ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }
@@ -164,6 +165,7 @@ function buildWebsiteRow(input: WebsiteInput, businessId: string, current?: Webs
     social_tiktok: input.socialTiktok ?? current?.socialTiktok ?? null,
     social_linkedin: input.socialLinkedin ?? current?.socialLinkedin ?? null,
     social_pinterest: input.socialPinterest ?? current?.socialPinterest ?? null,
+    social_twitter: input.socialTwitter ?? current?.socialTwitter ?? null,
   }
 }
 
@@ -295,6 +297,7 @@ export async function createOrUpdateWebsite(
     socialTiktok?: string | null
     socialLinkedin?: string | null
     socialPinterest?: string | null
+    socialTwitter?: string | null
   }
 ) {
   const current = await getWebsiteRowByBusinessId(supabase, businessId)
@@ -336,6 +339,7 @@ export async function createOrUpdateWebsite(
       socialTiktok: input.socialTiktok ?? current?.socialTiktok ?? null,
       socialLinkedin: input.socialLinkedin ?? current?.socialLinkedin ?? null,
       socialPinterest: input.socialPinterest ?? current?.socialPinterest ?? null,
+      socialTwitter: input.socialTwitter ?? current?.socialTwitter ?? null,
     },
     current
   )
@@ -404,6 +408,7 @@ export async function updateWebsite(supabase: DbClient, businessId: string, webs
     socialTiktok: patch.socialTiktok ?? current.socialTiktok,
     socialLinkedin: patch.socialLinkedin ?? current.socialLinkedin,
     socialPinterest: patch.socialPinterest ?? current.socialPinterest,
+    socialTwitter: patch.socialTwitter ?? current.socialTwitter,
   }
 
   return createOrUpdateWebsite(supabase, businessId, merged)

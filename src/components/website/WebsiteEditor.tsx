@@ -457,6 +457,7 @@ export function WebsiteEditor({
         socialTiktok: textOrNull(website.socialTiktok ?? ''),
         socialLinkedin: textOrNull(website.socialLinkedin ?? ''),
         socialPinterest: textOrNull(website.socialPinterest ?? ''),
+        socialTwitter: textOrNull(website.socialTwitter ?? ''),
       },
       services: services.map((service, index) => ({
         id: service.id,

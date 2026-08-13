@@ -3,6 +3,7 @@ import { apiError, json, readJson } from '@/lib/api'
 import { getPublicBusinessProfile } from '@/services/business'
 import { updateConversationStatus } from '@/services/conversations'
 import { realtimeConversationEndSchema } from '@/validations'
+import { logAiUsage, realtimeVoiceCostUsd } from '@/services/aiUsage'
 
 // Called both mid-call (to link the client/appointment a tool call just
 // created or found, so the Call Log row points at them) and on disconnect
@@ -37,6 +38,16 @@ export async function PATCH(request: Request, props: { params: Promise<{ id: str
       endedAt: parsed.data.durationSeconds !== undefined ? new Date().toISOString() : undefined,
       outcome: parsed.data.appointmentId ? 'booked_appointment' : undefined,
     })
+
+    if (parsed.data.durationSeconds !== undefined) {
+      await logAiUsage(admin, {
+        businessId: business.id,
+        conversationId: conversation.id,
+        kind: 'realtime_voice',
+        durationSeconds: parsed.data.durationSeconds,
+        costUsd: realtimeVoiceCostUsd(parsed.data.durationSeconds),
+      })
+    }
 
     return json({ conversation })
   } catch (error) {

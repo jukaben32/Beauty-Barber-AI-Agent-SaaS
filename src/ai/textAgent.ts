@@ -2,6 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
 import type { AiAgent, Business, Service, KnowledgeDocument } from '@/types'
 import { buildAssistantInstructions, realtimeTools, executeRealtimeToolCall } from './tools'
+import { chatCompletionCostUsd, logAiUsage } from '@/services/aiUsage'
 
 type DB = SupabaseClient<Database>
 
@@ -71,6 +72,21 @@ export async function runWhatsappAgentTurn(
     })),
   ]
 
+  let totalInputTokens = 0
+  let totalOutputTokens = 0
+
+  async function flushUsage() {
+    if (totalInputTokens === 0 && totalOutputTokens === 0) return
+    await logAiUsage(supabase, {
+      businessId: ctx.businessId,
+      conversationId: ctx.conversationId,
+      kind: 'chat_completion',
+      inputTokens: totalInputTokens,
+      outputTokens: totalOutputTokens,
+      costUsd: chatCompletionCostUsd(totalInputTokens, totalOutputTokens, CHAT_MODEL),
+    })
+  }
+
   for (let round = 0; round < MAX_TOOL_ROUNDS; round += 1) {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -89,16 +105,21 @@ export async function runWhatsappAgentTurn(
 
     if (!response.ok) {
       const detail = await response.text().catch(() => '')
+      await flushUsage()
       throw new Error(`OpenAI Chat Completions error: ${detail}`)
     }
 
     const data = await response.json()
+    totalInputTokens += data?.usage?.prompt_tokens ?? 0
+    totalOutputTokens += data?.usage?.completion_tokens ?? 0
     const message = data?.choices?.[0]?.message
     if (!message) {
+      await flushUsage()
       throw new Error('OpenAI Chat Completions returned no message')
     }
 
     if (!message.tool_calls?.length) {
+      await flushUsage()
       return (message.content ?? '').trim()
     }
 
@@ -139,5 +160,6 @@ export async function runWhatsappAgentTurn(
     }
   }
 
+  await flushUsage()
   return 'Lo siento, tuve un problema procesando tu mensaje. En breve te contacta alguien del equipo.'
 }

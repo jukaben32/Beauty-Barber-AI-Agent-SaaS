@@ -284,6 +284,7 @@ export interface Website {
   socialTiktok: string | null
   socialLinkedin: string | null
   socialPinterest: string | null
+  socialTwitter: string | null
   createdAt: string
   updatedAt: string
 }

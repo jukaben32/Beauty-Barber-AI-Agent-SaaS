@@ -78,6 +78,7 @@ export async function POST(request: Request) {
       socialTiktok: parsed.data.socialTiktok ?? null,
       socialLinkedin: parsed.data.socialLinkedin ?? null,
       socialPinterest: parsed.data.socialPinterest ?? null,
+      socialTwitter: parsed.data.socialTwitter ?? null,
     })
 
     const content = await getWebsiteContentForBusiness(supabase, business.id)

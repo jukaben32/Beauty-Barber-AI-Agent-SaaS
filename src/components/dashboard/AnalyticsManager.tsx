@@ -2,6 +2,7 @@ import {
   BarChart3,
   CalendarDays,
   Clock3,
+  DollarSign,
   MessageSquareMore,
   PhoneCall,
   PieChart,
@@ -16,6 +17,11 @@ import { StatusBadge, SurfaceCard } from '@/components/dashboard/shared'
 import { getDateKeyInTimeZone, getDayOfWeekInTimeZone } from '@/services/_shared'
 
 const NUMBER_FORMAT = new Intl.NumberFormat('en-US')
+const USD_FORMAT = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+function formatUsd(value: number) {
+  return USD_FORMAT.format(value)
+}
 
 const TOP_TONES = {
   teal: {
@@ -41,6 +47,12 @@ const TOP_TONES = {
     soft: 'rgba(236,170,93,0.12)',
     border: 'rgba(236,170,93,0.20)',
     color: '#b45309',
+  },
+  rose: {
+    accent: 'linear-gradient(180deg, rgba(225,29,72,0.96), rgba(225,29,72,0.18))',
+    soft: 'rgba(225,29,72,0.12)',
+    border: 'rgba(225,29,72,0.20)',
+    color: '#be123c',
   },
 } as const
 
@@ -500,12 +512,14 @@ export function AnalyticsManager({
   appointments,
   timezone,
   businessName,
+  aiSpendUsd = 0,
 }: {
   analytics: DashboardAnalytics
   conversations: Conversation[]
   appointments: AppointmentWithRelations[]
   timezone: string
   businessName: string
+  aiSpendUsd?: number
 }) {
   const now = new Date()
   const totalConversations = analytics.totalConversations || conversations.length
@@ -572,6 +586,13 @@ export function AnalyticsManager({
       icon: Clock3,
       tone: 'amber' as const,
     },
+    {
+      label: 'AI API Spend',
+      value: formatUsd(aiSpendUsd),
+      helper: 'OpenAI chat + voice usage, all time',
+      icon: DollarSign,
+      tone: 'rose' as const,
+    },
   ]
 
   return (
@@ -604,7 +625,7 @@ export function AnalyticsManager({
         </div>
       </SurfaceCard>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         {topCards.map((card) => (
           <MetricCard key={card.label} {...card} />
         ))}

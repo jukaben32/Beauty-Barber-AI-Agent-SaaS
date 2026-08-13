@@ -491,6 +491,30 @@ create policy "clients can see own conversations"
     )
   );
 
+create table if not exists ai_usage_events (
+  id uuid primary key default gen_random_uuid(),
+  business_id uuid not null references businesses(id) on delete cascade,
+  conversation_id uuid references conversations(id) on delete set null,
+  kind text not null check (kind in ('chat_completion', 'realtime_voice')),
+  input_tokens integer,
+  output_tokens integer,
+  duration_seconds integer,
+  cost_usd numeric(10,6) not null default 0,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_ai_usage_events_business_id on ai_usage_events (business_id);
+create index if not exists idx_ai_usage_events_created_at on ai_usage_events (created_at);
+
+alter table ai_usage_events enable row level security;
+
+drop policy if exists "ai usage events access by business members" on ai_usage_events;
+create policy "ai usage events access by business members"
+  on ai_usage_events for select using (has_business_access(business_id));
+drop policy if exists "service role can manage ai usage events" on ai_usage_events;
+create policy "service role can manage ai usage events"
+  on ai_usage_events for all using (auth.role() = 'service_role');
+
 create table if not exists conversation_messages (
   id uuid primary key default gen_random_uuid(),
   conversation_id uuid not null references conversations(id) on delete cascade,
@@ -658,6 +682,7 @@ create table if not exists websites (
   social_tiktok text,
   social_linkedin text,
   social_pinterest text,
+  social_twitter text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

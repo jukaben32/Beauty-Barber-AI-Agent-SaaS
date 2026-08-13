@@ -192,6 +192,7 @@ export const websiteSchema = z.object({
   socialTiktok: z.string().url().optional().nullable(),
   socialLinkedin: z.string().url().optional().nullable(),
   socialPinterest: z.string().url().optional().nullable(),
+  socialTwitter: z.string().url().optional().nullable(),
 })
 
 export const websiteServiceSchema = z.object({
