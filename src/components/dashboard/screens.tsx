@@ -282,7 +282,7 @@ export function MarketingHomeScreen() {
 
       <main>
         <section id="producto" className="relative mx-auto mt-6 grid w-full max-w-7xl items-center gap-14 overflow-hidden rounded-[36px] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,255,255,0.72),rgba(247,240,231,0.92))] px-6 py-16 lg:grid-cols-[1.02fr_0.98fr] lg:px-8 lg:py-20">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(91, 15, 33,0.11),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(236,170,93,0.12),transparent_26%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(15, 42, 107,0.11),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(236,170,93,0.12),transparent_26%)]" />
           <div className="relative max-w-xl">
             <SectionEyebrow>AI booking receptionist</SectionEyebrow>
             <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-[var(--border-soft)] bg-white/72 px-3.5 py-1.5 text-[11px] font-semibold text-[var(--text-strong)] backdrop-blur-sm">
@@ -364,7 +364,7 @@ export function MarketingHomeScreen() {
           <div className="grid items-center gap-14 lg:grid-cols-[0.9fr_1.1fr]">
             <div className="relative">
               <SurfaceCard className="relative overflow-hidden p-6">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(91, 15, 33,0.14),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(236,170,93,0.12),transparent_24%)]" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(15, 42, 107,0.14),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(236,170,93,0.12),transparent_24%)]" />
                 <div className="relative flex min-h-[540px] flex-col gap-6">
                   <div className="flex items-center justify-between gap-4">
                     <div>
@@ -404,7 +404,7 @@ export function MarketingHomeScreen() {
                       </div>
                       <ShieldCheck className="h-5 w-5 text-[var(--brand)]" />
                     </div>
-                    <div className="ecg-line mt-4 h-10 rounded-[18px] border border-[var(--border-soft)] bg-[linear-gradient(90deg,rgba(91, 15, 33,0.05),rgba(91, 15, 33,0.16),rgba(91, 15, 33,0.05))]" />
+                    <div className="ecg-line mt-4 h-10 rounded-[18px] border border-[var(--border-soft)] bg-[linear-gradient(90deg,rgba(15, 42, 107,0.05),rgba(15, 42, 107,0.16),rgba(15, 42, 107,0.05))]" />
                   </div>
                 </div>
               </SurfaceCard>
@@ -556,7 +556,7 @@ export function MarketingHomeScreen() {
         <section className="border-t border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,253,248,0.72),rgba(245,239,230,0.98))]">
           <div className="mx-auto w-full max-w-7xl px-6 py-24 lg:px-8">
             <SurfaceCard className="relative overflow-hidden px-6 py-8 sm:px-8 sm:py-10">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(91, 15, 33,0.12),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(236,170,93,0.12),transparent_24%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(15, 42, 107,0.12),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(236,170,93,0.12),transparent_24%)]" />
               <div className="relative grid gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
                 <div>
                   <SectionEyebrow>Launch ready</SectionEyebrow>

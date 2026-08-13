@@ -275,7 +275,7 @@ function ClientCard({
         )}
       >
         <div className="flex min-w-0 items-center gap-3">
-          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[var(--brand)] text-sm font-bold text-white shadow-[0_16px_30px_-20px_rgba(91, 15, 33,0.75)]">
+          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[var(--brand)] text-sm font-bold text-white shadow-[0_16px_30px_-20px_rgba(15, 42, 107,0.75)]">
             {firstLetter}
           </div>
           <div className="min-w-0">
