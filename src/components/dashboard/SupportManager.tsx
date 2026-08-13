@@ -173,7 +173,7 @@ function TicketCard({
       className={cn(
         'w-full rounded-[24px] border px-4 py-4 text-left transition',
         active
-          ? 'border-[var(--brand)] bg-[var(--brand-soft)]/30 shadow-[0_16px_40px_-34px_rgba(19,122,114,0.7)]'
+          ? 'border-[var(--brand)] bg-[var(--brand-soft)]/30 shadow-[0_16px_40px_-34px_rgba(91, 15, 33,0.7)]'
           : 'border-[var(--border-soft)] bg-white/78 hover:border-[var(--border-strong)] hover:bg-white',
       )}
     >

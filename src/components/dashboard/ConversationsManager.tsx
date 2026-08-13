@@ -144,7 +144,7 @@ function TranscriptMessage({ message }: { message: ConversationMessage }) {
   const badgeBg = isSystem ? 'var(--text-muted)' : isAgent ? 'var(--brand)' : 'var(--text-strong)'
   const badgeTextClass = isCaller ? 'text-[var(--text-strong)]' : 'text-white'
   const bubbleTone = isAgent
-    ? 'border-[rgba(19,122,114,0.18)] bg-[rgba(19,122,114,0.08)] text-[var(--text-strong)]'
+    ? 'border-[rgba(91, 15, 33,0.18)] bg-[rgba(91, 15, 33,0.08)] text-[var(--text-strong)]'
     : isCaller
       ? 'border-[var(--border-soft)] bg-white/90 text-[var(--text-strong)]'
       : 'border-[var(--border-soft)] bg-[var(--panel-soft)] text-[var(--text-muted)]'
@@ -399,7 +399,7 @@ export function ConversationsManager({
                     style={{ gridTemplateColumns: tableGridTemplate }}
                   >
                     <div className="flex min-w-0 items-center gap-3">
-                      <div className="grid h-11 w-11 shrink-0 place-items-center rounded-[16px] bg-[var(--brand)] text-[11px] font-semibold text-white shadow-[0_16px_30px_-20px_rgba(19,122,114,0.7)]">
+                      <div className="grid h-11 w-11 shrink-0 place-items-center rounded-[16px] bg-[var(--brand)] text-[11px] font-semibold text-white shadow-[0_16px_30px_-20px_rgba(91, 15, 33,0.7)]">
                         {clientInitials || 'UC'}
                       </div>
                       <div className="min-w-0">
