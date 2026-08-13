@@ -4,7 +4,8 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { getPortalClientForAuthUser } from '@/services/clients'
 import { getAppointmentById, getAvailableSlots } from '@/services/appointments'
 
-export async function GET(_request: Request, { params }: { params: { id: string } }) {
+export async function GET(_request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const supabase = await createServerSupabaseClient()
   const {
     data: { user },

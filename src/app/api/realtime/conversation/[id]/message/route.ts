@@ -4,7 +4,8 @@ import { getPublicBusinessProfile } from '@/services/business'
 import { appendConversationMessage } from '@/services/conversations'
 import { realtimeConversationMessageSchema } from '@/validations'
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   let body: unknown
   try {
     body = await readJson(request)

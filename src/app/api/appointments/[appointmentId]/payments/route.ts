@@ -3,10 +3,8 @@ import { getBusinessForCurrentUser, getServerSupabaseAndUser } from '@/lib/route
 import { getAppointmentById } from '@/services/appointments'
 import { listBillingTransactionsForAppointment } from '@/services/billing'
 
-export async function GET(
-  _request: Request,
-  { params }: { params: { appointmentId: string } }
-) {
+export async function GET(_request: Request, props: { params: Promise<{ appointmentId: string }> }) {
+  const params = await props.params;
   const { supabase, user } = await getServerSupabaseAndUser()
   if (!user) {
     return apiError('Unauthorized', 401)

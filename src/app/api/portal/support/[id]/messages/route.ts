@@ -14,7 +14,8 @@ async function loadOwnedTicket(admin: ReturnType<typeof createAdminClient>, busi
   return ticket
 }
 
-export async function GET(_request: Request, { params }: { params: { id: string } }) {
+export async function GET(_request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const supabase = await createServerSupabaseClient()
   const {
     data: { user },
@@ -38,7 +39,8 @@ export async function GET(_request: Request, { params }: { params: { id: string 
   return json({ ticket, messages })
 }
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const supabase = await createServerSupabaseClient()
   const {
     data: { user },

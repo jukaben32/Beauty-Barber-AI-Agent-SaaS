@@ -42,7 +42,7 @@ export default async function WidgetPage() {
     ]
   }
 
-  const headerStore = headers()
+  const headerStore = await headers()
   const forwardedProto = headerStore.get('x-forwarded-proto') ?? 'https'
   const forwardedHost = headerStore.get('x-forwarded-host') ?? headerStore.get('host')
   const siteOrigin = process.env.NEXT_PUBLIC_APP_URL || (forwardedHost ? `${forwardedProto}://${forwardedHost}` : 'http://localhost:3000')

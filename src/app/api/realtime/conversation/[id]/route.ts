@@ -7,7 +7,8 @@ import { realtimeConversationEndSchema } from '@/validations'
 // Called both mid-call (to link the client/appointment a tool call just
 // created or found, so the Call Log row points at them) and on disconnect
 // (to close the conversation out with a duration and status).
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+export async function PATCH(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   let body: unknown
   try {
     body = await readJson(request)

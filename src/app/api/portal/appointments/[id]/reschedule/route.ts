@@ -10,7 +10,8 @@ import { buildBusinessAppointmentEmail } from '@/lib/email/businessNotification'
 import { sendEmail } from '@/lib/resend'
 import { portalRescheduleAppointmentSchema } from '@/validations'
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const supabase = await createServerSupabaseClient()
   const {
     data: { user },

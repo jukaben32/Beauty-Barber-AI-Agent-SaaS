@@ -5,13 +5,14 @@ import { getAgentById } from '@/services/agents'
 import { listServices } from '@/services/services'
 import { AgentDetailManager } from '@/components/dashboard/AgentDetailManager'
 
-export default async function AgentDetailPage({
-  params,
-  searchParams,
-}: {
-  params: { id: string }
-  searchParams?: { mode?: string }
-}) {
+export default async function AgentDetailPage(
+  props: {
+    params: Promise<{ id: string }>
+    searchParams?: Promise<{ mode?: string }>
+  }
+) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   const supabase = await createClient()
   const {
     data: { user },

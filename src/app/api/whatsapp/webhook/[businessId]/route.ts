@@ -37,7 +37,8 @@ function verifyToken(expected: string, provided: string): boolean {
   return timingSafeEqual(expectedBuf, providedBuf)
 }
 
-export async function POST(request: Request, { params }: { params: { businessId: string } }) {
+export async function POST(request: Request, props: { params: Promise<{ businessId: string }> }) {
+  const params = await props.params;
   const supabase = createAdminClient()
 
   const connection = await getWhatsappConnection(supabase, params.businessId)
