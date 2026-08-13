@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { apiError, json, readJson } from '@/lib/api'
 import { resolveRealtimeBookingContext } from '@/lib/realtime'
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 import { realtimeTools } from '@/ai/tools'
 import { findOrCreateClient } from '@/services/clients'
 import { createConversation, linkConversationToAppointment } from '@/services/conversations'
@@ -28,6 +29,11 @@ export async function POST(request: Request) {
   }
 
   const admin = createAdminClient()
+
+  const rateLimit = await checkRateLimit(admin, { key: `realtime-connect:${getClientIp(request)}`, limit: 20, windowSeconds: 60 })
+  if (!rateLimit.allowed) {
+    return apiError('Too many requests. Please try again in a moment.', 429)
+  }
 
   try {
     const context = await resolveRealtimeBookingContext(admin, {

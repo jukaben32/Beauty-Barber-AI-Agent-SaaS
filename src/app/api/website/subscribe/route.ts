@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { apiError, json, readJson } from '@/lib/api'
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 import { websiteSubscriberSchema } from '@/validations'
 import { getBusinessById, getPublicBusinessProfile } from '@/services/business'
 import { getWebsiteBySlug, createWebsiteSubscriber } from '@/services/websites'
@@ -27,6 +28,11 @@ export async function POST(request: Request) {
   }
 
   const admin = createAdminClient()
+
+  const rateLimit = await checkRateLimit(admin, { key: `website-subscribe:${getClientIp(request)}`, limit: 10, windowSeconds: 300 })
+  if (!rateLimit.allowed) {
+    return apiError('Too many requests. Please try again in a few minutes.', 429)
+  }
 
   // businessSlug resolves through the public-profile lookup (slug-keyed);
   // websiteSlug resolves through the website row to get a businessId, which

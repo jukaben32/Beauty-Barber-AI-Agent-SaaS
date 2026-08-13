@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { apiError, json, readJson } from '@/lib/api'
 import { resolveRealtimeBookingContext } from '@/lib/realtime'
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 import { realtimeSessionSchema } from '@/validations'
 
 const sdpAnswerSchema = z.object({
@@ -34,8 +35,17 @@ export async function POST(request: Request) {
     return apiError('OpenAI API key not configured', 500)
   }
 
+  const admin = createAdminClient()
+
+  // This endpoint mints an OpenAI Realtime client secret and opens a billed
+  // voice session on every call - the single most expensive request in the
+  // app. Cap it hard per caller before touching OpenAI.
+  const rateLimit = await checkRateLimit(admin, { key: `sdp:${getClientIp(request)}`, limit: 10, windowSeconds: 60 })
+  if (!rateLimit.allowed) {
+    return apiError('Too many requests. Please try again in a moment.', 429)
+  }
+
   try {
-    const admin = createAdminClient()
     const context = await resolveRealtimeBookingContext(admin, {
       businessSlug: parsed.data.businessSlug,
       widgetSlug: parsed.data.widgetSlug ?? null,
