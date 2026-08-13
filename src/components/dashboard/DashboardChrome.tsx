@@ -124,7 +124,7 @@ export function DashboardChrome({
 
   function renderSidebarContent() {
     return (
-      <div className="sticky top-0 flex min-h-full flex-col text-white" style={{ background: 'linear-gradient(180deg, #10222a 0%, #132b34 56%, #0f2129 100%)' }}>
+      <div className="sticky top-0 flex min-h-full flex-col text-white" style={{ background: 'linear-gradient(180deg, #06070f 0%, #0e1c45 56%, #04050c 100%)' }}>
         <div className="border-b border-white/10 p-4">
           <div className="flex items-center justify-between gap-2">
             <div className="rounded-[18px] border border-white/10 bg-white/6 p-3.5 backdrop-blur-sm flex-1">
