@@ -14,7 +14,7 @@ export default function FilePreview({ name, description, meta, className }: File
   return (
     <div className={cn('flex items-center justify-between gap-4 rounded-[24px] border border-[var(--border-soft)] bg-white px-4 py-3', className)}>
       <div className="flex items-center gap-3">
-        <div className="grid h-10 w-10 place-items-center rounded-2xl bg-teal-50 text-teal-600">
+        <div className="grid h-10 w-10 place-items-center rounded-2xl bg-[var(--brand-soft)] text-[var(--brand)]">
           <FileText className="h-4 w-4" />
         </div>
         <div>

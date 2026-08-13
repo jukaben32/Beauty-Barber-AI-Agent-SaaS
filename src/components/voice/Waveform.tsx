@@ -21,7 +21,7 @@ export const Waveform = React.memo(function Waveform({
   amplitude,
   bars = DEFAULT_BARS,
   color = '#0f766e',
-  bgColor = 'rgba(15,118,110,0.08)',
+  bgColor = 'rgba(21, 57, 142,0.08)',
   width = 320,
   height = 48,
   className = '',

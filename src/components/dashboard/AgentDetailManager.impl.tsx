@@ -114,11 +114,11 @@ function ConversationBubble({ role, content }: { role: string; content: string }
   return (
     <div className={cn('flex gap-3', isAgent ? 'justify-start' : 'justify-end')}>
       {isAgent ? (
-        <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[rgba(15,118,110,0.12)] text-[var(--brand-strong)]">
+        <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[rgba(21, 57, 142,0.12)] text-[var(--brand-strong)]">
           <Sparkles className="h-4 w-4" />
         </div>
       ) : null}
-      <div className={cn('max-w-[78%] rounded-[18px] border px-4 py-3 text-sm leading-7', isAgent ? 'border-[var(--border-soft)] bg-white/90 text-[var(--text-strong)]' : 'border-[rgba(15,118,110,0.18)] bg-[rgba(15,118,110,0.08)] text-[var(--text-strong)]')}>
+      <div className={cn('max-w-[78%] rounded-[18px] border px-4 py-3 text-sm leading-7', isAgent ? 'border-[var(--border-soft)] bg-white/90 text-[var(--text-strong)]' : 'border-[rgba(21, 57, 142,0.18)] bg-[rgba(21, 57, 142,0.08)] text-[var(--text-strong)]')}>
         {content}
       </div>
     </div>
@@ -494,7 +494,7 @@ export function AgentDetailManager({
                 className="font-mono text-xs"
               />
 
-              <div className="rounded-[24px] border border-[var(--border-soft)] bg-[rgba(15,118,110,0.04)] p-4">
+              <div className="rounded-[24px] border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.04)] p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <div className="text-sm font-semibold text-[var(--text-strong)]">Assigned Services</div>
@@ -536,7 +536,7 @@ export function AgentDetailManager({
                           className={cn(
                             'flex w-full items-center gap-4 rounded-[22px] border px-4 py-4 text-left transition',
                             active
-                              ? 'border-[rgba(15,118,110,0.28)] bg-[rgba(15,118,110,0.08)]'
+                              ? 'border-[rgba(21, 57, 142,0.28)] bg-[rgba(21, 57, 142,0.08)]'
                               : 'border-[var(--border-soft)] bg-white/85 hover:bg-white',
                           )}
                         >
@@ -695,10 +695,10 @@ export function AgentDetailManager({
                       onClick={() => void handleToggleVoiceCall()}
                       disabled={voiceCall.status === 'connecting' || voiceCall.status === 'initializing'}
                       className={cn(
-                        'mx-auto mt-6 grid h-24 w-24 place-items-center rounded-full border text-white shadow-[0_24px_48px_-32px_rgba(15,118,110,0.7)] transition disabled:opacity-70',
+                        'mx-auto mt-6 grid h-24 w-24 place-items-center rounded-full border text-white shadow-[0_24px_48px_-32px_rgba(21, 57, 142,0.7)] transition disabled:opacity-70',
                         voiceCallActive
                           ? 'border-[rgba(225,29,72,0.28)] bg-[linear-gradient(135deg,#e11d48,#be123c)]'
-                          : 'border-[rgba(15,118,110,0.22)] bg-[linear-gradient(135deg,var(--brand),var(--brand-strong))]'
+                          : 'border-[rgba(21, 57, 142,0.22)] bg-[linear-gradient(135deg,var(--brand),var(--brand-strong))]'
                       )}
                     >
                       {voiceCall.status === 'connecting' || voiceCall.status === 'initializing' ? (
@@ -727,7 +727,7 @@ export function AgentDetailManager({
                     </p>
                   </div>
 
-                  <div className="mt-5 rounded-[22px] border border-[var(--border-soft)] bg-[rgba(15,118,110,0.04)] p-4 text-sm text-[var(--text-muted)]">
+                  <div className="mt-5 rounded-[22px] border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.04)] p-4 text-sm text-[var(--text-muted)]">
                     <div className="font-semibold text-[var(--text-strong)]">Testing tips</div>
                     <ul className="mt-3 space-y-2">
                       <li>• Allow microphone access when prompted.</li>

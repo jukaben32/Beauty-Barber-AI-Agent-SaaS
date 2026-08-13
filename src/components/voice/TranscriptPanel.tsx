@@ -51,7 +51,7 @@ export const TranscriptPanel = React.memo(function TranscriptPanel({
             {message.role !== 'system' && (
               <div
                 className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full"
-                style={{ background: isOwn ? 'var(--brand)' : 'rgba(15,118,110,0.08)' }}
+                style={{ background: isOwn ? 'var(--brand)' : 'rgba(21, 57, 142,0.08)' }}
               >
                 {config.icon}
               </div>
@@ -72,7 +72,7 @@ export const TranscriptPanel = React.memo(function TranscriptPanel({
 
       {isLoading && (
         <div className="flex gap-2.5">
-          <div className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[rgba(15,118,110,0.08)]">
+          <div className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[rgba(21, 57, 142,0.08)]">
             <Bot className="h-4 w-4 animate-pulse" />
           </div>
           <div className="rounded-[20px] bg-[rgba(248,250,252,1)] px-4 py-2.5">

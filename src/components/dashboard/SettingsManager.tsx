@@ -460,7 +460,7 @@ export function SettingsManager({
       {tab === 'payments' ? (
         <SurfaceCard className="p-6">
           <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[rgba(15,118,110,0.1)] text-[var(--brand-strong)]">
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[rgba(21, 57, 142,0.1)] text-[var(--brand-strong)]">
               <CreditCard className="h-5 w-5" />
             </div>
             <div>

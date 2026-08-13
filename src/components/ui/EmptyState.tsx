@@ -14,7 +14,7 @@ type EmptyStateProps = {
 export default function EmptyState({ title, description, actionHref, actionLabel, icon }: EmptyStateProps) {
   return (
     <SurfaceCard className="p-8 text-center">
-      <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-teal-50 text-teal-600">
+      <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-[var(--brand-soft)] text-[var(--brand)]">
         {icon ?? <Inbox className="h-6 w-6" />}
       </div>
       <h3 className="mt-5 text-2xl font-black tracking-tight text-[var(--text-strong)]">{title}</h3>

@@ -283,7 +283,7 @@ function createWidgetPreviewStage({
         style={{
           background: dark
             ? 'radial-gradient(circle at top left, rgba(20,184,166,0.18), transparent 36%), radial-gradient(circle at bottom right, rgba(124,58,237,0.14), transparent 32%)'
-            : 'radial-gradient(circle at top left, rgba(15,118,110,0.10), transparent 36%), radial-gradient(circle at bottom right, rgba(124,58,237,0.08), transparent 32%)',
+            : 'radial-gradient(circle at top left, rgba(21, 57, 142,0.10), transparent 36%), radial-gradient(circle at bottom right, rgba(124,58,237,0.08), transparent 32%)',
         }}
       />
 
@@ -327,7 +327,7 @@ function createWidgetPreviewStage({
             <div
               className="mt-4 rounded-[20px] px-4 py-3 text-sm leading-6"
               style={{
-                background: dark ? 'rgba(255,255,255,0.06)' : 'rgba(15,118,110,0.06)',
+                background: dark ? 'rgba(255,255,255,0.06)' : 'rgba(21, 57, 142,0.06)',
                 color: dark ? 'rgba(255,255,255,0.92)' : 'var(--text-strong)',
               }}
             >
@@ -769,7 +769,7 @@ function WidgetCodePanel({
   const snippet = buildCodeSnippet(codeTab, widget, businessSlug, siteOrigin)
 
   return (
-    <div className="space-y-4 rounded-[24px] border border-[var(--border-soft)] bg-[rgba(15,118,110,0.03)] p-4">
+    <div className="space-y-4 rounded-[24px] border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.03)] p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="text-sm font-semibold text-[var(--text-strong)]">{widget.name}</div>
@@ -790,9 +790,9 @@ function WidgetCodePanel({
 
       <Tabs items={CODE_TABS} value={codeTab} onChange={(value) => onCodeTabChange(value as 'script' | 'react' | 'html')} />
 
-      <div className="rounded-[22px] border border-[rgba(15,23,42,0.08)] bg-slate-950 p-4 text-[11px] leading-6 text-teal-100">
+      <div className="rounded-[22px] border border-[rgba(15,23,42,0.08)] bg-slate-950 p-4 text-[11px] leading-6 text-[var(--brand-100)]">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
-          <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-teal-200/85">
+          <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--brand-200)]">
             <Code2 className="h-4 w-4" />
             {CODE_TABS.find((tab) => tab.value === codeTab)?.label}
           </div>
@@ -839,7 +839,7 @@ function WidgetRow({
   onCopy: (snippet: string) => void
 }) {
   return (
-    <div className={cn('border-b border-[var(--border-soft)] px-5 py-4 last:border-b-0', selected && 'bg-[rgba(15,118,110,0.04)]')}>
+    <div className={cn('border-b border-[var(--border-soft)] px-5 py-4 last:border-b-0', selected && 'bg-[rgba(21, 57, 142,0.04)]')}>
       <button
         type="button"
         onClick={onSelect}
@@ -943,7 +943,7 @@ function WidgetTemplateCard({
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <Badge tone="slate" className="bg-[rgba(15,118,110,0.06)] normal-case tracking-normal">
+            <Badge tone="slate" className="bg-[rgba(21, 57, 142,0.06)] normal-case tracking-normal">
               {agent.status === 'live' ? 'Live agent' : toTitleCase(agent.status)}
             </Badge>
             {alreadyCreated ? <StatusBadge tone="emerald">Widget already created</StatusBadge> : <StatusBadge tone="slate">Template</StatusBadge>}
@@ -953,12 +953,12 @@ function WidgetTemplateCard({
           </h3>
           <p className="mt-1 text-sm text-[var(--text-muted)]">{agent.title ?? agent.specialty ?? 'Booking assistant'}</p>
         </div>
-        <div className="grid h-11 w-11 place-items-center rounded-[16px] border border-[var(--border-soft)] bg-[rgba(15,118,110,0.06)]">
+        <div className="grid h-11 w-11 place-items-center rounded-[16px] border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.06)]">
           <Sparkles className="h-5 w-5" style={{ color: accent }} />
         </div>
       </div>
 
-      <div className="mt-4 rounded-[22px] border border-[var(--border-soft)] bg-[rgba(15,118,110,0.03)] p-4">
+      <div className="mt-4 rounded-[22px] border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.03)] p-4">
         <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Voice settings</div>
         <div className="mt-3 grid gap-2 text-sm text-[var(--text-muted)]">
           <div className="flex items-center justify-between gap-3">
@@ -976,7 +976,7 @@ function WidgetTemplateCard({
         </div>
       </div>
 
-      <div className="mt-4 rounded-[22px] border border-[var(--border-soft)] bg-[rgba(15,118,110,0.03)] p-4 text-sm text-[var(--text-muted)]">
+      <div className="mt-4 rounded-[22px] border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.03)] p-4 text-sm text-[var(--text-muted)]">
         &ldquo;{agent.greetingMessage}&rdquo;
       </div>
 
@@ -993,7 +993,7 @@ function WidgetTemplateCard({
         <Button variant="secondary" onClick={onPreview} className="justify-center">
           Preview
         </Button>
-        <Button onClick={onCreate} disabled={alreadyCreated} className="justify-center" style={{ background: alreadyCreated ? 'rgba(15,118,110,0.18)' : accent }}>
+        <Button onClick={onCreate} disabled={alreadyCreated} className="justify-center" style={{ background: alreadyCreated ? 'rgba(21, 57, 142,0.18)' : accent }}>
           {alreadyCreated ? 'Widget already created' : 'Create Widget'}
         </Button>
       </div>
@@ -1015,7 +1015,7 @@ function WidgetDeleteModal({
   return (
     <Modal open title="Delete Widget" description="This widget will be removed from the dashboard and the embed snippet will stop working." onClose={onClose} className="max-w-lg">
       <div className="space-y-5">
-        <div className="rounded-[22px] border border-[var(--border-soft)] bg-[rgba(15,118,110,0.04)] px-4 py-4">
+        <div className="rounded-[22px] border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.04)] px-4 py-4">
           <div className="text-sm font-semibold text-[var(--text-strong)]">{widget.name}</div>
           <div className="mt-1 text-sm text-[var(--text-muted)]">{widget.agentName ?? 'No agent selected'} - {getPositionLabel(widget.position)}</div>
         </div>
@@ -1283,7 +1283,7 @@ export function WidgetManager({
           <div className="divide-y divide-[var(--border-soft)]">
             {widgets.length === 0 ? (
               <div className="px-5 py-10 text-center">
-                <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[rgba(15,118,110,0.08)] text-[var(--brand-strong)]">
+                <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[rgba(21, 57, 142,0.08)] text-[var(--brand-strong)]">
                   <MonitorSmartphone className="h-6 w-6" />
                 </div>
                 <h3 className="mt-4 text-lg font-semibold text-[var(--text-strong)]">No widgets yet</h3>
@@ -1363,10 +1363,10 @@ export function WidgetManager({
               <Code2 className="h-5 w-5 text-[var(--brand)]" />
             </div>
             <div className="mt-4 grid gap-3">
-              <div className="rounded-[22px] border border-[var(--border-soft)] bg-[rgba(15,118,110,0.04)] px-4 py-3 text-sm text-[var(--text-muted)]">
+              <div className="rounded-[22px] border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.04)] px-4 py-3 text-sm text-[var(--text-muted)]">
                 The widget script reads the business slug, widget slug, position, theme, colors, and greeting directly from data attributes.
               </div>
-              <div className="rounded-[22px] border border-[var(--border-soft)] bg-[rgba(15,118,110,0.04)] px-4 py-3 text-sm text-[var(--text-muted)]">
+              <div className="rounded-[22px] border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.04)] px-4 py-3 text-sm text-[var(--text-muted)]">
                 Keep one active widget per agent to mirror the reference flow and keep the website embed simple.
               </div>
             </div>

@@ -209,7 +209,7 @@ function AgentPreviewModal({
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Capabilities</div>
             <div className="mt-4 flex flex-wrap gap-2">
               {template.capabilities.map((capability) => (
-                <Badge key={capability} tone="slate" className="bg-[rgba(15,118,110,0.06)] normal-case tracking-normal">
+                <Badge key={capability} tone="slate" className="bg-[rgba(21, 57, 142,0.06)] normal-case tracking-normal">
                   {capability}
                 </Badge>
               ))}
@@ -239,7 +239,7 @@ function AgentPreviewModal({
           <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Best For</div>
           <div className="mt-4 flex flex-wrap gap-2">
             {template.bestFor.map((item) => (
-              <Badge key={item} tone="teal" className="bg-[rgba(15,118,110,0.08)] normal-case tracking-normal">
+              <Badge key={item} tone="teal" className="bg-[rgba(21, 57, 142,0.08)] normal-case tracking-normal">
                 {item}
               </Badge>
             ))}
@@ -258,7 +258,7 @@ function AgentPreviewModal({
               alreadyActive && 'cursor-not-allowed opacity-60 hover:translate-y-0',
             )}
             style={{
-              background: alreadyActive ? 'rgba(15,118,110,0.15)' : template.accent,
+              background: alreadyActive ? 'rgba(21, 57, 142,0.15)' : template.accent,
               color: alreadyActive ? 'var(--brand-strong)' : 'white',
             }}
           >
@@ -510,7 +510,7 @@ function AgentWizardModal({
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="rounded-[24px] border border-[var(--border-soft)] bg-[rgba(15,118,110,0.04)] px-4 py-4">
+            <div className="rounded-[24px] border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.04)] px-4 py-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <div className="text-sm font-semibold text-[var(--text-strong)]">Which services can this agent discuss?</div>
@@ -559,7 +559,7 @@ function AgentWizardModal({
                       className={cn(
                         'flex w-full items-center gap-4 rounded-[22px] border px-4 py-4 text-left transition',
                         active
-                          ? 'border-[rgba(15,118,110,0.28)] bg-[rgba(15,118,110,0.07)]'
+                          ? 'border-[rgba(21, 57, 142,0.28)] bg-[rgba(21, 57, 142,0.07)]'
                           : 'border-[var(--border-soft)] bg-white/85 hover:bg-white',
                       )}
                     >
@@ -662,7 +662,7 @@ function TemplateCard({
           <p className="mt-1 text-sm font-medium text-[var(--text-muted)]">{template.title}</p>
           <p className="mt-2 text-sm text-[var(--text-muted)]">{template.specialty}</p>
         </div>
-        <div className="grid h-11 w-11 place-items-center rounded-[16px] border border-[var(--border-soft)] bg-[rgba(15,118,110,0.06)]">
+        <div className="grid h-11 w-11 place-items-center rounded-[16px] border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.06)]">
           <Sparkles className="h-5 w-5" style={{ color: template.accent }} />
         </div>
       </div>
@@ -706,7 +706,7 @@ function TemplateCard({
             'inline-flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white transition',
             active ? 'cursor-not-allowed opacity-60' : 'hover:-translate-y-0.5',
           )}
-          style={{ background: active ? 'rgba(15,118,110,0.22)' : template.accent }}
+          style={{ background: active ? 'rgba(21, 57, 142,0.22)' : template.accent }}
         >
           <Plus className="h-4 w-4" />
           {active ? 'Already Active' : 'Activate Agent'}
@@ -984,7 +984,7 @@ export function AgentsManager({
         <div>
           {sortedAgents.length === 0 ? (
             <div className="px-5 py-10 text-center">
-              <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[rgba(15,118,110,0.08)] text-[var(--brand-strong)]">
+              <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[rgba(21, 57, 142,0.08)] text-[var(--brand-strong)]">
                 <Bot className="h-6 w-6" />
               </div>
               <h3 className="mt-4 text-lg font-semibold text-[var(--text-strong)]">No agents yet</h3>

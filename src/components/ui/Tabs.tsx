@@ -28,8 +28,8 @@ export default function Tabs({ items, value, onChange, children }: TabsProps) {
             className={cn(
               'rounded-full px-4 py-2 text-sm font-semibold transition',
               item.value === value
-                ? 'bg-[var(--brand)] text-white shadow-[0_10px_24px_rgba(15,118,110,0.2)]'
-                : 'bg-white text-[var(--text-muted)] hover:bg-teal-50 hover:text-[var(--text-strong)]',
+                ? 'bg-[var(--brand)] text-white shadow-[0_10px_24px_rgba(21, 57, 142,0.2)]'
+                : 'bg-white text-[var(--text-muted)] hover:bg-[var(--brand-soft)] hover:text-[var(--text-strong)]',
             )}
           >
             {item.label}

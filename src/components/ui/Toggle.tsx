@@ -20,7 +20,7 @@ export default function Toggle({ checked, onCheckedChange, label }: ToggleProps)
       <span
         className={cn(
           'relative inline-flex h-7 w-12 items-center rounded-full border transition',
-          checked ? 'border-teal-500 bg-teal-500' : 'border-slate-300 bg-slate-200',
+          checked ? 'border-[var(--brand)] bg-[var(--brand)]' : 'border-slate-300 bg-slate-200',
         )}
       >
         <span

@@ -5,11 +5,11 @@ import { cn } from '@/lib/utils'
 type BadgeTone = 'teal' | 'emerald' | 'blue' | 'amber' | 'rose' | 'slate'
 
 const toneClasses: Record<BadgeTone, string> = {
-  teal: 'border-teal-200 bg-teal-50 text-teal-700',
-  emerald: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-  blue: 'border-sky-200 bg-sky-50 text-sky-700',
+  teal: 'border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--brand-strong)]',
+  emerald: 'border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--brand-strong)]',
+  blue: 'border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--brand-strong)]',
   amber: 'border-amber-200 bg-amber-50 text-amber-700',
-  rose: 'border-rose-200 bg-rose-50 text-rose-700',
+  rose: 'border-[var(--border-soft)] bg-[var(--panel-soft)] text-[var(--coral)]',
   slate: 'border-slate-200 bg-slate-50 text-slate-700',
 }
 

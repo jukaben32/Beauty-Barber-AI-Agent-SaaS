@@ -14,7 +14,7 @@ type ButtonProps = {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-[var(--brand)] text-white shadow-[0_14px_32px_rgba(15,118,110,0.22)] hover:bg-[var(--brand-strong)]',
+    'bg-[var(--brand)] text-white shadow-[0_14px_32px_rgba(21, 57, 142,0.22)] hover:bg-[var(--brand-strong)]',
   secondary:
     'border border-[var(--border-soft)] bg-white text-[var(--text-strong)] hover:bg-[var(--panel-soft)]',
   ghost: 'bg-transparent text-[var(--text-strong)] hover:bg-white/70',

@@ -177,7 +177,7 @@ function ServicesHeader({
             <Badge tone="slate" className="bg-white/90 normal-case tracking-normal">
               {serviceCount} services in your catalog
             </Badge>
-            <Badge tone="emerald" className="bg-[rgba(15,118,110,0.08)] normal-case tracking-normal">
+            <Badge tone="emerald" className="bg-[rgba(21, 57, 142,0.08)] normal-case tracking-normal">
               {activeCount} active now
             </Badge>
             <Badge tone="blue" className="bg-[rgba(14,165,233,0.08)] normal-case tracking-normal">
@@ -208,10 +208,10 @@ function ServiceRow({
   const isActive = service.active
 
   return (
-    <div className={cn('grid gap-4 px-5 py-4 transition hover:bg-[rgba(15,118,110,0.03)] md:grid-cols-[1.1fr_auto]', !isActive && 'opacity-80')}>
+    <div className={cn('grid gap-4 px-5 py-4 transition hover:bg-[rgba(21, 57, 142,0.03)] md:grid-cols-[1.1fr_auto]', !isActive && 'opacity-80')}>
       <div className="flex min-w-0 items-start gap-4">
         <div
-          className="mt-0.5 grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-[rgba(15,118,110,0.14)]"
+          className="mt-0.5 grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-[rgba(21, 57, 142,0.14)]"
           style={{
             backgroundColor: `${accent}14`,
             color: accent,
@@ -450,7 +450,7 @@ function ServiceFormDialog({
             />
           </div>
         ) : form.priceMode === 'contact' ? (
-          <div className="rounded-[22px] border border-[var(--border-soft)] bg-[rgba(15,118,110,0.04)] px-4 py-3 text-sm text-[var(--text-muted)]">
+          <div className="rounded-[22px] border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.04)] px-4 py-3 text-sm text-[var(--text-muted)]">
             The price will be hidden and clients will see a contact-for-price prompt.
           </div>
         ) : (
@@ -513,7 +513,7 @@ function CatalogCard({
       aria-pressed={selected}
       className={cn(
         'group flex h-full flex-col rounded-[24px] border p-4 text-left transition hover:-translate-y-0.5',
-        selected || added ? 'bg-white shadow-[0_20px_54px_-42px_rgba(15,118,110,0.55)]' : 'bg-white/90 hover:bg-white',
+        selected || added ? 'bg-white shadow-[0_20px_54px_-42px_rgba(21, 57, 142,0.55)]' : 'bg-white/90 hover:bg-white',
       )}
       style={{
         borderColor: selected || added ? accent : 'var(--border-soft)',
@@ -680,7 +680,7 @@ function SelectionBar({
   adding: boolean
 }) {
   return (
-    <div className="sticky bottom-4 z-20 mt-6 rounded-[22px] border border-[rgba(15,118,110,0.16)] bg-[linear-gradient(135deg,#0a3940,#0f5f60)] px-4 py-4 text-white shadow-[0_24px_60px_-40px_rgba(15,118,110,0.7)]">
+    <div className="sticky bottom-4 z-20 mt-6 rounded-[22px] border border-[rgba(21, 57, 142,0.16)] bg-[linear-gradient(135deg,#0a3940,#0f5f60)] px-4 py-4 text-white shadow-[0_24px_60px_-40px_rgba(21, 57, 142,0.7)]">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-start gap-3">
           <div className="mt-0.5 grid h-10 w-10 place-items-center rounded-2xl bg-white/10 text-white">
@@ -892,8 +892,8 @@ export function ServicesManager({
         <div className="divide-y divide-[var(--border-soft)]">
           {services.length === 0 ? (
             <div className="px-5 py-10">
-              <div className="rounded-[24px] border border-dashed border-[var(--border-soft)] bg-[rgba(15,118,110,0.04)] px-6 py-8 text-center">
-                <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[rgba(15,118,110,0.1)] text-[var(--brand-strong)]">
+              <div className="rounded-[24px] border border-dashed border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.04)] px-6 py-8 text-center">
+                <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[rgba(21, 57, 142,0.1)] text-[var(--brand-strong)]">
                   <Sparkles className="h-6 w-6" />
                 </div>
                 <h4 className="mt-4 text-lg font-semibold text-[var(--text-strong)]">No services yet</h4>
@@ -920,7 +920,7 @@ export function ServicesManager({
       </SurfaceCard>
 
       <SurfaceCard className="overflow-hidden">
-        <div className="border-b border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(15,118,110,0.08),rgba(255,255,255,0.92))] px-5 py-5">
+        <div className="border-b border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(21, 57, 142,0.08),rgba(255,255,255,0.92))] px-5 py-5">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Service Catalog</div>
@@ -984,7 +984,7 @@ export function ServicesManager({
                   onClick={() => setSelectedCategory(category.key)}
                   className={cn(
                     'inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition',
-                    active ? 'shadow-[0_14px_32px_-24px_rgba(15,118,110,0.5)]' : 'hover:bg-white',
+                    active ? 'shadow-[0_14px_32px_-24px_rgba(21, 57, 142,0.5)]' : 'hover:bg-white',
                   )}
                   style={{
                     borderColor: active ? labelColor : 'var(--border-soft)',
@@ -1004,7 +1004,7 @@ export function ServicesManager({
 
           <div className="space-y-8">
             {visibleGroups.length === 0 ? (
-              <div className="rounded-[24px] border border-dashed border-[var(--border-soft)] bg-[rgba(15,118,110,0.04)] px-6 py-10 text-center text-sm text-[var(--text-muted)]">
+              <div className="rounded-[24px] border border-dashed border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.04)] px-6 py-10 text-center text-sm text-[var(--text-muted)]">
                 No services match your search.
               </div>
             ) : (

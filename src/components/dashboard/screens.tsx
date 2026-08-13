@@ -840,7 +840,7 @@ export function WidgetDemoScreen() {
 
         <SurfaceCard className="p-6">
           <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Script snippet</div>
-          <pre className="mt-4 overflow-auto rounded-[24px] bg-slate-950 p-5 text-[11px] leading-6 text-teal-100">
+          <pre className="mt-4 overflow-auto rounded-[24px] bg-slate-950 p-5 text-[11px] leading-6 text-[var(--brand-100)]">
 {`<script src="http://localhost:3000/widget-script.js"></script>
 <script>
   window.ClaraWidget.init({
@@ -1019,7 +1019,7 @@ export function SiteSlugScreen({ slug }: { slug: string }) {
           </div>
         </section>
 
-        <section id="contact" className="rounded-[34px] bg-gradient-to-r from-teal-600 to-cyan-500 px-6 py-12 text-white shadow-[0_20px_70px_rgba(13,148,136,0.18)] lg:px-10">
+        <section id="contact" className="rounded-[34px] bg-gradient-to-r from-[var(--brand-600)] to-[var(--brand-900)] px-6 py-12 text-white shadow-[0_20px_70px_rgba(21,57,142,0.18)] lg:px-10">
           <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <div className="inline-flex rounded-full bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em]">14-day free trial - no credit card</div>
