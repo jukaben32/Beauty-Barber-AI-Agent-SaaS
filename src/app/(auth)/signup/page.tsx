@@ -206,6 +206,17 @@ export default function SignupPage() {
               )}
             </button>
             <div className="text-sm text-[var(--text-muted)]">No credit card required.</div>
+            <p className="text-xs leading-6 text-[var(--text-muted)]">
+              By starting a trial, you agree to our{' '}
+              <a href="/terms" className="font-semibold text-[var(--brand)]">
+                Terms
+              </a>{' '}
+              and{' '}
+              <a href="/privacy" className="font-semibold text-[var(--brand)]">
+                Privacy Policy
+              </a>
+              .
+            </p>
           </div>
 
           <p className="mt-6 text-sm text-[var(--text-muted)]">

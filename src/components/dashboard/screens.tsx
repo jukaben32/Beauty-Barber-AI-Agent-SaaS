@@ -625,8 +625,8 @@ export function MarketingHomeScreen() {
           <div>
             <div className="font-display text-xs font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">Legal</div>
             <div className="mt-3.5 flex flex-col gap-2.5 text-sm">
-              <a href="#" className="hover:text-[var(--brand-strong)]">Privacy</a>
-              <a href="#" className="hover:text-[var(--brand-strong)]">Terms</a>
+              <a href="/privacy" className="hover:text-[var(--brand-strong)]">Privacy</a>
+              <a href="/terms" className="hover:text-[var(--brand-strong)]">Terms</a>
             </div>
           </div>
         </div>
