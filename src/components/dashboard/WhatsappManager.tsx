@@ -286,7 +286,7 @@ export function WhatsappManager({
 
   return (
     <SurfaceCard className="overflow-hidden">
-      <div className="border-b border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(15, 42, 107,0.05),rgba(255,255,255,0))] px-6 py-5 lg:px-8">
+      <div className="border-b border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(21, 57, 142,0.05),rgba(255,255,255,0))] px-6 py-5 lg:px-8">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[var(--brand-soft)] text-[var(--brand-strong)]">

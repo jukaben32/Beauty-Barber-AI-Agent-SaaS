@@ -12,14 +12,26 @@
     --panel-elevated: #ffffff;
     --text-strong: #102129;
     --text-muted: #5f6871;
-    --brand: #0f2a6b;
-    --brand-strong: #060b1a;
-    --brand-soft: #dde4f5;
+    /* Escala completa de marca (azul) — 950 a 50, generada en HSL constante */
+    --brand-950: #0a0d14;
+    --brand-900: #0f141f;
+    --brand-800: #0a1e52;
+    --brand-700: #0e2c71;
+    --brand-600: #15398e;
+    --brand-500: #1f4cad;
+    --brand-400: #4972c5;
+    --brand-300: #8ca5d4;
+    --brand-200: #bccce6;
+    --brand-100: #d9e3f2;
+    --brand-50:  #f1f4f8;
+    --brand: var(--brand-600);
+    --brand-strong: var(--brand-900);
+    --brand-soft: var(--brand-100);
     --coral: #a45057;
     --coral-soft: #f3e1e3;
-    --teal-soft: #dde4f5;
+    --teal-soft: var(--brand-100);
     --border-soft: rgba(16, 33, 41, 0.12);
-    --border-strong: rgba(15, 42, 107, 0.34);
+    --border-strong: rgba(21, 57, 142, 0.34);
     --surface-dark: #0f2129;
   }
 

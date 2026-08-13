@@ -28,9 +28,9 @@ const NUMBER_FORMAT = new Intl.NumberFormat('en-US')
 
 const TONES = {
   teal: {
-    accent: 'linear-gradient(180deg, rgba(15, 42, 107,0.96), rgba(15, 42, 107,0.18))',
-    soft: 'rgba(15, 42, 107,0.12)',
-    border: 'rgba(15, 42, 107,0.20)',
+    accent: 'linear-gradient(180deg, rgba(21, 57, 142,0.96), rgba(21, 57, 142,0.18))',
+    soft: 'rgba(21, 57, 142,0.12)',
+    border: 'rgba(21, 57, 142,0.20)',
     color: 'var(--brand-strong)',
   },
   emerald: {
@@ -250,8 +250,8 @@ function TrendChart({ series }: { series: TrendDay[] }) {
       <svg viewBox={`0 0 ${width} ${height}`} className="h-72 w-full overflow-visible" aria-label="Conversation trend over the last 14 days" role="img">
         <defs>
           <linearGradient id="overview-total-fill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="rgba(15, 42, 107,0.26)" />
-            <stop offset="100%" stopColor="rgba(15, 42, 107,0.02)" />
+            <stop offset="0%" stopColor="rgba(21, 57, 142,0.26)" />
+            <stop offset="100%" stopColor="rgba(21, 57, 142,0.02)" />
           </linearGradient>
         </defs>
 
@@ -381,7 +381,7 @@ export function DashboardOverviewManager({
   return (
     <div className="space-y-6">
       <SurfaceCard className="relative overflow-hidden p-6 md:p-7" glow>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(15, 42, 107,0.12),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(236,170,93,0.10),transparent_28%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(21, 57, 142,0.12),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(236,170,93,0.10),transparent_28%)]" />
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-soft)] bg-white/78 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--brand-strong)] backdrop-blur-sm">
@@ -472,7 +472,7 @@ export function DashboardOverviewManager({
               return (
                 <div key={appointment.id} className="grid gap-4 px-5 py-4 md:grid-cols-[1fr_auto] md:items-center">
                   <div className="flex min-w-0 items-center gap-4">
-                    <div className="grid h-11 w-11 shrink-0 place-items-center rounded-[16px] bg-[var(--brand)] text-sm font-semibold text-white shadow-[0_16px_30px_-20px_rgba(15, 42, 107,0.7)]">
+                    <div className="grid h-11 w-11 shrink-0 place-items-center rounded-[16px] bg-[var(--brand)] text-sm font-semibold text-white shadow-[0_16px_30px_-20px_rgba(21, 57, 142,0.7)]">
                       {appointment.client?.name
                         ?.split(' ')
                         .map((part) => part[0])

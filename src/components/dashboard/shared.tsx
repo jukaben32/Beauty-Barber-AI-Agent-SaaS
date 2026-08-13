@@ -72,7 +72,7 @@ export function BrandMark({
         )}
         style={{
           background: 'linear-gradient(135deg, var(--brand), var(--brand-strong))',
-          boxShadow: '0 18px 36px -24px rgba(15, 42, 107, 0.7)',
+          boxShadow: '0 18px 36px -24px rgba(21, 57, 142, 0.7)',
         }}
       >
         <span className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.36),transparent_55%)]" />
@@ -152,7 +152,7 @@ export function SurfaceCard({
       )}
       style={{
         boxShadow: glow
-          ? '0 24px 72px -44px rgba(15, 42, 107, 0.42)'
+          ? '0 24px 72px -44px rgba(21, 57, 142, 0.42)'
           : '0 18px 60px -42px rgba(15, 33, 41, 0.34)',
         ...style,
       }}
@@ -178,7 +178,7 @@ export function MetricCard({
   const toneClasses = toneMap[tone]
   return (
     <SurfaceCard className="relative overflow-hidden p-5">
-      <div className="absolute inset-x-0 top-0 h-1.5" style={{ background: 'linear-gradient(90deg, var(--brand), rgba(15, 42, 107, 0.28))' }} />
+      <div className="absolute inset-x-0 top-0 h-1.5" style={{ background: 'linear-gradient(90deg, var(--brand), rgba(21, 57, 142, 0.28))' }} />
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--text-muted)]">
@@ -251,7 +251,7 @@ export function ButtonLink({
         variant === 'primary'
           ? {
               background: 'linear-gradient(135deg, var(--brand), var(--brand-strong))',
-              boxShadow: '0 18px 40px -24px rgba(15, 42, 107, 0.65)',
+              boxShadow: '0 18px 40px -24px rgba(21, 57, 142, 0.65)',
             }
           : undefined
       }
@@ -476,7 +476,7 @@ export function FeatureCard({
   }) {
   return (
     <SurfaceCard className="relative overflow-hidden p-6">
-      <div className="absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,var(--brand),rgba(15, 42, 107,0.18))]" />
+      <div className="absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,var(--brand),rgba(21, 57, 142,0.18))]" />
       <Icon className="h-6 w-6" style={{ color: 'var(--brand)' }} />
       <h3 className="mt-4 font-display text-lg font-semibold tracking-[-0.03em] text-[var(--text-strong)]">{title}</h3>
       <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">{body}</p>

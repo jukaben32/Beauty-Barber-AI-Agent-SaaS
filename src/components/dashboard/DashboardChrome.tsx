@@ -124,7 +124,7 @@ export function DashboardChrome({
 
   function renderSidebarContent() {
     return (
-      <div className="sticky top-0 flex min-h-full flex-col text-white" style={{ background: 'linear-gradient(180deg, #06070f 0%, #0e1c45 56%, #04050c 100%)' }}>
+      <div className="sticky top-0 flex min-h-full flex-col text-white" style={{ background: 'linear-gradient(180deg, #0a0d14 0%, #0a1e52 56%, #0a0d14 100%)' }}>
         <div className="border-b border-white/10 p-4">
           <div className="flex items-center justify-between gap-2">
             <div className="rounded-[18px] border border-white/10 bg-white/6 p-3.5 backdrop-blur-sm flex-1">
@@ -210,7 +210,7 @@ export function DashboardChrome({
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_12%_18%,rgba(15, 42, 107,0.12),transparent_22%),radial-gradient(circle_at_86%_10%,rgba(236,170,93,0.14),transparent_18%),var(--page-bg)] p-3 text-[var(--text-strong)] lg:p-4">
+    <div className="min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_12%_18%,rgba(21, 57, 142,0.12),transparent_22%),radial-gradient(circle_at_86%_10%,rgba(236,170,93,0.14),transparent_18%),var(--page-bg)] p-3 text-[var(--text-strong)] lg:p-4">
       <div className="mx-auto flex min-h-[calc(100vh-1.5rem)] max-w-[1760px] overflow-hidden rounded-[34px] border border-white/60 bg-[rgba(255,253,248,0.84)] shadow-[0_30px_100px_-60px_rgba(15,33,41,0.55)] backdrop-blur-xl lg:min-h-[calc(100vh-2rem)]">
         <aside className="hidden lg:flex lg:w-[272px] lg:flex-col">{renderSidebarContent()}</aside>
 

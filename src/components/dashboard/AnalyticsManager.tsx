@@ -19,9 +19,9 @@ const NUMBER_FORMAT = new Intl.NumberFormat('en-US')
 
 const TOP_TONES = {
   teal: {
-    accent: 'linear-gradient(180deg, rgba(15, 42, 107,0.96), rgba(15, 42, 107,0.18))',
-    soft: 'rgba(15, 42, 107,0.12)',
-    border: 'rgba(15, 42, 107,0.20)',
+    accent: 'linear-gradient(180deg, rgba(21, 57, 142,0.96), rgba(21, 57, 142,0.18))',
+    soft: 'rgba(21, 57, 142,0.12)',
+    border: 'rgba(21, 57, 142,0.20)',
     color: 'var(--brand-strong)',
   },
   emerald: {
@@ -305,8 +305,8 @@ function TrendChart({ series }: { series: DailyPoint[] }) {
       <svg viewBox={`0 0 ${width} ${height}`} className="h-72 w-full overflow-visible" role="img" aria-label="30 day conversation trend">
         <defs>
           <linearGradient id="analytics-trend-fill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="rgba(15, 42, 107,0.24)" />
-            <stop offset="100%" stopColor="rgba(15, 42, 107,0.02)" />
+            <stop offset="0%" stopColor="rgba(21, 57, 142,0.24)" />
+            <stop offset="100%" stopColor="rgba(21, 57, 142,0.02)" />
           </linearGradient>
         </defs>
 
@@ -577,7 +577,7 @@ export function AnalyticsManager({
   return (
     <div className="space-y-6">
       <SurfaceCard className="relative overflow-hidden p-6 md:p-7" glow>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(15, 42, 107,0.12),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(236,170,93,0.10),transparent_28%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(21, 57, 142,0.12),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(236,170,93,0.10),transparent_28%)]" />
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-soft)] bg-white/78 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--brand-strong)] backdrop-blur-sm">

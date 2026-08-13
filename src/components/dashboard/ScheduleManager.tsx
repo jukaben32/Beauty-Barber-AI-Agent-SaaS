@@ -126,10 +126,10 @@ function ScheduleMetricCard({
   }
 
   const accentBar: Record<'teal' | 'amber' | 'rose' | 'blue', string> = {
-    teal: 'linear-gradient(90deg,var(--brand),rgba(15, 42, 107,0.2))',
+    teal: 'linear-gradient(90deg,var(--brand),rgba(21, 57, 142,0.2))',
     amber: 'linear-gradient(90deg,var(--border-strong),rgba(201,159,108,0.2))',
     rose: 'linear-gradient(90deg,var(--coral),rgba(208,78,64,0.2))',
-    blue: 'linear-gradient(90deg,var(--brand-strong),rgba(15, 42, 107,0.14))',
+    blue: 'linear-gradient(90deg,var(--brand-strong),rgba(21, 57, 142,0.14))',
   }
 
   return (

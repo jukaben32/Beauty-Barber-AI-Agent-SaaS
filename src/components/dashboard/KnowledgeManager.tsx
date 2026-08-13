@@ -74,8 +74,8 @@ const CATEGORY_ACCENTS: Record<KnowledgeTemplateCategoryKey | 'all', ChipAccent>
     text: 'var(--text-muted)',
   },
   appointments: {
-    fill: 'rgba(15, 42, 107, 0.09)',
-    border: 'rgba(15, 42, 107, 0.2)',
+    fill: 'rgba(21, 57, 142, 0.09)',
+    border: 'rgba(21, 57, 142, 0.2)',
     text: 'var(--brand-strong)',
   },
   'booking-cancellation': {
@@ -315,7 +315,7 @@ function KnowledgeRow({
               type="button"
               onClick={onRestore}
               disabled={busy}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(15, 42, 107,0.18)] bg-[rgba(15, 42, 107,0.08)] text-[var(--brand-strong)] transition hover:bg-[rgba(15, 42, 107,0.12)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(21, 57, 142,0.18)] bg-[rgba(21, 57, 142,0.08)] text-[var(--brand-strong)] transition hover:bg-[rgba(21, 57, 142,0.12)] disabled:cursor-not-allowed disabled:opacity-50"
               aria-label="Restore article"
             >
               {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <RotateCcw className="h-4 w-4" />}
@@ -344,7 +344,7 @@ function KnowledgeRow({
       </div>
 
       {expanded ? (
-        <div className="border-t border-[var(--border-soft)] bg-[rgba(15, 42, 107,0.03)] px-4 py-4 sm:px-5">
+        <div className="border-t border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.03)] px-4 py-4 sm:px-5">
           <div className="grid gap-3 md:grid-cols-[minmax(0,1.5fr)_minmax(0,0.9fr)]">
             <div className="rounded-[20px] border border-[var(--border-soft)] bg-white/85 p-4">
               <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Answer</div>
@@ -438,7 +438,7 @@ function TemplateCard({
             'inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition',
             isActive
               ? 'border border-[var(--border-soft)] bg-[var(--panel-soft)] text-[var(--text-muted)]'
-              : 'border border-[rgba(15, 42, 107,0.2)] bg-[rgba(15, 42, 107,0.08)] text-[var(--brand-strong)] hover:bg-[rgba(15, 42, 107,0.12)]',
+              : 'border border-[rgba(21, 57, 142,0.2)] bg-[rgba(21, 57, 142,0.08)] text-[var(--brand-strong)] hover:bg-[rgba(21, 57, 142,0.12)]',
             busy && 'cursor-not-allowed opacity-70',
           )}
         >
@@ -477,7 +477,7 @@ function PreviewModal({
         className="max-w-2xl"
       >
         <div className="space-y-5">
-          <div className="rounded-[24px] border border-[var(--border-soft)] bg-[rgba(15, 42, 107,0.03)] p-4">
+          <div className="rounded-[24px] border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.03)] p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <CategoryChip categoryKey={target.template.category} label={label} />
               <StatusBadge tone="slate">FAQ template</StatusBadge>
@@ -531,7 +531,7 @@ function PreviewModal({
       className="max-w-2xl"
     >
       <div className="space-y-5">
-        <div className="rounded-[24px] border border-[var(--border-soft)] bg-[rgba(15, 42, 107,0.03)] p-4">
+        <div className="rounded-[24px] border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.03)] p-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <CategoryChip categoryKey={resolveCategoryKey(doc.category)} label={label} />
             <StatusBadge tone={isArchived ? 'slate' : 'emerald'}>{isArchived ? 'Archived' : 'Active'}</StatusBadge>
@@ -874,7 +874,7 @@ export function KnowledgeManager({
     <div className="space-y-8">
       <section className="grid gap-4 xl:grid-cols-[minmax(0,1.34fr)_minmax(260px,0.66fr)]">
         <SurfaceCard className="relative overflow-hidden p-6 lg:p-7" glow>
-          <div className="absolute inset-y-0 right-0 w-2/5 bg-[radial-gradient(circle_at_center,rgba(15, 42, 107,0.08),transparent_70%)]" />
+          <div className="absolute inset-y-0 right-0 w-2/5 bg-[radial-gradient(circle_at_center,rgba(21, 57, 142,0.08),transparent_70%)]" />
           <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-2xl">
               <SectionEyebrow>Knowledge Base</SectionEyebrow>
@@ -968,7 +968,7 @@ export function KnowledgeManager({
             <div className="flex flex-col gap-5 border-b border-[var(--border-soft)] pb-5">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div>
-                  <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-soft)] bg-[rgba(15, 42, 107,0.04)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--brand-strong)]">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.04)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--brand-strong)]">
                     <BookOpen className="h-3.5 w-3.5" />
                     Knowledge list
                   </div>
@@ -1071,7 +1071,7 @@ export function KnowledgeManager({
             <div className="flex flex-col gap-4 border-b border-[var(--border-soft)] pb-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-soft)] bg-[rgba(15, 42, 107,0.04)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--brand-strong)]">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.04)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--brand-strong)]">
                     <Sparkles className="h-3.5 w-3.5" />
                     FAQ templates
                   </div>
@@ -1220,7 +1220,7 @@ export function KnowledgeManager({
           <SurfaceCard className="p-5 lg:p-6" glow>
             <div className="flex items-start justify-between gap-3">
               <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-soft)] bg-[rgba(15, 42, 107,0.04)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--brand-strong)]">
+                <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.04)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--brand-strong)]">
                   <Plus className="h-3.5 w-3.5" />
                   Add article
                 </div>
@@ -1235,7 +1235,7 @@ export function KnowledgeManager({
               )}
             </div>
 
-            <div className="mt-5 rounded-[24px] border border-[var(--border-soft)] bg-[rgba(15, 42, 107,0.04)] p-4">
+            <div className="mt-5 rounded-[24px] border border-[var(--border-soft)] bg-[rgba(21, 57, 142,0.04)] p-4">
               <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">Live preview</div>
               <div className="mt-3 rounded-[20px] border border-[var(--border-soft)] bg-white/88 p-4">
                 <div className="text-sm font-semibold text-[var(--text-strong)]">
@@ -1306,7 +1306,7 @@ export function KnowledgeManager({
 
           <SurfaceCard className="p-5 lg:p-6">
             <div className="flex items-start gap-3">
-              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-[18px] border border-[rgba(15, 42, 107,0.18)] bg-[rgba(15, 42, 107,0.08)] text-[var(--brand-strong)]">
+              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-[18px] border border-[rgba(21, 57, 142,0.18)] bg-[rgba(21, 57, 142,0.08)] text-[var(--brand-strong)]">
                 <Sparkles className="h-4 w-4" />
               </div>
               <div>
