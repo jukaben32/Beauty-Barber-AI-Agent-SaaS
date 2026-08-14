@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { apiError, json, readJson } from '@/lib/api'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getServerSupabaseAndUser, getBusinessForCurrentUser, getBusinessMembershipRole, canManageBusiness } from '@/lib/route-helpers'
-import { getPublicWidgetConfig, getWidgetById, getWidgetForBusiness, createWidget, updateWidget } from '@/services/widgets'
+import { getPublicWidgetConfig, getWidgetById, getWidgetForBusiness, createWidget, updateWidget, isOriginAllowed } from '@/services/widgets'
 import { widgetSchema } from '@/validations'
 
 const widgetUpsertSchema = widgetSchema.extend({
@@ -20,7 +20,24 @@ export async function GET(request: Request) {
     if (!widget) {
       return apiError('Widget not found', 404)
     }
-    return json({ widget })
+
+    // The embed script (api/widget-script) fetches this cross-origin from
+    // whichever site it's pasted into. Enforce the owner's allowlist here
+    // (isOriginAllowed treats an empty list as "allow any origin") and echo
+    // the origin back so the browser actually lets the embedding page read
+    // the response — without this header the fetch silently fails CORS and
+    // the widget never receives its real name/colors/greeting.
+    const origin = request.headers.get('origin')
+    if (origin && !isOriginAllowed(origin, widget.allowedOrigins)) {
+      return apiError('This origin is not allowed to load this widget', 403)
+    }
+
+    const response = json({ widget })
+    if (origin) {
+      response.headers.set('Access-Control-Allow-Origin', origin)
+      response.headers.set('Vary', 'Origin')
+    }
+    return response
   }
 
   const { supabase, user } = await getServerSupabaseAndUser()
