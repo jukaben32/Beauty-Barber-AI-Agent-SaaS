@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getBusinessForUser, getSubscription } from '@/services/business'
 import { getPaymentConfigForBusiness, listBillingTransactions, getBillingSummary } from '@/services/billing'
+import { listAgentsForBusiness } from '@/services/agents'
 import { BillingManager } from '@/components/dashboard/BillingManager'
 
 export default async function BillingPage() {
@@ -14,11 +15,12 @@ export default async function BillingPage() {
   const business = await getBusinessForUser(supabase, user.id)
   if (!business) redirect('/signup')
 
-  const [subscription, paymentConfig, transactions, summary] = await Promise.all([
+  const [subscription, paymentConfig, transactions, summary, agents] = await Promise.all([
     getSubscription(supabase, business.id),
     getPaymentConfigForBusiness(supabase, business.id),
     listBillingTransactions(supabase, business.id, 50),
     getBillingSummary(supabase, business.id),
+    listAgentsForBusiness(supabase, business.id),
   ])
 
   return (
@@ -27,6 +29,7 @@ export default async function BillingPage() {
       paymentConfig={paymentConfig}
       transactions={transactions}
       summary={summary}
+      agentCount={agents.length}
     />
   )
 }

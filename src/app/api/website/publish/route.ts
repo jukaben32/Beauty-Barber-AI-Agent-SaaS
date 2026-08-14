@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { apiError, json, readJson } from '@/lib/api'
 import { getBusinessForCurrentUser, getBusinessMembershipRole, getServerSupabaseAndUser, canManageBusiness } from '@/lib/route-helpers'
 import { getWebsiteByBusinessId, publishWebsite } from '@/services/websites'
+import { getSubscription } from '@/services/business'
 
 const publishSchema = z.object({
   websiteId: z.string().uuid().optional(),
@@ -34,6 +35,13 @@ export async function POST(request: Request) {
   const parsed = publishSchema.safeParse(body)
   if (!parsed.success) {
     return apiError('Invalid publish payload', 422, { issues: parsed.error.flatten() })
+  }
+
+  if (parsed.data.published ?? true) {
+    const subscription = await getSubscription(supabase, business.id)
+    if (!subscription?.websiteBuilderEnabled) {
+      return apiError('The Website Builder add-on is required to publish your site — upgrade first.', 402)
+    }
   }
 
   const website = parsed.data.websiteId

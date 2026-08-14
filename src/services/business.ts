@@ -61,6 +61,11 @@ function toSubscription(row: any): BusinessSubscription {
     businessId: row.business_id,
     plan: row.plan,
     status: row.status,
+    stripeCustomerId: row.stripe_customer_id ?? null,
+    stripeSubscriptionId: row.stripe_subscription_id ?? null,
+    stripePriceId: row.stripe_price_id ?? null,
+    currentPeriodEnd: row.current_period_end ?? null,
+    cancelAtPeriodEnd: row.cancel_at_period_end ?? false,
     websiteBuilderEnabled: row.website_builder_enabled,
     billingEnabled: row.billing_enabled,
     createdAt: row.created_at,
@@ -251,14 +256,11 @@ export async function createBusiness(
   const defaultAgentName = `${toTitleCase(input.name)} Assistant`
   const defaultPrompt = `You are Clara, the AI booking receptionist for ${input.name}. Help clients book appointments, answer FAQs, and follow the business scheduling rules. Be concise, warm, and professional.`
 
-  const [{ error: subscriptionError }, { error: memberError }, { data: agentData, error: agentError }] = await Promise.all([
-    supabase.from('business_subscriptions').insert({
-      business_id: business.id,
-      plan: 'free',
-      status: 'active',
-      website_builder_enabled: true,
-      billing_enabled: true,
-    }),
+  // business_subscriptions is created automatically by the
+  // trg_create_default_subscription trigger right after the businesses
+  // insert above — no client insert here, since RLS only allows the
+  // service-role Stripe webhook to write that table.
+  const [{ error: memberError }, { data: agentData, error: agentError }] = await Promise.all([
     supabase.from('business_members').insert({
       business_id: business.id,
       user_id: input.ownerId,
@@ -283,7 +285,6 @@ export async function createBusiness(
       .single(),
   ])
 
-  if (subscriptionError) throw subscriptionError
   if (memberError) throw memberError
   if (agentError) throw agentError
 

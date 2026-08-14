@@ -173,15 +173,19 @@ function TemplateBadge({ template }: { template: AgentTemplate }) {
 function AgentPreviewModal({
   template,
   alreadyActive,
+  locked,
   onClose,
   onActivate,
 }: {
   template: AgentTemplate | null
   alreadyActive: boolean
+  locked: boolean
   onClose: () => void
   onActivate: () => void
 }) {
   if (!template) return null
+
+  const disableActivate = alreadyActive || locked
 
   return (
     <Modal
@@ -252,17 +256,18 @@ function AgentPreviewModal({
           </Button>
           <Button
             onClick={onActivate}
-            disabled={alreadyActive}
+            disabled={disableActivate}
+            title={locked && !alreadyActive ? "You've reached your plan's agent limit — upgrade to activate more." : undefined}
             className={cn(
               'min-w-[180px]',
-              alreadyActive && 'cursor-not-allowed opacity-60 hover:translate-y-0',
+              disableActivate && 'cursor-not-allowed opacity-60 hover:translate-y-0',
             )}
             style={{
-              background: alreadyActive ? 'rgba(21, 57, 142,0.15)' : template.accent,
-              color: alreadyActive ? 'var(--brand-strong)' : 'white',
+              background: disableActivate ? 'rgba(21, 57, 142,0.15)' : template.accent,
+              color: disableActivate ? 'var(--brand-strong)' : 'white',
             }}
           >
-            {alreadyActive ? 'Already Active' : 'Activate This Agent'}
+            {alreadyActive ? 'Already Active' : locked ? 'Upgrade to Activate' : 'Activate This Agent'}
           </Button>
         </div>
       </div>
@@ -636,14 +641,17 @@ function AgentWizardModal({
 function TemplateCard({
   template,
   active,
+  locked,
   onPreview,
   onActivate,
 }: {
   template: AgentTemplate
   active: boolean
+  locked: boolean
   onPreview: () => void
   onActivate: () => void
 }) {
+  const disableActivate = active || locked
   return (
     <div
       className="relative overflow-hidden rounded-[28px] border border-[var(--border-soft)] bg-white p-5 shadow-[0_18px_54px_-40px_rgba(15,23,42,0.45)]"
@@ -701,15 +709,16 @@ function TemplateCard({
         <button
           type="button"
           onClick={onActivate}
-          disabled={active}
+          disabled={disableActivate}
+          title={locked && !active ? "You've reached your plan's agent limit — upgrade to activate more." : undefined}
           className={cn(
             'inline-flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white transition',
-            active ? 'cursor-not-allowed opacity-60' : 'hover:-translate-y-0.5',
+            disableActivate ? 'cursor-not-allowed opacity-60' : 'hover:-translate-y-0.5',
           )}
-          style={{ background: active ? 'rgba(21, 57, 142,0.22)' : template.accent }}
+          style={{ background: disableActivate ? 'rgba(21, 57, 142,0.22)' : template.accent }}
         >
           <Plus className="h-4 w-4" />
-          {active ? 'Already Active' : 'Activate Agent'}
+          {active ? 'Already Active' : locked ? 'Upgrade to Activate' : 'Activate Agent'}
         </button>
         <button
           type="button"
@@ -829,10 +838,12 @@ export function AgentsManager({
   initialAgents,
   businessId,
   services,
+  agentLimit,
 }: {
   initialAgents: AiAgent[]
   businessId: string
   services: Service[]
+  agentLimit: number
 }) {
   const [agents, setAgents] = useState(initialAgents)
   const [category, setCategory] = useState<AgentTemplateCategory>('all')
@@ -863,6 +874,7 @@ export function AgentsManager({
 
   const sortedAgents = sortAgents(agents)
   const liveAgents = agents.filter((agent) => agent.status === 'live')
+  const atLimit = agentLimit !== 0 && agents.length >= agentLimit
   const totalCallsHandled = agents.reduce((total, agent) => total + (agent.callsHandled ?? 0), 0)
   const uniqueAssignedServiceCount = new Set(agents.flatMap((agent) => agent.assignedServiceIds ?? [])).size
 
@@ -937,12 +949,23 @@ export function AgentsManager({
         title="Agents, templates, and live testing"
         description="Build and activate the front-desk, triage, and specialist voice agents your business uses on the website and over the phone."
         actions={
-          <Button onClick={() => openCreate()} className="inline-flex items-center gap-2">
+          <Button
+            onClick={() => openCreate()}
+            disabled={atLimit}
+            title={atLimit ? "You've reached your plan's agent limit — upgrade to activate more." : undefined}
+            className={cn('inline-flex items-center gap-2', atLimit && 'cursor-not-allowed opacity-60 hover:translate-y-0')}
+          >
             <Plus className="h-4 w-4" />
             New Agent
           </Button>
         }
       />
+
+      {atLimit ? (
+        <div className="rounded-[20px] border border-[rgba(217,119,6,0.35)] bg-[rgba(217,119,6,0.08)] px-5 py-4 text-sm font-semibold text-[#92400e]">
+          You&apos;ve reached your plan&apos;s agent limit ({agentLimit} agent{agentLimit === 1 ? '' : 's'}). Upgrade your plan to activate more AI agents.
+        </div>
+      ) : null}
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <MetricCard label="Live Agents" value={String(liveAgents.length)} delta="Handling client calls" icon={Bot} tone="teal" />
@@ -990,7 +1013,7 @@ export function AgentsManager({
               <h3 className="mt-4 text-lg font-semibold text-[var(--text-strong)]">No agents yet</h3>
               <p className="mt-2 text-sm text-[var(--text-muted)]">Create the first AI receptionist or activate one of the templates below.</p>
               <div className="mt-5">
-                <Button onClick={() => openCreate()}>
+                <Button onClick={() => openCreate()} disabled={atLimit}>
                   <Plus className="mr-2 h-4 w-4" />
                   Create First Agent
                 </Button>
@@ -1048,6 +1071,7 @@ export function AgentsManager({
             key={template.key}
             template={template}
             active={activeTemplateKeySet.has(template.key)}
+            locked={atLimit}
             onPreview={() => setPreviewTemplateKey(template.key)}
             onActivate={() => openCreate(template)}
           />
@@ -1058,6 +1082,7 @@ export function AgentsManager({
         <AgentPreviewModal
           template={AGENT_TEMPLATES.find((template) => template.key === previewTemplateKey) ?? null}
           alreadyActive={activeTemplateKeySet.has(previewTemplateKey)}
+          locked={atLimit}
           onClose={() => setPreviewTemplateKey(null)}
           onActivate={() => {
             const template = AGENT_TEMPLATES.find((item) => item.key === previewTemplateKey) ?? null

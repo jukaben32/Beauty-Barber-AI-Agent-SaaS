@@ -1,6 +1,7 @@
 import { apiError, json, readJson } from '@/lib/api'
 import { getBusinessForCurrentUser, getBusinessMembershipRole, getServerSupabaseAndUser, canManageBusiness } from '@/lib/route-helpers'
 import { createOrUpdateWebsite, getWebsiteContentForBusiness, saveWebsiteContent } from '@/services/websites'
+import { getSubscription } from '@/services/business'
 import { saveWebsiteContentSchema, websiteSchema } from '@/validations'
 
 export async function POST(request: Request) {
@@ -33,6 +34,13 @@ export async function POST(request: Request) {
         return apiError('Invalid website payload', 422, { issues: parsed.error.flatten() })
       }
 
+      if (parsed.data.website.published) {
+        const subscription = await getSubscription(supabase, business.id)
+        if (!subscription?.websiteBuilderEnabled) {
+          return apiError('The Website Builder add-on is required to publish your site — upgrade first.', 402)
+        }
+      }
+
       const content = await saveWebsiteContent(supabase, business.id, parsed.data)
       return json(content)
     }
@@ -40,6 +48,13 @@ export async function POST(request: Request) {
     const parsed = websiteSchema.safeParse(body)
     if (!parsed.success) {
       return apiError('Invalid website payload', 422, { issues: parsed.error.flatten() })
+    }
+
+    if (parsed.data.published) {
+      const subscription = await getSubscription(supabase, business.id)
+      if (!subscription?.websiteBuilderEnabled) {
+        return apiError('The Website Builder add-on is required to publish your site — upgrade first.', 402)
+      }
     }
 
     await createOrUpdateWebsite(supabase, business.id, {

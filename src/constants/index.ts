@@ -1,3 +1,41 @@
+import type { PlanId, PlanLimits } from '@/types'
+
+export const PLAN_LIMITS: Record<PlanId, PlanLimits> = {
+  free: {
+    id: 'free',
+    name: process.env.NEXT_PUBLIC_FREE_PLAN_NAME ?? 'Free',
+    priceUsd: 0,
+    agentLimit: Number(process.env.NEXT_PUBLIC_FREE_AGENT_LIMIT ?? 1),
+  },
+  pro: {
+    id: 'pro',
+    name: process.env.NEXT_PUBLIC_PRO_PLAN_NAME ?? 'Pro',
+    priceUsd: Number(process.env.NEXT_PUBLIC_PRO_PLAN_PRICE_USD ?? 49),
+    agentLimit: Number(process.env.NEXT_PUBLIC_PRO_AGENT_LIMIT ?? 10),
+  },
+  business: {
+    id: 'business',
+    name: process.env.NEXT_PUBLIC_BUSINESS_PLAN_NAME ?? 'Business',
+    priceUsd: Number(process.env.NEXT_PUBLIC_BUSINESS_PLAN_PRICE_USD ?? 199),
+    agentLimit: Number(process.env.NEXT_PUBLIC_BUSINESS_AGENT_LIMIT ?? 0),
+  },
+}
+
+export const WEBSITE_BUILDER_PRICE_USD = Number(process.env.NEXT_PUBLIC_WEBSITE_BUILDER_PRICE_USD ?? 29)
+
+export const WEBSITE_BUILDER_FEATURES = [
+  '3 professional website templates',
+  'Full content & brand editor',
+  'AI voice widget embedded',
+  'Published at your custom URL',
+  'Renew anytime — cancel anytime',
+] as const
+
+// 0 means "unlimited" in the env contract.
+export function isWithinLimit(used: number, limit: number): boolean {
+  return limit === 0 || used < limit
+}
+
 export const DEFAULT_TIME_ZONE = 'America/Santo_Domingo'
 export const DEFAULT_WELCOME_MESSAGE = 'Hola, soy Clara, tu asistente medica virtual. En que te ayudo hoy?'
 export const DEFAULT_WIDGET_WIDTH = 420

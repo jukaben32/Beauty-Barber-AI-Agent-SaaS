@@ -1,6 +1,6 @@
 import type { Json } from './database'
 
-export type PlanId = 'free' | 'starter' | 'pro' | 'enterprise'
+export type PlanId = 'free' | 'pro' | 'business'
 export type BusinessOnboardingStep = 'created' | 'profile' | 'agent' | 'services' | 'billing' | 'done'
 export type BusinessMemberRole = 'owner' | 'admin' | 'staff' | 'assistant'
 export type AgentStatus = 'draft' | 'live' | 'paused'
@@ -68,10 +68,22 @@ export interface BusinessSubscription {
   businessId: string
   plan: PlanId
   status: 'active' | 'trialing' | 'past_due' | 'canceled' | 'incomplete'
+  stripeCustomerId: string | null
+  stripeSubscriptionId: string | null
+  stripePriceId: string | null
+  currentPeriodEnd: string | null
+  cancelAtPeriodEnd: boolean
   websiteBuilderEnabled: boolean
   billingEnabled: boolean
   createdAt: string
   updatedAt: string
+}
+
+export interface PlanLimits {
+  id: PlanId
+  name: string
+  priceUsd: number
+  agentLimit: number
 }
 
 export interface AiAgent {

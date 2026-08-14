@@ -172,9 +172,14 @@ create table if not exists business_subscriptions (
   id uuid primary key default gen_random_uuid(),
   business_id uuid not null references businesses(id) on delete cascade unique,
   plan text not null default 'free'
-    check (plan in ('free', 'starter', 'pro', 'enterprise')),
+    check (plan in ('free', 'pro', 'business')),
   status text not null default 'active'
     check (status in ('active', 'trialing', 'past_due', 'canceled', 'incomplete')),
+  stripe_customer_id text unique,
+  stripe_subscription_id text unique,
+  stripe_price_id text,
+  current_period_end timestamptz,
+  cancel_at_period_end boolean not null default false,
   website_builder_enabled boolean not null default false,
   billing_enabled boolean not null default false,
   created_at timestamptz not null default now(),
@@ -182,6 +187,7 @@ create table if not exists business_subscriptions (
 );
 
 create index if not exists idx_business_subscriptions_business_id on business_subscriptions (business_id);
+create index if not exists idx_business_subscriptions_stripe_customer_id on business_subscriptions (stripe_customer_id);
 
 drop trigger if exists update_business_subscriptions_updated_at on business_subscriptions;
 create trigger update_business_subscriptions_updated_at
@@ -190,12 +196,32 @@ for each row execute function update_updated_at_column();
 
 alter table business_subscriptions enable row level security;
 
+-- Members may only read their subscription — every write (plan changes,
+-- Stripe fields) goes through the service-role Stripe webhook. A business
+-- owner previously had "for all" here, which let them set their own plan
+-- to the paid tier for free straight from the browser.
 drop policy if exists "subscription access by business members" on business_subscriptions;
-create policy "subscription access by business members"
-  on business_subscriptions for select using (has_business_access(business_id));
 drop policy if exists "subscription changes by owners" on business_subscriptions;
-create policy "subscription changes by owners"
-  on business_subscriptions for all using (is_business_owner(business_id));
+create policy "subscription read by business members"
+  on business_subscriptions for select using (has_business_access(business_id));
+create policy "subscription writes by service role"
+  on business_subscriptions for all using (auth.role() = 'service_role');
+
+-- Auto-create a free subscription row whenever a business is created, so
+-- no client code needs INSERT permission on business_subscriptions.
+create or replace function create_default_subscription() returns trigger as $$
+begin
+  insert into business_subscriptions (business_id, plan, status)
+  values (new.id, 'free', 'active')
+  on conflict (business_id) do nothing;
+  return new;
+end;
+$$ language plpgsql security definer set search_path = public;
+
+drop trigger if exists trg_create_default_subscription on businesses;
+create trigger trg_create_default_subscription
+after insert on businesses
+for each row execute function create_default_subscription();
 
 -- 4. AI AGENTS
 create table if not exists ai_agents (
@@ -236,6 +262,39 @@ create policy "agents access by business members"
 -- the public anon key read every business's agents directly via PostgREST,
 -- including system_prompt.
 drop policy if exists "public can read live agents" on ai_agents;
+
+-- Real server-side plan-tier enforcement for AI agent creation. This is
+-- the actual gate — the dashboard greys out the "Activate" button too, but
+-- that's UX only and can't stop a direct client SDK/API call by itself.
+create or replace function enforce_agent_limit() returns trigger as $$
+declare
+  current_plan text;
+  agent_limit int;
+  agent_count int;
+begin
+  select plan into current_plan from business_subscriptions where business_id = new.business_id;
+  agent_limit := case coalesce(current_plan, 'free')
+    when 'free' then 1
+    when 'pro' then 10
+    when 'business' then 0
+    else 1
+  end;
+  if agent_limit = 0 then
+    return new;
+  end if;
+  select count(*) into agent_count from ai_agents where business_id = new.business_id;
+  if agent_count >= agent_limit then
+    raise exception 'Your plan allows a maximum of % AI agent(s). Upgrade to add more.', agent_limit
+      using errcode = 'P0001';
+  end if;
+  return new;
+end;
+$$ language plpgsql security definer set search_path = public;
+
+drop trigger if exists trg_enforce_agent_limit on ai_agents;
+create trigger trg_enforce_agent_limit
+before insert on ai_agents
+for each row execute function enforce_agent_limit();
 
 -- 5. SERVICES
 create table if not exists services (
