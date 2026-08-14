@@ -99,8 +99,6 @@ export function WebsiteEditor({
   const [error, setError] = useState<string | null>(null)
   const [uploadingHero, setUploadingHero] = useState(false)
   const [uploadingAbout, setUploadingAbout] = useState(false)
-  const [needsUpgrade, setNeedsUpgrade] = useState(false)
-  const [checkingOut, setCheckingOut] = useState(false)
 
   function patch(p: Partial<FormState>) {
     setForm((f) => ({ ...f, ...p }))
@@ -152,7 +150,6 @@ export function WebsiteEditor({
     setSaving(true)
     setSaved(false)
     setError(null)
-    setNeedsUpgrade(false)
 
     const body = {
       slug: form.slug,
@@ -195,7 +192,6 @@ export function WebsiteEditor({
 
     if (!res.ok) {
       setError(data.error ?? 'No se pudo guardar')
-      if (res.status === 402) setNeedsUpgrade(true)
       return false
     }
 
@@ -208,30 +204,11 @@ export function WebsiteEditor({
   // Publish always saves the current draft first — a Publish click that
   // redirects or bails without saving would lose everything just typed in,
   // the exact bug found and fixed in the sibling real-estate project's
-  // Website Builder (commit 21a8fbb). Publishing is gated server-side by the
-  // $29/mo Website Builder add-on (business_subscriptions.website_builder_enabled);
-  // a 402 here surfaces the upgrade CTA below instead of silently failing.
+  // Website Builder (commit 21a8fbb). There's no payment gate here
+  // (website_builder_enabled defaults true for every business), so this is
+  // simpler, but the save-before-state-change discipline still matters.
   async function handlePublishToggle() {
     await save(!website.published)
-  }
-
-  async function startWebsiteBuilderCheckout() {
-    setCheckingOut(true)
-    try {
-      const res = await fetch('/api/billing/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ addon: 'website_builder' }),
-      })
-      const data = await res.json().catch(() => ({}))
-      if (res.ok && data.url) {
-        window.location.assign(data.url)
-        return
-      }
-      setError(data.error ?? 'No se pudo iniciar el pago')
-    } finally {
-      setCheckingOut(false)
-    }
   }
 
   const siteUrl = typeof window !== 'undefined' ? `${window.location.origin}/sites/${website.slug}` : `/sites/${website.slug}`
@@ -268,21 +245,6 @@ export function WebsiteEditor({
       </div>
 
       {error && <p className="text-sm font-medium text-[var(--coral)]">{error}</p>}
-      {needsUpgrade && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[rgba(217,119,6,0.35)] bg-[rgba(217,119,6,0.08)] px-4 py-3">
-          <p className="text-sm font-semibold text-[#92400e]">
-            Publishing your site requires the Website Builder add-on ($29/mo).
-          </p>
-          <button
-            type="button"
-            onClick={() => void startWebsiteBuilderCheckout()}
-            disabled={checkingOut}
-            className="btn-primary !px-3 !py-2 !text-xs"
-          >
-            {checkingOut ? 'Redirecting…' : 'Upgrade to publish'}
-          </button>
-        </div>
-      )}
 
       <div className="grid gap-6 lg:grid-cols-2">
         <SurfaceCard className="space-y-4 p-6">

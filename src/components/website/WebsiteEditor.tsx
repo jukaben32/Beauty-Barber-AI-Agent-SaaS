@@ -276,6 +276,8 @@ export function WebsiteEditor({
   const [heroBusy, setHeroBusy] = useState(false)
   const [aboutBusy, setAboutBusy] = useState(false)
   const [teamPhotoIndex, setTeamPhotoIndex] = useState<number | null>(null)
+  const [needsUpgrade, setNeedsUpgrade] = useState(false)
+  const [checkingOut, setCheckingOut] = useState(false)
 
   const livePath = `/sites/${website.slug}`
   const liveUrl = useMemo(() => (typeof window !== 'undefined' ? `${window.location.origin}${livePath}` : livePath), [livePath])
@@ -418,6 +420,7 @@ export function WebsiteEditor({
     setSaving(true)
     setSaved(false)
     setError(null)
+    setNeedsUpgrade(false)
 
     const body = {
       website: {
@@ -508,6 +511,7 @@ export function WebsiteEditor({
 
     if (!res.ok) {
       setError(data.error ?? 'No se pudo guardar')
+      if (res.status === 402) setNeedsUpgrade(true)
       return false
     }
 
@@ -525,6 +529,25 @@ export function WebsiteEditor({
 
   async function togglePublish() {
     await save(!website.published)
+  }
+
+  async function startWebsiteBuilderCheckout() {
+    setCheckingOut(true)
+    try {
+      const res = await fetch('/api/billing/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ addon: 'website_builder' }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok && data.url) {
+        window.location.assign(data.url)
+        return
+      }
+      setError(data.error ?? 'No se pudo iniciar el pago')
+    } finally {
+      setCheckingOut(false)
+    }
   }
 
   return (
@@ -558,6 +581,21 @@ export function WebsiteEditor({
       </div>
 
       {error ? <p className="text-sm font-medium text-[var(--coral)]">{error}</p> : null}
+      {needsUpgrade ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[rgba(217,119,6,0.35)] bg-[rgba(217,119,6,0.08)] px-4 py-3">
+          <p className="text-sm font-semibold text-[#92400e]">
+            Publishing your site requires the Website Builder add-on ($29/mo).
+          </p>
+          <button
+            type="button"
+            onClick={() => void startWebsiteBuilderCheckout()}
+            disabled={checkingOut}
+            className="btn-primary !px-3 !py-2 !text-xs"
+          >
+            {checkingOut ? 'Redirecting…' : 'Upgrade to publish'}
+          </button>
+        </div>
+      ) : null}
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.95fr)]">
         <div className="space-y-5">
